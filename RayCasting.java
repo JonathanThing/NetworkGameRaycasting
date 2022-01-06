@@ -1,8 +1,7 @@
-
-/* BasicGameTemplate
- * Desc: Template for a basic arcade game
- * @author ICS3U
- * @version Dec 2017
+/* RayCasting
+ * Basic raycasting demo
+ * @author Jonathan Cai
+ * @version Dec 2021
  */
 import javax.swing.*;
 
