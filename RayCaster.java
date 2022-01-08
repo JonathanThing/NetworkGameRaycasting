@@ -1,3 +1,4 @@
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -114,18 +115,9 @@ public class RayCaster {
 
 					g2.drawLine(Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2+(middle) - i*stepPattern) , Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2 + (middle) - (i+1)*stepPattern ));
 
-				}
-				
-				int tx,ty;
-				
-				for (int i = 0; i < numb/2; i++) {
-					
-				}
-				
-			}
-			
+				}		
+			}	
 		}
-
 	}
 	
 	public double rayCastVerticalSides(double rAngle) {
