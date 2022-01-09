@@ -1,2 +1,1 @@
-raycastin program
-Dont work on the main, use personal branches
+Don't push anything to main unless it's unanimous.
