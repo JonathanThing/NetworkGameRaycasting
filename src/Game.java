@@ -34,11 +34,8 @@ public class Game {
 			{1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,1},
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
-			
-	static double pX = (3)*Const.BOXSIZE - Const.BOXSIZE/2;
-	static double pY = (2)*Const.BOXSIZE - Const.BOXSIZE/2;
-	static int pSize = 10;
-	static Angle pAngle = new Angle(3*Math.PI/2);
+		
+	static Player player = new Player((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2, 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
 	static boolean up, down, left, right, turnRight, turnLeft;
 	static int xOffset = 0;
 	static int yOffset = 0;
@@ -202,74 +199,9 @@ public class Game {
 			} catch (Exception e) {
 			}
 
-			double xRaw = 0;
-			double yRaw = 0;
-			double xForward = 0;
-			double yForward = 0;
-			double xSide = 0;
-			double ySide = 0;
-			double forward = 0;
-			double side = 0;
-
-			if (up) {
-				yRaw += 1;
-			}
-
-			if (down) {
-				yRaw -= 1;
-			}
-
-			if (right) {
-				xRaw += 1;
-			}
-
-			if (left) {
-				xRaw -= 1;
-			}
-
-			if (turnLeft) {
-				pAngle.changeAngle(Math.toRadians(5));
-			}
-
-			if (turnRight) {
-				pAngle.changeAngle(Math.toRadians(-5));
-			}
-
-			xForward = Math.cos(pAngle.getAngle()) * yRaw;
-			yForward = Math.sin(pAngle.getAngle()) * yRaw;
-
-			ySide = Math.sin(Angle.checkLimit(pAngle.getAngle() - Math.PI / 2)) * xRaw;
-			xSide = Math.cos(Angle.checkLimit(pAngle.getAngle() - Math.PI / 2)) * xRaw;
-
-			forward = yForward + ySide;
-			side = xForward + xSide;
-
-			double hyp = Math.sqrt(Math.pow(forward, 2) + Math.pow(side, 2));
-
-			int speed = 4;		
-			
-			if (hyp != 0) {
-				
-				if (map[(int) ((pY - ((forward/hyp) * speed*4))/Const.BOXSIZE)][(int) ((pX + ((side/hyp) * speed*4))/Const.BOXSIZE)] == 4) {
-					map[(int) ((pY - ((forward/hyp) * speed*4))/Const.BOXSIZE)][(int) ((pX + ((side/hyp) * speed*4))/Const.BOXSIZE)] = 0;
-				}
-				
-				if (map[(int) (pY/Const.BOXSIZE)][(int) ((pX + ((side/hyp) * speed*2))/Const.BOXSIZE)] < 1) {
-					pX += ((side / hyp) * speed);
-					
-				}
-					
-				if (map[(int) ((pY - ((forward/hyp) * speed*2))/Const.BOXSIZE)][(int) (pX/Const.BOXSIZE)] < 1) {
-					pY -= ((forward / hyp) * speed);
-				}
-			}
-
+			player.movement(up,down,left,right,turnLeft,turnRight,map);
 		}
 	} // runGameLoop method end
-
-	
-	
-	
 
 //------------------------------------------------------------------------------  
 	static class GraphicsPanel extends JPanel {
@@ -285,7 +217,7 @@ public class Game {
 			g2.fillRect(0,0,Const.WIDTH,Const.HEIGHT/2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
-			rayCaster.rayCast(g2, false, pX, pY, pAngle, xOffset, yOffset, map);
+			rayCaster.rayCast(g2, false, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, map);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -317,11 +249,11 @@ public class Game {
 				}
 			}
 			
-			rayCaster.rayCast(g2, true, pX, pY, pAngle, xOffset, yOffset, map);
+			rayCaster.rayCast(g2, true, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, map);
 
 			g.setColor(Color.ORANGE);
-			g2.rotate(-pAngle.getAngle(), pX+ xOffset, pY+ yOffset);
-			g2.fillRect((int) pX - pSize / 2 + xOffset, (int) pY - pSize / 2 + yOffset, pSize, pSize);
+			g2.rotate(-player.getAngle().getAngleValue(), player.getX()+ xOffset, player.getY()+ yOffset);
+			g2.fillRect((int) player.getX() - player.getWidth() / 2 + xOffset, (int) player.getY() - player.getHeight() / 2 + yOffset, player.getWidth(), player.getHeight());
 			
 		
 		} // paintComponent method end

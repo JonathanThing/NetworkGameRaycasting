@@ -10,8 +10,8 @@ abstract class Enemy extends Character {
     g.drawImage(this.getSprite(), (int) (getX() - getWidth() / 2 - offSetX), (int) (getY() - getHeight() / 2 - offSetY), null);
   }  
 
-  Enemy(double x, double y, int width, int height, String name, BufferedImage sprite, double health, double speed, Weapon weapon) {
-    super(x, y, width, height, name, sprite, health, speed, weapon);
+  Enemy(double x, double y, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, Weapon weapon) {
+    super(x, y, width, height, name, angle, sprite, health, speed, weapon);
   }
   
 }

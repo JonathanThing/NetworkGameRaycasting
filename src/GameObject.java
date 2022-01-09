@@ -11,6 +11,7 @@ abstract class GameObject{
   private int height;
   private BufferedImage sprite;
   private String name;
+  private Angle angle;
   
   public double getX(){
     return this.x;
@@ -26,6 +27,10 @@ abstract class GameObject{
   
   public void setY(double y){
     this.y = y;
+  }
+  
+  public Angle getAngle() {
+	  return this.angle;
   }
   
   public int getWidth(){
@@ -55,13 +60,14 @@ abstract class GameObject{
   public abstract void draw (Graphics g,  double offSetX, double offSetY);
   
 
-  GameObject(double x, double y, int width, int height, String name, BufferedImage sprite){
+  GameObject(double x, double y, int width, int height, String name, Angle angle, BufferedImage sprite){
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.sprite = sprite;
     this.name = name;
+    this.angle = angle;
   }
   
 }

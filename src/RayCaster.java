@@ -39,7 +39,7 @@ public class RayCaster {
 		
 		for (int rays = 0; rays < numb; rays++) {
 			
-			rAngle = Angle.checkLimit(pAngle.getAngle() + Math.atan(inc*(rays-numb/2)));
+			rAngle = Angle.checkLimit(pAngle.getAngleValue() + Math.atan(inc*(rays-numb/2)));
 
 			dist1 = rayCastVerticalSides(rAngle);
 			dist2 = rayCastHorizontalSides(rAngle);
@@ -65,7 +65,7 @@ public class RayCaster {
 				
 			} else {
 							
-				dist1 = dist1*Math.cos(rAngle-pAngle.getAngle());
+				dist1 = dist1*Math.cos(rAngle-pAngle.getAngleValue());
 				
 				int strokeWidth = Const.WIDTH/numb;
 				g2.setStroke(new BasicStroke(strokeWidth));
