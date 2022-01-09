@@ -100,7 +100,7 @@ public class Client extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
 
-            // --------------------Player 1 (Arrow Keys)--------------------
+            // --------------------Move (Arrow Keys)--------------------
             // Right Arrow
             if (e.getKeyCode() == 39){
                 // Move 20 on the x axis
