@@ -16,6 +16,8 @@ public class Level {
 
 	public void setMap(int[][] map) {
 		this.map = map;
+		this.rows = map.length;
+		this.columns = map[0].length;
 	}
 
 	public int getMapTile(int row, int column) {
