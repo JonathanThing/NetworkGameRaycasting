@@ -13,7 +13,7 @@ class Player extends Character {
 				(int) (getY() - getHeight() / 2 - offSetY), null);
 	}
 
-	public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight, int[][] map) {
+	public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight, Level map) {
 		
 		double xRaw = 0;
 		double yRaw = 0;
@@ -61,16 +61,16 @@ class Player extends Character {
 		
 		if (hyp != 0) {
 			
-			if (map[(int) ((this.getY() - ((forward/hyp) * this.getSpeed()*4))/Const.BOXSIZE)][(int) ((this.getX() + ((side/hyp) * this.getSpeed()*4))/Const.BOXSIZE)] == 4) {
-				map[(int) ((this.getY() - ((forward/hyp) * this.getSpeed()*4))/Const.BOXSIZE)][(int) ((this.getX() + ((side/hyp) * this.getSpeed()*4))/Const.BOXSIZE)] = 0;
+			if (map.getMapTile((int) ((this.getY() - ((forward/hyp) * this.getSpeed() * 4))/Const.BOXSIZE),(int) ((this.getX() + ((side/hyp) * this.getSpeed() * 4))/Const.BOXSIZE)) == 4) {
+				map.setMapTile((int) ((this.getY() - ((forward/hyp) * this.getSpeed() * 4))/Const.BOXSIZE),(int) ((this.getX() + ((side/hyp) * this.getSpeed() * 4))/Const.BOXSIZE), 0);
 			}
 			
-			if (map[(int) (this.getY()/Const.BOXSIZE)][(int) ((this.getX() + ((side/hyp) * this.getSpeed()*2))/Const.BOXSIZE)] < 1) {
+			if (map.getMapTile((int) (this.getY()/Const.BOXSIZE),(int) ((this.getX() + ((side/hyp) * this.getSpeed()*2))/Const.BOXSIZE)) < 1) {
 				this.moveRight((side / hyp) * this.getSpeed());
 				
 			}
 				
-			if (map[(int) ((this.getY() - ((forward/hyp) * this.getSpeed()*2))/Const.BOXSIZE)][(int) (this.getX()/Const.BOXSIZE)] < 1) {
+			if (map.getMapTile((int) ((this.getY() - ((forward/hyp) * this.getSpeed()*2))/Const.BOXSIZE),(int) (this.getX()/Const.BOXSIZE)) < 1) {
 				this.moveUp(((forward / hyp) * this.getSpeed()));
 			}
 		}

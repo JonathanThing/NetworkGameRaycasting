@@ -17,24 +17,24 @@ public class Game {
 	static MyKeyListener keyListener = new MyKeyListener();
 	static MyMouseListener mouseListener = new MyMouseListener();
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
-	static int map[][] = {
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-			{1,0,0,0,1,2,2,1,0,0,0,0,0,0,0,1},
-			{1,0,0,0,4,0,0,4,0,0,2,2,0,0,0,1},
-			{1,0,0,0,1,2,0,1,0,0,0,0,0,0,2,1},
-			{1,1,4,1,6,1,1,1,0,0,3,4,3,2,2,1},
-			{1,0,0,0,0,0,0,1,3,3,3,0,3,3,3,1},
-			{1,0,0,5,0,0,0,4,0,0,0,0,0,0,0,1},
-			{1,2,0,0,0,0,0,6,3,0,3,0,3,0,0,1},
-			{1,1,7,7,7,4,1,1,1,0,1,4,1,0,0,1},
-			{1,0,0,0,0,0,0,1,1,1,1,0,1,1,4,1},
-			{1,0,2,0,2,0,0,1,0,0,0,0,0,2,0,1},
-			{1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-			{1,0,2,0,2,0,0,4,0,0,0,2,0,0,0,1},
-			{1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,1},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-	};
-		
+	
+	static Level currentLevel = new Level(new int[][]{
+												{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+												{1,0,0,0,1,2,2,1,0,0,0,0,0,0,0,1},
+												{1,0,0,0,4,0,0,4,0,0,2,2,0,0,0,1},
+												{1,0,0,0,1,2,0,1,0,0,0,0,0,0,2,1},
+												{1,1,4,1,6,1,1,1,0,0,3,4,3,2,2,1},
+												{1,0,0,0,0,0,0,1,3,3,3,0,3,3,3,1},
+												{1,0,0,5,0,0,0,4,0,0,0,0,0,0,0,1},
+												{1,2,0,0,0,0,0,6,3,0,3,0,3,0,0,1},
+												{1,1,7,7,7,4,1,1,1,0,1,4,1,0,0,1},
+												{1,0,0,0,0,0,0,1,1,1,1,0,1,1,4,1},
+												{1,0,2,0,2,0,0,1,0,0,0,0,0,2,0,1},
+												{1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+												{1,0,2,0,2,0,0,4,0,0,0,2,0,0,0,1},
+												{1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,1},
+												{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},}); 
+
 	static Player player = new Player((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2, 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
 	static boolean up, down, left, right, turnRight, turnLeft;
 	static int xOffset = 0;
@@ -166,6 +166,8 @@ public class Game {
 
 //------------------------------------------------------------------------------    
 	public static void main(String[] args) {
+		System.out.println(currentLevel.getMapTile(0, 0));
+		
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.WIDTH-62, Const.HEIGHT+40);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -199,7 +201,7 @@ public class Game {
 			} catch (Exception e) {
 			}
 
-			player.movement(up,down,left,right,turnLeft,turnRight,map);
+			player.movement(up,down,left,right,turnLeft,turnRight,currentLevel);
 		}
 	} // runGameLoop method end
 
@@ -217,7 +219,7 @@ public class Game {
 			g2.fillRect(0,0,Const.WIDTH,Const.HEIGHT/2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
-			rayCaster.rayCast(g2, false, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, map);
+			rayCaster.rayCast(g2, false, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, currentLevel);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -235,12 +237,12 @@ public class Game {
 			g2.rotate(0);
 			g2.setStroke(new BasicStroke(4));
 			g2.setColor(Color.BLACK);
-			for (int rows = 0; rows < map.length; rows++) {
-				for (int columns = 0; columns < map[0].length; columns++) {
-					if (map[rows][columns] == 0) {
+			for (int rows = 0; rows < currentLevel.getRows(); rows++) {
+				for (int columns = 0; columns < currentLevel.getColumns(); columns++) {
+					if (currentLevel.getMapTile(rows, columns) == 0) {
 						g2.setColor(Color.WHITE);
 						g2.drawRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE, Const.BOXSIZE);
-					} else if (map[rows][columns] >= 1) {
+					} else if (currentLevel.getMapTile(rows, columns) >= 1) {
 						g2.setColor(Color.BLACK);
 						g2.fillRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE, Const.BOXSIZE);
 					}
@@ -249,7 +251,7 @@ public class Game {
 				}
 			}
 			
-			rayCaster.rayCast(g2, true, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, map);
+			rayCaster.rayCast(g2, true, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, currentLevel);
 
 			g.setColor(Color.ORANGE);
 			g2.rotate(-player.getAngle().getAngleValue(), player.getX()+ xOffset, player.getY()+ yOffset);
@@ -278,11 +280,11 @@ public class Game {
 				right = true;
 			}
 
-			if (e.getKeyCode() == 'E' || e.getKeyCode() == KeyEvent.VK_RIGHT) { // If the player hits/holds 'A', move left until they stop
+			if (e.getKeyCode() == 'E') { // If the player hits/holds 'A', move left until they stop
 				turnRight = true;
 			}
 
-			if (e.getKeyCode() == 'Q' || e.getKeyCode() == KeyEvent.VK_LEFT) { // If the player hits/holds 'D', move right until they stop
+			if (e.getKeyCode() == 'Q') { // If the player hits/holds 'D', move right until they stop
 				turnLeft = true;
 			}
 			
@@ -314,11 +316,11 @@ public class Game {
 				right = false;
 			}
 
-			if (e.getKeyCode() == 'E'|| e.getKeyCode() == KeyEvent.VK_RIGHT) { // If the player hits/holds 'A', move left until they stop
+			if (e.getKeyCode() == 'E') { // If the player hits/holds 'A', move left until they stop
 				turnRight = false;
 			}
 
-			if (e.getKeyCode() == 'Q' || e.getKeyCode() == KeyEvent.VK_LEFT) { // If the player hits/holds 'D', move right until they stop
+			if (e.getKeyCode() == 'Q') { // If the player hits/holds 'D', move right until they stop
 				turnLeft = false;
 			}
 		}

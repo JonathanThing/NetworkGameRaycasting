@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 public class RayCaster {
 
 	private Graphics2D g2;
-	private int map[][];
+	private Level map;
 	private double pX, pY;
 	private Angle pAngle;
 	private int xOffset, yOffset;
@@ -16,11 +16,10 @@ public class RayCaster {
 	private int texture[][][];
 			
 	public RayCaster (int[][][] texture) {
-		
 		this.texture = texture;
 	}
 	
-	public void rayCast(Graphics2D g2, boolean bruh, double pX,double pY, Angle pAngle, int xOffset, int yOffset, int [][] map) {
+	public void rayCast(Graphics2D g2, boolean bruh, double pX,double pY, Angle pAngle, int xOffset, int yOffset, Level map) {
 		this.g2 = g2;
 		this.map = map;
 		this.pX = pX;
@@ -127,8 +126,8 @@ public class RayCaster {
 		double yStep;
 		double xInt;
 		double yInt;
-		int width = map[0].length*Const.BOXSIZE;
-		int height = map.length*Const.BOXSIZE;
+		int width = map.getColumns()*Const.BOXSIZE;
+		int height = map.getRows()*Const.BOXSIZE;
 		
 		if (rAngle == Math.PI/2 || rAngle == 3*Math.PI/2) {
 			return distance;
@@ -145,12 +144,12 @@ public class RayCaster {
 		}
 		
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
-			if (map[(int) yInt / Const.BOXSIZE][(int) xInt / Const.BOXSIZE-1] >= 1) {
-				wallType1 = map[(int) yInt / Const.BOXSIZE][(int) xInt / Const.BOXSIZE-1];
+			if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE-1) >= 1) {
+				wallType1 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE-1);
 				distance = distance(pX, pY, xInt, yInt);
 				break;
-			} else if (map[(int) yInt / Const.BOXSIZE][(int) xInt / Const.BOXSIZE] >= 1) {
-				wallType1 = map[(int) yInt / Const.BOXSIZE][(int) xInt / Const.BOXSIZE];
+			} else if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE) >= 1) {
+				wallType1 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE);
 				distance = distance(pX, pY, xInt, yInt);
 				break;
 			} else {
@@ -168,8 +167,8 @@ public class RayCaster {
 		double yStep;
 		double xInt;
 		double yInt;
-		int width = map[0].length*Const.BOXSIZE;
-		int height = map.length*Const.BOXSIZE;
+		int width = map.getColumns()*Const.BOXSIZE;
+		int height = map.getRows()*Const.BOXSIZE;
 		
 		if (rAngle == Math.PI || rAngle == 0 || rAngle == 2*Math.PI) {
 			return distance;
@@ -186,12 +185,12 @@ public class RayCaster {
 		}
 
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
-			if (map[(int) yInt / Const.BOXSIZE-1][(int) xInt / Const.BOXSIZE] >= 1) {
-				wallType2 = map[(int) yInt / Const.BOXSIZE-1][(int) xInt / Const.BOXSIZE];
+			if (map.getMapTile((int) yInt / Const.BOXSIZE-1,(int) xInt / Const.BOXSIZE) >= 1) {
+				wallType2 = map.getMapTile((int) yInt / Const.BOXSIZE-1,(int) xInt / Const.BOXSIZE);
 				distance = distance(pX, pY, xInt, yInt);
 				break;
-			} else if (map[(int) yInt / Const.BOXSIZE][(int) xInt / Const.BOXSIZE] >= 1) {
-				wallType2 = map[(int) yInt / Const.BOXSIZE][(int) xInt / Const.BOXSIZE];
+			} else if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE) >= 1) {
+				wallType2 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE);
 				distance = distance(pX, pY, xInt, yInt);
 				break;
 			} else {
