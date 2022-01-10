@@ -36,7 +36,7 @@ public class Game {
 												{1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,1},
 												{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},}); 
 
-	static Player player = new Player((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2, 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
+	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
 	static boolean up, down, left, right, turnRight, turnLeft;
 	static int xOffset = 0;
 	static int yOffset = 0;
@@ -80,7 +80,7 @@ public class Game {
 				Thread.sleep(25);
 			} catch (Exception e) {
 			}
-
+			
 			player.movement(up,down,left,right,turnLeft,turnRight,currentLevel);
 		}
 	} // runGameLoop method end
@@ -94,12 +94,13 @@ public class Game {
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); // required
+			
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
 			g2.fillRect(0,0,Const.WIDTH,Const.HEIGHT/2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
-			rayCaster.rayCast(g2, false, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, currentLevel);
+			rayCaster.rayCast(g2, false, player.getPosition().getX(), player.getPosition().getY(), player.getAngle(), xOffset, yOffset, currentLevel);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -114,6 +115,7 @@ public class Game {
 			super.paintComponent(g); // required
 
 			Graphics2D g2 = (Graphics2D) g;
+			
 			g2.rotate(0);
 			g2.setStroke(new BasicStroke(4));
 			g2.setColor(Color.BLACK);
@@ -131,11 +133,11 @@ public class Game {
 				}
 			}
 			
-			rayCaster.rayCast(g2, true, player.getX(), player.getY(), player.getAngle(), xOffset, yOffset, currentLevel);
+			rayCaster.rayCast(g2, true, player.getPosition().getX(), player.getPosition().getY(), player.getAngle(), xOffset, yOffset, currentLevel);
 
 			g.setColor(Color.ORANGE);
-			g2.rotate(-player.getAngle().getAngleValue(), player.getX()+ xOffset, player.getY()+ yOffset);
-			g2.fillRect((int) player.getX() - player.getWidth() / 2 + xOffset, (int) player.getY() - player.getHeight() / 2 + yOffset, player.getWidth(), player.getHeight());
+			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ xOffset, player.getPosition().getY()+ yOffset);
+			g2.fillRect((int) player.getPosition().getX() - player.getWidth() / 2 + xOffset, (int) player.getPosition().getY() - player.getHeight() / 2 + yOffset, player.getWidth(), player.getHeight());
 			
 		
 		} // paintComponent method end
@@ -169,13 +171,13 @@ public class Game {
 			}
 			
 			if (e.getKeyCode() == 'J'){
-				xOffset += 50;
+				xOffset += Const.BOXSIZE;
             } else if (e.getKeyCode() =='L'){
-            	xOffset -= 50;
+            	xOffset -= Const.BOXSIZE;
             } else if (e.getKeyCode() == 'I'){
-            	yOffset += 50;
+            	yOffset += Const.BOXSIZE;
             } else if (e.getKeyCode() == 'K'){
-            	yOffset -= 50;
+            	yOffset -= Const.BOXSIZE;
             }   
 		}
 

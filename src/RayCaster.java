@@ -28,20 +28,20 @@ public class RayCaster {
 		this.xOffset = xOffset;
 		this.yOffset= yOffset;
 		
-		int numb = 360;
+		int numberOfRays = 360;
 		double dist1;
 		double dist2;
 		double fov = Math.toRadians(90); 
-		double rAngle;
+		double rayAngle;
 		double plane = Math.tan(fov/2)*2;
-		double inc = plane/numb;
+		double inc = plane/numberOfRays;
 		
-		for (int rays = 0; rays < numb; rays++) {
+		for (int rays = 0; rays < numberOfRays; rays++) {
 			
-			rAngle = Angle.checkLimit(pAngle.getAngleValue() + Math.atan(inc*(rays-numb/2)));
+			rayAngle = Angle.checkLimit(pAngle.getAngleValue() + Math.atan(inc*(rays-numberOfRays/2)));
 
-			dist1 = rayCastVerticalSides(rAngle);
-			dist2 = rayCastHorizontalSides(rAngle);
+			dist1 = rayCastVerticalSides(rayAngle);
+			dist2 = rayCastHorizontalSides(rayAngle);
 					
 			boolean horizontal = false;
 			
@@ -50,25 +50,24 @@ public class RayCaster {
 				wallType1 = wallType2;
 			} else if (dist1 < dist2 && dist1 != Const.NONE) { //hit horizontal side
 				horizontal = true;
-				
 			}
 			
-			double rx = pX + dist1*Math.cos(rAngle);
-			double ry = pY - dist1*Math.sin(rAngle);
+			double rayX = pX + dist1*Math.cos(rayAngle);
+			double rayY = pY - dist1*Math.sin(rayAngle);
 			
 			if (bruh) {
 			
 				g2.setColor(new Color(255, 165, 0));
 				g2.setStroke(new BasicStroke(1));
-				g2.drawLine((int)pX + xOffset, (int)pY + yOffset,(int)(pX + dist1*Math.cos(rAngle)) + xOffset, (int)(pY - dist1*Math.sin(rAngle) + yOffset));
+				g2.drawLine((int)pX + xOffset, (int)pY + yOffset,(int)(pX + dist1*Math.cos(rayAngle)) + xOffset, (int)(pY - dist1*Math.sin(rayAngle) + yOffset));
 				
 			} else {
 					
 				wallType1--;
 				
-				dist1 = dist1*Math.cos(rAngle-pAngle.getAngleValue());
+				dist1 = dist1*Math.cos(rayAngle-pAngle.getAngleValue());
 				
-				int strokeWidth = Const.WIDTH/numb;
+				int strokeWidth = Const.WIDTH/numberOfRays;
 				g2.setStroke(new BasicStroke(strokeWidth));
 
 				
@@ -80,16 +79,16 @@ public class RayCaster {
 				int textureY = 0;
 				
 				if (!horizontal) {
-					if (rAngle < Math.PI) {
-						textureX = (int)(rx / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
+					if (rayAngle < Math.PI) {
+						textureX = (int)(rayX / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
 					} else {
-						textureX = numbPixel- (int)(rx / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
+						textureX = numbPixel- (int)(rayX / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
 					}
 				} else {
-					if (rAngle < Math.PI/2 || rAngle > 3*Math.PI/2) {
-						textureX = (int)(ry / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
+					if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) {
+						textureX = (int)(rayY / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
 					} else {
-						textureX = numbPixel- (int)(ry / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
+						textureX = numbPixel- (int)(rayY / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
 					}
 				}
 
@@ -121,7 +120,7 @@ public class RayCaster {
 		}
 	}
 	
-	public double rayCastVerticalSides(double rAngle) {
+	public double rayCastVerticalSides(double rayAngle) {
 		
 		double distance = Const.NONE;
 		double xStep;
@@ -131,18 +130,18 @@ public class RayCaster {
 		int width = map.getColumns()*Const.BOXSIZE;
 		int height = map.getRows()*Const.BOXSIZE;
 		
-		if (rAngle == Math.PI/2 || rAngle == 3*Math.PI/2) {
+		if (rayAngle == Math.PI/2 || rayAngle == 3*Math.PI/2) {
 			return distance;
-		} else if (rAngle < Math.PI/2 || rAngle > 3*Math.PI/2) { //right
+		} else if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) { //right
 			xInt = Const.BOXSIZE * (Math.ceil(pX / Const.BOXSIZE));
-			yInt = pY - (xInt-pX) * Math.tan(rAngle);
+			yInt = pY - (xInt-pX) * Math.tan(rayAngle);
 			xStep = Const.BOXSIZE;
-			yStep = Math.tan(rAngle) * xStep;			
+			yStep = Math.tan(rayAngle) * xStep;			
 		} else { //left
 			xInt = Const.BOXSIZE * (Math.floor(pX / Const.BOXSIZE));
-			yInt = pY - (xInt-pX) * Math.tan(rAngle);
+			yInt = pY - (xInt-pX) * Math.tan(rayAngle);
 			xStep = -Const.BOXSIZE;
-			yStep = Math.tan(rAngle) * xStep;
+			yStep = Math.tan(rayAngle) * xStep;
 		}
 		
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
@@ -163,7 +162,7 @@ public class RayCaster {
 		return distance;
 	}
 	
-	public double rayCastHorizontalSides(double rAngle) {
+	public double rayCastHorizontalSides(double rayAngle) {
 		double distance = Const.NONE;
 		double xStep;
 		double yStep;
@@ -172,18 +171,18 @@ public class RayCaster {
 		int width = map.getColumns()*Const.BOXSIZE;
 		int height = map.getRows()*Const.BOXSIZE;
 		
-		if (rAngle == Math.PI || rAngle == 0 || rAngle == 2*Math.PI) {
+		if (rayAngle == Math.PI || rayAngle == 0 || rayAngle == 2*Math.PI) {
 			return distance;
-		} else if (rAngle < Math.PI) { //up
+		} else if (rayAngle < Math.PI) { //up
 			yInt = Const.BOXSIZE * (Math.floor(pY / Const.BOXSIZE));
-			xInt = pX + (yInt - pY) / Math.tan(-rAngle);
+			xInt = pX + (yInt - pY) / Math.tan(-rayAngle);
 			yStep = -Const.BOXSIZE;
-			xStep = yStep / Math.tan(rAngle) ;			
+			xStep = yStep / Math.tan(rayAngle) ;			
 		} else { //down
 			yInt = Const.BOXSIZE * (Math.ceil(pY / Const.BOXSIZE));
-			xInt = pX + (yInt - pY) / Math.tan(-rAngle);
+			xInt = pX + (yInt - pY) / Math.tan(-rayAngle);
 			yStep = Const.BOXSIZE;
-			xStep = yStep / Math.tan(rAngle);
+			xStep = yStep / Math.tan(rayAngle);
 		}
 
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {

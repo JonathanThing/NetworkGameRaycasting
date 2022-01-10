@@ -1,17 +1,9 @@
 import java.awt.image.BufferedImage;
-import java.awt.Graphics;
-import java.util.ArrayList;
 import java.lang.Math;
 
 class Player extends Character {
 
 	private int ammo;
-
-	public void draw(Graphics g, double offSetX, double offSetY) {
-
-		g.drawImage(this.getSprite(), (int) (getX() - getWidth() / 2 - offSetX),
-				(int) (getY() - getHeight() / 2 - offSetY), null);
-	}
 
 	public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight, Level map) {
 		
@@ -21,9 +13,7 @@ class Player extends Character {
 		double yForward = 0;
 		double xSide = 0;
 		double ySide = 0;
-		double forward = 0;
-		double side = 0;
-
+		
 		if (up) {
 			yRaw += 1;
 		}
@@ -48,37 +38,42 @@ class Player extends Character {
 			this.getAngle().changeAngleValue(Math.toRadians(-5));
 		}
 
-		xForward = Math.cos(this.getAngle().getAngleValue()) * yRaw;
-		yForward = Math.sin(this.getAngle().getAngleValue()) * yRaw;
-
-		ySide = Math.sin(Angle.checkLimit(this.getAngle().getAngleValue() - Math.PI / 2)) * xRaw;
-		xSide = Math.cos(Angle.checkLimit(this.getAngle().getAngleValue() - Math.PI / 2)) * xRaw;
-
-		forward = yForward + ySide;
-		side = xForward + xSide;
-
-		double hyp = Math.sqrt(Math.pow(forward, 2) + Math.pow(side, 2));
+		double forwardAngle = this.getAngle().getAngleValue();
+		double sideAngle = Angle.checkLimit(forwardAngle - Math.PI / 2);
 		
-		if (hyp != 0) {
-			
-			if (map.getMapTile((int) ((this.getY() - ((forward/hyp) * this.getSpeed() * 4))/Const.BOXSIZE),(int) ((this.getX() + ((side/hyp) * this.getSpeed() * 4))/Const.BOXSIZE)) == 4) {
-				map.setMapTile((int) ((this.getY() - ((forward/hyp) * this.getSpeed() * 4))/Const.BOXSIZE),(int) ((this.getX() + ((side/hyp) * this.getSpeed() * 4))/Const.BOXSIZE), 0);
+		xForward = Math.cos(forwardAngle) * yRaw;
+		yForward = Math.sin(forwardAngle) * yRaw;
+
+		ySide = Math.sin(sideAngle) * xRaw;
+		xSide = Math.cos(sideAngle) * xRaw;
+
+		Vector movementVector = new Vector(xForward + xSide, -yForward - ySide).normalized().multiplyByScalar(this.getSpeed());
+		
+		if (!movementVector.isZero()) {
+					
+			Vector futurePosition = this.getPosition().add(movementVector.multiplyByScalar(4));
+
+			//door collision 
+			if (map.getMapTile((int)futurePosition.getY() / Const.BOXSIZE, (int)futurePosition.getX() / Const.BOXSIZE) == 4) {
+				map.setMapTile((int)futurePosition.getY() / Const.BOXSIZE, (int)futurePosition.getX() / Const.BOXSIZE, 0);
 			}
 			
-			if (map.getMapTile((int) (this.getY()/Const.BOXSIZE),(int) ((this.getX() + ((side/hyp) * this.getSpeed()*2))/Const.BOXSIZE)) < 1) {
-				this.moveRight((side / hyp) * this.getSpeed());
-				
+			//wall side collision
+			futurePosition = this.getPosition().add(movementVector.multiplyByScalar(2));
+			if (map.getMapTile((int) this.getPosition().getY() / Const.BOXSIZE,(int) futurePosition.getX() / Const.BOXSIZE) < 1) {
+				this.moveLeft(movementVector.getX());
 			}
 				
-			if (map.getMapTile((int) ((this.getY() - ((forward/hyp) * this.getSpeed()*2))/Const.BOXSIZE),(int) (this.getX()/Const.BOXSIZE)) < 1) {
-				this.moveUp(((forward / hyp) * this.getSpeed()));
+			//wall forward collision
+			if (map.getMapTile((int) futurePosition.getY() / Const.BOXSIZE,(int) this.getPosition().getX()/ Const.BOXSIZE) < 1) {
+				this.moveDown(movementVector.getY());
 			}
 		}
 	}
 
-	Player(double x, double y, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed,
+	Player(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed,
 			Weapon weapon) {
-		super(x, y, width, height, name,angle, sprite, health, speed, weapon); // calls the constructor in the character super
+		super(position, width, height, name,angle, sprite, health, speed, weapon); // calls the constructor in the character super
 																			// class
 	}
 
