@@ -8,25 +8,21 @@ public class RayCaster {
 
 	private Graphics2D g2;
 	private Level map;
-	private double pX, pY;
 	private Angle pAngle;
-	private int xOffset, yOffset;
 	private int wallType1;
 	private int wallType2;
 	private TextureList textures;
+	private Vector position;
 			
 	public RayCaster (TextureList textures) {
 		this.textures = textures;
 	}
 	
-	public void rayCast(Graphics2D g2, boolean drawMap, double pX,double pY, Angle pAngle, int xOffset, int yOffset, Level map) {
+	public void rayCast(Graphics2D g2, boolean drawMap, Vector position, Angle pAngle, Vector cameraOffset, Level map) {
 		this.g2 = g2;
 		this.map = map;
-		this.pX = pX;
-		this.pY = pY;
 		this.pAngle = pAngle;
-		this.xOffset = xOffset;
-		this.yOffset= yOffset;
+		this.position = position;
 		
 		int numberOfRays = 360;
 		double dist1;
@@ -52,14 +48,13 @@ public class RayCaster {
 				horizontal = true;
 			}
 			
-			double rayX = pX + dist1*Math.cos(rayAngle);
-			double rayY = pY - dist1*Math.sin(rayAngle);
+			Vector rayVector = new Vector(position.getX() +  dist1*Math.cos(rayAngle), position.getY() -  dist1*Math.sin(rayAngle));
 			
 			if (drawMap) {
 			
 				g2.setColor(new Color(255, 165, 0));
 				g2.setStroke(new BasicStroke(1));
-				g2.drawLine((int)pX + xOffset, (int)pY + yOffset,(int)(pX + dist1*Math.cos(rayAngle)) + xOffset, (int)(pY - dist1*Math.sin(rayAngle) + yOffset));
+				g2.drawLine((int) (position.getX() + cameraOffset.getX()), (int) (position.getY() + cameraOffset.getY()),(int)(position.getX() + dist1*Math.cos(rayAngle) + cameraOffset.getX()), (int)(position.getY() - dist1*Math.sin(rayAngle) + cameraOffset.getY()));
 				
 			} else {
 					
@@ -80,15 +75,15 @@ public class RayCaster {
 				
 				if (!horizontal) {
 					if (rayAngle < Math.PI) {
-						textureX = (int)(rayX / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
+						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
 					} else {
-						textureX = numbPixel- (int)(rayX / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
+						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
 					}
 				} else {
 					if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) {
-						textureX = (int)(rayY / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
+						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
 					} else {
-						textureX = numbPixel- (int)(rayY / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
+						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
 					}
 				}
 
@@ -133,13 +128,13 @@ public class RayCaster {
 		if (rayAngle == Math.PI/2 || rayAngle == 3*Math.PI/2) {
 			return distance;
 		} else if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) { //right
-			xInt = Const.BOXSIZE * (Math.ceil(pX / Const.BOXSIZE));
-			yInt = pY - (xInt-pX) * Math.tan(rayAngle);
+			xInt = Const.BOXSIZE * (Math.ceil(position.getX() / Const.BOXSIZE));
+			yInt = position.getY() - (xInt-position.getX()) * Math.tan(rayAngle);
 			xStep = Const.BOXSIZE;
 			yStep = Math.tan(rayAngle) * xStep;			
 		} else { //left
-			xInt = Const.BOXSIZE * (Math.floor(pX / Const.BOXSIZE));
-			yInt = pY - (xInt-pX) * Math.tan(rayAngle);
+			xInt = Const.BOXSIZE * (Math.floor(position.getX() / Const.BOXSIZE));
+			yInt = position.getY() - (xInt-position.getX()) * Math.tan(rayAngle);
 			xStep = -Const.BOXSIZE;
 			yStep = Math.tan(rayAngle) * xStep;
 		}
@@ -147,11 +142,11 @@ public class RayCaster {
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
 			if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE-1) >= 1) {
 				wallType1 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE-1);
-				distance = distance(pX, pY, xInt, yInt);
+				distance = distance(position.getX(), position.getY(), xInt, yInt);
 				break;
 			} else if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE) >= 1) {
 				wallType1 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE);
-				distance = distance(pX, pY, xInt, yInt);
+				distance = distance(position.getX(), position.getY(), xInt, yInt);
 				break;
 			} else {
 				xInt += xStep;
@@ -174,13 +169,13 @@ public class RayCaster {
 		if (rayAngle == Math.PI || rayAngle == 0 || rayAngle == 2*Math.PI) {
 			return distance;
 		} else if (rayAngle < Math.PI) { //up
-			yInt = Const.BOXSIZE * (Math.floor(pY / Const.BOXSIZE));
-			xInt = pX + (yInt - pY) / Math.tan(-rayAngle);
+			yInt = Const.BOXSIZE * (Math.floor(position.getY() / Const.BOXSIZE));
+			xInt = position.getX() + (yInt - position.getY()) / Math.tan(-rayAngle);
 			yStep = -Const.BOXSIZE;
 			xStep = yStep / Math.tan(rayAngle) ;			
 		} else { //down
-			yInt = Const.BOXSIZE * (Math.ceil(pY / Const.BOXSIZE));
-			xInt = pX + (yInt - pY) / Math.tan(-rayAngle);
+			yInt = Const.BOXSIZE * (Math.ceil(position.getY() / Const.BOXSIZE));
+			xInt = position.getX() + (yInt - position.getY()) / Math.tan(-rayAngle);
 			yStep = Const.BOXSIZE;
 			xStep = yStep / Math.tan(rayAngle);
 		}
@@ -188,11 +183,11 @@ public class RayCaster {
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
 			if (map.getMapTile((int) yInt / Const.BOXSIZE-1,(int) xInt / Const.BOXSIZE) >= 1) {
 				wallType2 = map.getMapTile((int) yInt / Const.BOXSIZE-1,(int) xInt / Const.BOXSIZE);
-				distance = distance(pX, pY, xInt, yInt);
+				distance = distance(position.getX(), position.getY(), xInt, yInt);
 				break;
 			} else if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE) >= 1) {
 				wallType2 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE);
-				distance = distance(pX, pY, xInt, yInt);
+				distance = distance(position.getX(), position.getY(), xInt, yInt);
 				break;
 			} else {
 				xInt -= xStep;
