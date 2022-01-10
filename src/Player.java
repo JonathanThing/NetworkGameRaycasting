@@ -9,10 +9,6 @@ class Player extends Character {
 		
 		double xRaw = 0;
 		double yRaw = 0;
-		double xForward = 0;
-		double yForward = 0;
-		double xSide = 0;
-		double ySide = 0;
 		
 		if (up) {
 			yRaw += 1;
@@ -40,14 +36,12 @@ class Player extends Character {
 
 		double forwardAngle = this.getAngle().getAngleValue();
 		double sideAngle = Angle.checkLimit(forwardAngle - Math.PI / 2);
+
+		Vector forwardVector = new Vector(Math.cos(forwardAngle) * yRaw, -Math.sin(forwardAngle) * yRaw);
 		
-		xForward = Math.cos(forwardAngle) * yRaw;
-		yForward = Math.sin(forwardAngle) * yRaw;
+		Vector sideVector = new Vector(Math.cos(sideAngle) * xRaw, -Math.sin(sideAngle) * xRaw);
 
-		ySide = Math.sin(sideAngle) * xRaw;
-		xSide = Math.cos(sideAngle) * xRaw;
-
-		Vector movementVector = new Vector(xForward + xSide, -yForward - ySide).normalized().multiplyByScalar(this.getSpeed());
+		Vector movementVector = forwardVector.add(sideVector).normalized().multiplyByScalar(this.getSpeed());
 		
 		if (!movementVector.isZero()) {
 					

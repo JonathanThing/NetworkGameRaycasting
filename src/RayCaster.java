@@ -19,7 +19,7 @@ public class RayCaster {
 		this.textures = textures;
 	}
 	
-	public void rayCast(Graphics2D g2, boolean bruh, double pX,double pY, Angle pAngle, int xOffset, int yOffset, Level map) {
+	public void rayCast(Graphics2D g2, boolean drawMap, double pX,double pY, Angle pAngle, int xOffset, int yOffset, Level map) {
 		this.g2 = g2;
 		this.map = map;
 		this.pX = pX;
@@ -55,7 +55,7 @@ public class RayCaster {
 			double rayX = pX + dist1*Math.cos(rayAngle);
 			double rayY = pY - dist1*Math.sin(rayAngle);
 			
-			if (bruh) {
+			if (drawMap) {
 			
 				g2.setColor(new Color(255, 165, 0));
 				g2.setStroke(new BasicStroke(1));
