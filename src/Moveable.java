@@ -1,4 +1,3 @@
-
 public interface Moveable{
 
   public void moveLeft(double n);
