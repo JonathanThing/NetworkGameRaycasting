@@ -150,14 +150,16 @@ public class Game {
             rayCaster.rayCast(g2, true, player.getPosition().getX(), player.getPosition().getY(), player.getAngle(),
                               xOffset, yOffset, currentLevel);
             
+            g.setColor(Color.RED);
+            player.drawPlayerProjectile(g2, xOffset, yOffset);
+            
             g.setColor(Color.ORANGE);
             g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX() + xOffset,
                       player.getPosition().getY() + yOffset);
             g2.fillRect((int) player.getPosition().getX() - player.getWidth() / 2 + xOffset,
                         (int) player.getPosition().getY() - player.getHeight() / 2 + yOffset, player.getWidth(),
                         player.getHeight());
-            g.setColor(Color.RED);
-            player.drawPlayerProjectile(g2, xOffset, yOffset);
+
             
         } // paintComponent method end
     } // GraphicsPanel class end

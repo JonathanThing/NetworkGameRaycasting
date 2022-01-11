@@ -11,7 +11,7 @@ class Player extends Character {
         double yComponent = Math.cos(getAngle().getAngleValue());
         
         System.out.println("made new bullet");
-        this.getProjectilesList().add(new Projectile(this.getPosition(), 20, 20, "Bullet", getAngle(), getSprite(), 10,
+        this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), getSprite(), 10,
       10, xComponent, yComponent));
     }
     

@@ -7,7 +7,7 @@ public class Vector {
   this.y = y;
  }
 
- public double getX() {
+public double getX() {
   return x;
  }
 
