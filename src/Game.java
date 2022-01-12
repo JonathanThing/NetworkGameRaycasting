@@ -3,10 +3,13 @@
  * @author Jonathan Cai
  * @version Dec 2021
  */
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Game {
 	static JFrame gameWindow;
@@ -17,26 +20,24 @@ public class Game {
 	static MyKeyListener keyListener = new MyKeyListener();
 	static MyMouseListener mouseListener = new MyMouseListener();
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
-	static TextureList textures = new TextureList();
-	
-	static Sprite test = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 40, 0, 0 , null); //Vector position, int z ,int type, int state, int[][] texture
-	
+	static TextureList textures;
+//	static Sprite test = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 40, 0, 0 , null); //Vector position, int z ,int type, int state, int[][] texture
 	static Level currentLevel = new Level(new int[][]{
-												{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-												{1,0,0,0,1,2,2,1,0,0,0,0,0,0,0,1},
-												{1,0,0,0,4,0,0,4,0,0,2,2,0,0,0,1},
-												{1,0,0,0,1,2,0,1,0,0,0,0,0,0,2,1},
-												{1,1,4,1,6,1,1,1,0,0,3,4,3,2,2,1},
-												{1,0,0,0,0,0,0,1,3,3,3,0,3,3,3,1},
-												{1,0,0,5,0,0,0,4,0,0,0,0,0,0,0,1},
-												{1,2,0,0,0,0,0,6,3,0,3,0,3,0,0,1},
-												{1,1,7,7,7,4,1,1,1,0,1,4,1,0,0,1},
-												{1,0,0,0,0,0,0,1,1,1,1,0,1,1,4,1},
-												{1,0,2,0,2,0,0,1,0,0,0,0,0,2,0,1},
-												{1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-												{1,0,2,0,2,0,0,4,0,0,0,2,0,0,0,1},
-												{1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,1},
-												{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},}); 
+												{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+												{2,0,0,0,2,2,2,2,0,0,0,0,0,0,0,2},
+												{2,0,0,0,4,0,0,4,0,0,2,2,0,0,0,2},
+												{2,0,0,0,2,2,0,2,0,0,0,0,0,0,2,2},
+												{2,2,4,2,2,2,2,2,0,0,4,2,2,0,2,2},
+												{2,0,0,0,0,0,0,2,2,2,2,0,2,4,2,2},
+												{2,0,0,2,0,0,0,4,0,0,0,0,0,0,0,2},
+												{2,2,0,0,0,0,0,7,2,0,2,0,2,0,0,2},
+												{2,2,1,2,2,4,2,6,2,0,2,2,2,0,0,2},
+												{2,0,0,0,0,0,0,2,2,4,2,0,2,4,2,2},
+												{2,0,2,0,2,0,0,2,0,0,0,0,0,2,0,2},
+												{2,0,0,0,0,0,0,4,0,0,0,0,0,0,0,2},
+												{2,0,2,0,2,0,0,2,0,0,0,2,0,0,0,2},
+												{2,0,0,0,0,0,0,2,0,0,0,2,0,0,0,2},
+												{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},}); 
 
 	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
 	static boolean up, down, left, right, turnRight, turnLeft;
@@ -48,6 +49,12 @@ public class Game {
 //------------------------------------------------------------------------------    
 	public static void main(String[] args) {
 
+		try {
+			textures = new TextureList(ImageIO.read(new File("images/textures.png")));
+		} catch (IOException e) {
+			System.out.println("failed to get image");
+			e.printStackTrace();
+		}
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,7 +108,7 @@ public class Game {
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
-			rayCaster.drawSprite(g2, test, false);
+//			rayCaster.drawSprite(g2, test, false);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -137,9 +144,8 @@ public class Game {
 			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
 
 			g.setColor(Color.BLUE);	
-			g2.fillRect((int) (test.getPosition().getX() -5), (int) (test.getPosition().getY() -5), 10, 10);
-
-			rayCaster.drawSprite(g2, test, true);
+//			g2.fillRect((int) (test.getPosition().getX() -5), (int) (test.getPosition().getY() -5), 10, 10);
+//			rayCaster.drawSprite(g2, test, true);
 			
 			g.setColor(Color.ORANGE);	
 			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());

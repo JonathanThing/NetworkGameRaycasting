@@ -3,6 +3,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 public class RayCaster {
 
@@ -49,11 +50,8 @@ public class RayCaster {
 		
 
 		if ((sA.getAngleValue() < rightSide && sA.getAngleValue() > leftSide) || (leftSide > rightSide && (leftSide < sA.getAngleValue() || rightSide > sA.getAngleValue()))) {
-			System.out.println((int)((sx/Const.TRUE_WIDTH)*numberOfRays));
-			System.out.println((int)Math.abs(tempVector.getY()));
-			System.out.println((int)dist[(int)(sx/Const.TRUE_WIDTH*numberOfRays)] + "\n");
 			if (Math.abs(tempVector.getY()) < dist[(int)((sx/Const.TRUE_WIDTH)*numberOfRays)]) {
-				g2.fillRect((int) (sx - 10),(int) (sy),10,10);
+				g2.fillRect((int) (sx - 10),(int) (Const.HEIGHT/2 - 5),10,10);
 			}
 		}		
 	}
@@ -106,7 +104,7 @@ public class RayCaster {
 				g2.setStroke(new BasicStroke(strokeWidth));
 
 				
-				int numbPixel = textures.getTextureRows(wallType1);
+				int numbPixel = textures.getTextureHeight(wallType1);
 				double lineH = (Const.HEIGHT*Const.BOXSIZE/2)/dist1;
 				double middle = lineH/2;
 				double stepPattern = (lineH/numbPixel);
@@ -115,15 +113,15 @@ public class RayCaster {
 				
 				if (!horizontal) {
 					if (rayAngle < Math.PI) {
-						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
+						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType1)) % textures.getTextureWidth(wallType1));
 					} else {
-						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
+						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType1)) % textures.getTextureWidth(wallType1))-1;
 					}
 				} else {
 					if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) {
-						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1));
+						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType1)) % textures.getTextureWidth(wallType1));
 					} else {
-						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureColumns(wallType1)) % textures.getTextureColumns(wallType1))-1;
+						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType1)) % textures.getTextureWidth(wallType1))-1;
 					}
 				}
 
@@ -135,18 +133,17 @@ public class RayCaster {
 				for (int i = 0; i < numbPixel; i++) {
 					textureY = (numbPixel-1-i);
 					
-					int value = textures.getTextureTile(wallType1,(int)textureY,(int)textureX);
+					BufferedImage thing = textures.getSingleTexture(wallType1);
+					int value = thing.getRGB((int)textureX,(int)textureY);
 					
 					if (dist1 == Const.NONE || wallType1 < 0) {
 						g2.setColor(Color.WHITE);
-					} else if (value == 1 && horizontal) {
-						g2.setColor(new Color(170, 110, 0));
-					} else if (value == 0 && horizontal) {
-						g2.setColor(new Color(255, 165, 0));
-					} else if (value == 1 && !horizontal) {
-						g2.setColor(new Color(64, 41, 0));
-					} else if (value == 0 && !horizontal) {
-						g2.setColor(new Color(127, 82, 0));
+					} else {
+						if (horizontal) {
+							g2.setColor(new Color(value));
+						} else {
+							g2.setColor(new Color(value).darker().darker());
+						}
 					}
 
 					g2.drawLine(Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2+(middle) - i*stepPattern) , Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2 + (middle) - (i+1)*stepPattern ));
