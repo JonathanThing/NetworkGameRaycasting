@@ -14,6 +14,8 @@ public class RayCaster {
 	private TextureList textures;
 	private Vector playerPosition;
 	private double fov;
+	private int numberOfRays = 360;
+	private double dist[] = new double[numberOfRays];
 			
 	public RayCaster (TextureList textures) { 
 		this.textures = textures;
@@ -32,7 +34,7 @@ public class RayCaster {
 		g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() - fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() - fov/2)));
 		g2.setColor(Color.BLUE);
 		g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() + fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() + fov/2)));
-
+		
 		double rightSide = Angle.checkLimit(pAngle.getAngleValue() + fov/2);
 		double leftSide = Angle.checkLimit(pAngle.getAngleValue() - fov/2);
 		
@@ -41,14 +43,18 @@ public class RayCaster {
 		double ray = Math.cos(pAngle.getAngleValue()-sA.getAngleValue())*distance;
 		double section = Math.sin(pAngle.getAngleValue()-sA.getAngleValue())*distance;
 		double plane = Math.abs(Math.tan(pAngle.getAngleValue() - leftSide)*ray)*2;
-		double sy = tempVector.getY();
-		sy=(sprite.getZ()*108.0/sy);
+		double sy = tempVector.getY() ;
+		double sx = Const.TRUE_WIDTH/2 + Const.TRUE_WIDTH*(section/plane) ;
+		sy=(sprite.getZ()*108.0/sy) + (Const.TRUE_HEIGHT/2);
 		
-		
-		//3d project matrix pls do that later :skul
-		if ((sA.getAngleValue() < rightSide && sA.getAngleValue() > leftSide) || (leftSide > rightSide && (leftSide < sA.getAngleValue() || rightSide > sA.getAngleValue()))) {
 
-			g2.fillRect((int) (Const.TRUE_WIDTH/2 + Const.TRUE_WIDTH*(section/plane) - 10),(int) (sy+(Const.TRUE_HEIGHT/2)),10,10);
+		if ((sA.getAngleValue() < rightSide && sA.getAngleValue() > leftSide) || (leftSide > rightSide && (leftSide < sA.getAngleValue() || rightSide > sA.getAngleValue()))) {
+			System.out.println((int)((sx/Const.TRUE_WIDTH)*numberOfRays));
+			System.out.println((int)Math.abs(tempVector.getY()));
+			System.out.println((int)dist[(int)(sx/Const.TRUE_WIDTH*numberOfRays)] + "\n");
+			if (Math.abs(tempVector.getY()) < dist[(int)((sx/Const.TRUE_WIDTH)*numberOfRays)]) {
+				g2.fillRect((int) (sx - 10),(int) (sy),10,10);
+			}
 		}		
 	}
 	
@@ -58,7 +64,6 @@ public class RayCaster {
 		this.pAngle = pAngle;
 		this.playerPosition = playerPosition;
 		
-		int numberOfRays = 360;
 		double dist1;
 		double dist2;
 		double fov = Math.toRadians(90); 
@@ -96,7 +101,7 @@ public class RayCaster {
 				wallType1--;
 				
 				dist1 = dist1*Math.cos(rayAngle-pAngle.getAngleValue());
-				
+				dist[numberOfRays-rays-1] = dist1;
 				int strokeWidth = Const.WIDTH/numberOfRays;
 				g2.setStroke(new BasicStroke(strokeWidth));
 
@@ -125,7 +130,8 @@ public class RayCaster {
 				if (lineH > Const.HEIGHT) {
 					lineH = Const.HEIGHT;
 				}
-					
+
+				
 				for (int i = 0; i < numbPixel; i++) {
 					textureY = (numbPixel-1-i);
 					
