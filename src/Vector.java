@@ -48,6 +48,22 @@ public class Vector {
 		return new Vector(this.x * value, this.y * value);
 	}
 	
+	public Vector rotateVector(double radians) {
+		return new Vector(this.x*Math.cos(radians) - this.y*Math.sin(radians), this.x*Math.sin(radians) + this.y*Math.cos(radians));
+	}
+	
+	public double distance(Vector other) {
+		return Math.sqrt(Math.pow(this.getX()-other.getX(), 2) + Math.pow(this.getY()-other.getY(), 2));
+	}
+	
+	public double magnitude() {
+		return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
+	}
+	
+	public Vector flipXAndY() {
+		return new Vector(this.y, this.x);
+	}
+	
 	public boolean isZero() {
 		if (this.x == 0 && this.y == 0) {
 			return true;

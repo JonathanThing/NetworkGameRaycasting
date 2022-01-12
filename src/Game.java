@@ -19,6 +19,8 @@ public class Game {
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
 	static TextureList textures = new TextureList();
 	
+	static Sprite test = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 40, 0, 0 , null); //Vector position, int z ,int type, int state, int[][] texture
+	
 	static Level currentLevel = new Level(new int[][]{
 												{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 												{1,0,0,0,1,2,2,1,0,0,0,0,0,0,0,1},
@@ -47,7 +49,7 @@ public class Game {
 	public static void main(String[] args) {
 
 		gameWindow = new JFrame("Game Window");
-		gameWindow.setSize(Const.WIDTH-62, Const.HEIGHT+40);
+		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		canvas = new GraphicsPanel();
 		canvas.addMouseListener(mouseListener);
@@ -99,6 +101,7 @@ public class Game {
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
+			rayCaster.drawSprite(g2, test, false);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -133,7 +136,12 @@ public class Game {
 			
 			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
 
-			g.setColor(Color.ORANGE);
+			g.setColor(Color.BLUE);	
+			g2.fillRect((int) (test.getPosition().getX() -5), (int) (test.getPosition().getY() -5), 10, 10);
+
+			rayCaster.drawSprite(g2, test, true);
+			
+			g.setColor(Color.ORANGE);	
 			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
 			g2.fillRect((int) (player.getPosition().getX() - player.getWidth() / 2 + cameraOffset.getX()), (int) (player.getPosition().getY() - player.getHeight() / 2 + cameraOffset.getY()), player.getWidth(), player.getHeight());
 			
@@ -173,9 +181,9 @@ public class Game {
             } else if (e.getKeyCode() =='L'){
             	cameraOffset.changeX(-Const.BOXSIZE);
             } else if (e.getKeyCode() == 'I'){
-            	cameraOffset.changeX(Const.BOXSIZE);
+            	cameraOffset.changeY(Const.BOXSIZE);
             } else if (e.getKeyCode() == 'K'){
-            	cameraOffset.changeX(-Const.BOXSIZE);
+            	cameraOffset.changeY(-Const.BOXSIZE);
             }   
 		}
 

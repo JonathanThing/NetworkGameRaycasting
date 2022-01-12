@@ -26,4 +26,5 @@ public class Angle {
 			return angle;
 		}
 	}
+
 }
