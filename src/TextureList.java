@@ -11,9 +11,7 @@ public class TextureList {
 		
 		for (int i = 0; i < numberOfTextures; i++) {
 			textures[i] = textureSheet.getSubimage(i*(textureWidth), 0, textureWidth, textureWidth);
-			System.out.println("subTextureCraeted");
 		}
-		
 	}
 
 	public BufferedImage[] getTextures() {
