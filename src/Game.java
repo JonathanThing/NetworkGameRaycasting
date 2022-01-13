@@ -152,7 +152,7 @@ public class Game {
             
             g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, xOffset, yOffset);
-            
+
             g.setColor(Color.ORANGE);
             g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX() + xOffset,
                       player.getPosition().getY() + yOffset);
@@ -160,7 +160,6 @@ public class Game {
                         (int) player.getPosition().getY() - player.getHeight() / 2 + yOffset, player.getWidth(),
                         player.getHeight());
 
-            
         } // paintComponent method end
     } // GraphicsPanel class end
     

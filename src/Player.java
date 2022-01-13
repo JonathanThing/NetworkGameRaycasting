@@ -7,12 +7,17 @@ class Player extends Character {
     private int ammo;
     
     public void shoot(){ //BufferedImage sprite) {
-        double xComponent = Math.sin(getAngle().getAngleValue());
-        double yComponent = Math.cos(getAngle().getAngleValue());
+        double yComponent = -1* Math.sin(getAngle().getAngleValue());
+        double xComponent = -1* Math.cos(getAngle().getAngleValue());
         
         System.out.println("made new bullet");
+        System.out.println(getAngle().getAngleValue());
+        System.out.println(Math.cos(getAngle().getAngleValue()));
+        System.out.println("x " + xComponent);
+        System.out.println("y " + yComponent);
+
         this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), getSprite(), 10,
-      10, xComponent, yComponent));
+                                                     10, xComponent, yComponent));
     }
     
     public void moveProjectile() {
