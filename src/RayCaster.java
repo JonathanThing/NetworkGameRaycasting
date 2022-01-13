@@ -1,9 +1,10 @@
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class RayCaster {
 
@@ -22,38 +23,87 @@ public class RayCaster {
 		this.textures = textures;
 	}
 	
-	public void drawSprite(Graphics g2, Sprite sprite, boolean drawMap) {
+	public void drawSprite(Graphics2D g2, Sprite[] sprites, boolean drawMap) {
 
-		Vector spritePosition = sprite.getPosition();
-		Vector spriteVector = spritePosition.subtract(playerPosition);
-		Vector tempVector = spriteVector.rotateVector(pAngle.getAngleValue()).flipXAndY();
-		Angle sA = new Angle(-Math.atan2(spriteVector.getY(),spriteVector.getX()));
+		
+		class DistanceComparator implements Comparator<Sprite> {
+            
+            @Override
+            public int compare(Sprite a, Sprite b) {
+            	double dist1 = a.getPosition().distance(playerPosition);
+            	double dist2 = b.getPosition().distance(playerPosition);
 
-		g2.setColor(Color.RED);
-		g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(sA.getAngleValue())), (int) (playerPosition.getY()-100*Math.sin(sA.getAngleValue())));
-		g2.setColor(Color.GREEN);
-		g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() - fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() - fov/2)));
-		g2.setColor(Color.BLUE);
-		g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() + fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() + fov/2)));
+            	if (dist1 == dist2) {
+            		return 0;
+            	} else if (dist1 > dist2) {
+            		return -1;
+            	} else {
+            		return 1;
+            	}
+            }
+            
+        }
+		Arrays.sort(sprites, new DistanceComparator());
 		
-		double rightSide = Angle.checkLimit(pAngle.getAngleValue() + fov/2);
-		double leftSide = Angle.checkLimit(pAngle.getAngleValue() - fov/2);
+		for (Sprite sprite: sprites) {
+			Vector spritePosition = sprite.getPosition();
+			Vector spriteVector = spritePosition.subtract(playerPosition);
+			Vector tempVector = spriteVector.rotateVector(pAngle.getAngleValue()).flipXAndY();
+			Angle sA = new Angle(-Math.atan2(spriteVector.getY(),spriteVector.getX()));
+	
+			if (drawMap) {
+			
+				g2.setColor(Color.BLUE);	
+				g2.fillRect((int) (sprite.getPosition().getX() -5), (int) (sprite.getPosition().getY() -5), 10, 10);
+				g2.setColor(Color.RED);
+				g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(sA.getAngleValue())), (int) (playerPosition.getY()-100*Math.sin(sA.getAngleValue())));
+				g2.setColor(Color.GREEN);
+				g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() - fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() - fov/2)));
+				g2.setColor(Color.BLUE);
+				g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() + fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() + fov/2)));
 		
-		double distance = spriteVector.magnitude();
-		
-		double ray = Math.cos(pAngle.getAngleValue()-sA.getAngleValue())*distance;
-		double section = Math.sin(pAngle.getAngleValue()-sA.getAngleValue())*distance;
-		double plane = Math.abs(Math.tan(pAngle.getAngleValue() - leftSide)*ray)*2;
-		double sy = tempVector.getY() ;
-		double sx = Const.TRUE_WIDTH/2 + Const.TRUE_WIDTH*(section/plane) ;
-		sy=(sprite.getZ()*108.0/sy) + (Const.TRUE_HEIGHT/2);
-		
-
-		if ((sA.getAngleValue() < rightSide && sA.getAngleValue() > leftSide) || (leftSide > rightSide && (leftSide < sA.getAngleValue() || rightSide > sA.getAngleValue()))) {
-			if (Math.abs(tempVector.getY()) < dist[(int)((sx/Const.TRUE_WIDTH)*numberOfRays)]) {
-				g2.fillRect((int) (sx - 10),(int) (Const.HEIGHT/2 - 5),10,10);
+			} else {
+			
+				double rightSide = Angle.checkLimit(pAngle.getAngleValue() + fov/2);
+				double leftSide = Angle.checkLimit(pAngle.getAngleValue() - fov/2);
+				double rightSide2 = Angle.checkLimit(pAngle.getAngleValue() + 2*fov/3);
+				double leftSide2 = Angle.checkLimit(pAngle.getAngleValue() - 2*fov/3);
+				
+				
+				double distance = spriteVector.magnitude();
+				
+				double ray = Math.cos(pAngle.getAngleValue()-sA.getAngleValue())*distance;
+				double section = Math.sin(pAngle.getAngleValue()-sA.getAngleValue())*distance;
+				double plane = Math.abs(Math.tan(pAngle.getAngleValue() - leftSide)*ray)*2;
+				double sy = tempVector.getY();
+				double sx = Const.TRUE_WIDTH/2 + Const.TRUE_WIDTH*(section/plane) ;
+				int scale=(int)(Const.TEXTURE_SIZE*Const.HEIGHT/sy);		
+				if (scale > Const.HEIGHT) {
+					scale = Const.HEIGHT;
+				}
+				g2.setColor(Color.GREEN);
+				
+				double step = scale/(double)Const.TEXTURE_SIZE;
+				double strokeWidth = Math.abs(scale/(double)Const.TEXTURE_SIZE);		
+				g2.setStroke(new BasicStroke((int) strokeWidth+1));
+				
+				for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
+					
+					double thing = sx +j*step - scale/2 -5;
+					double thingCheck = sx +j*step- scale/2;
+					if ((sA.getAngleValue() < rightSide2 && sA.getAngleValue() > leftSide2) || (leftSide2 > rightSide2 && (leftSide2 < sA.getAngleValue() || rightSide2 > sA.getAngleValue()))) {
+						if ((((thingCheck)/Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(tempVector.getY()) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
+							for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
+								g2.setColor(new Color(sprite.getTexture().getRGB(j,k)));
+								if (!g2.getColor().equals(new Color (74,65,42))) {
+									g2.drawLine((int) (thing), (int)(Const.HEIGHT/2 - scale/2 + k*step)+scale/10, (int) (thing), (int) (Const.HEIGHT/2 - scale/2 + k*step)+scale/10);
+								}
+							}
+						}
+					}
+				}
 			}
-		}		
+		}
 	}
 	
 	public void rayCast(Graphics2D g2, boolean drawMap, Vector playerPosition, Angle pAngle, Vector cameraOffset, Level map) {
@@ -147,9 +197,6 @@ public class RayCaster {
 					}
 
 					g2.drawLine(Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2+(middle) - i*stepPattern) , Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2 + (middle) - (i+1)*stepPattern ));
-
-
-				
 				}		
 			}	
 		}

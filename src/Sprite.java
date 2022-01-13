@@ -1,16 +1,16 @@
+import java.awt.image.BufferedImage;
+
 public class Sprite {
 	private int type;
 	private int state;
-	private int texture[][];
+	private BufferedImage texture;
 	private Vector position;
-	private int z;
 	
-	public Sprite(Vector position, int z ,int type, int state, int[][] texture) {
+	public Sprite(Vector position,int type, int state, BufferedImage texture) {
 		this.type = type;
 		this.state = state;
 		this.texture = texture;
 		this.position = position;
-		this.z = z;
 	}
 
 	public int getType() {
@@ -29,11 +29,11 @@ public class Sprite {
 		this.state = state;
 	}
 
-	public int[][] getTexture() {
+	public BufferedImage getTexture() {
 		return texture;
 	}
 
-	public void setTexture(int[][] texture) {
+	public void setTexture(BufferedImage texture) {
 		this.texture = texture;
 	}
 
@@ -44,18 +44,5 @@ public class Sprite {
 	public void setPosition(Vector position) {
 		this.position = position;
 	}
-
-	public int getZ() {
-		return z;
-	}
-
-	public void setZ(int z) {
-		this.z = z;
-	}
-	
-	
-	
-	
-
 	
 }

@@ -21,7 +21,8 @@ public class Game {
 	static MyMouseListener mouseListener = new MyMouseListener();
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
 	static TextureList textures;
-//	static Sprite test = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 40, 0, 0 , null); //Vector position, int z ,int type, int state, int[][] texture
+	static TextureList sprites;
+	static Sprite[] test = new Sprite[5];	
 	static Level currentLevel = new Level(new int[][]{
 												{2,2,2,1,2,1,2,2,2,2,2,2,2,2,2,2},
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
@@ -51,6 +52,11 @@ public class Game {
 
 		try {
 			textures = new TextureList(ImageIO.read(new File("images/textures.png")));
+			test[0] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
+			test[1] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
+			test[2] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
+			test[3] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
+			test[4] = new Sprite(new Vector ((4)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
@@ -108,7 +114,7 @@ public class Game {
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
-//			rayCaster.drawSprite(g2, test, false);
+			rayCaster.drawSprite(g2, test, false);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -143,9 +149,7 @@ public class Game {
 			
 			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
 
-			g.setColor(Color.BLUE);	
-//			g2.fillRect((int) (test.getPosition().getX() -5), (int) (test.getPosition().getY() -5), 10, 10);
-//			rayCaster.drawSprite(g2, test, true);
+			rayCaster.drawSprite(g2, test, true);
 			
 			g.setColor(Color.ORANGE);	
 			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());

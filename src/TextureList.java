@@ -5,12 +5,11 @@ public class TextureList {
 	private BufferedImage[] textures;
 	
 	public TextureList(BufferedImage textureSheet) {
-		int textureWidth = 32;
-		int numberOfTextures = textureSheet.getWidth()/textureWidth;
+		int numberOfTextures = textureSheet.getWidth()/Const.TEXTURE_SIZE;
 		textures = new BufferedImage[numberOfTextures];
 		
 		for (int i = 0; i < numberOfTextures; i++) {
-			textures[i] = textureSheet.getSubimage(i*(textureWidth), 0, textureWidth, textureWidth);
+			textures[i] = textureSheet.getSubimage(i*(Const.TEXTURE_SIZE), 0, Const.TEXTURE_SIZE, Const.TEXTURE_SIZE);
 		}
 	}
 
