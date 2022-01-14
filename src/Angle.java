@@ -4,15 +4,15 @@ public class Angle {
 		this.angle = checkLimit(angle);
 	}
 
-	public double getAngle() {
+	public double getAngleValue(){
 		return this.angle;
 	}
 
-	public void changeAngle(double change) {
+	public void changeAngleValue(double change) {
 		this.angle = checkLimit(angle+change);
 	}
 
-	public void setAngle(double angle) {
+	public void setAngleValue(double angle) {
 		this.angle = checkLimit(angle);
 	}
 

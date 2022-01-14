@@ -103,3 +103,4 @@ class Player extends Character {
         // character super
         // class
     }
+}

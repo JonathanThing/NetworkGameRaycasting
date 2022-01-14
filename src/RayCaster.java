@@ -38,7 +38,7 @@ public class RayCaster {
 
 		for (int rays = 0; rays < numberOfRays; rays++) {
 
-			rayAngle = Angle.checkLimit(pAngle.getAngle() + Math.atan(inc * (rays - numberOfRays / 2)));
+			rayAngle = Angle.checkLimit(pAngle.getAngleValue() + Math.atan(inc * (rays - numberOfRays / 2)));
 
 			dist1 = rayCastVerticalSides(rayAngle);
 			dist2 = rayCastHorizontalSides(rayAngle);
@@ -66,7 +66,7 @@ public class RayCaster {
 
 				wallType1--;
 
-				dist1 = dist1 * Math.cos(rayAngle - pAngle.getAngle());
+				dist1 = dist1 * Math.cos(rayAngle - pAngle.getAngleValue());
 
 				int strokeWidth = Const.WIDTH / numberOfRays;
 				g2.setStroke(new BasicStroke(strokeWidth));
