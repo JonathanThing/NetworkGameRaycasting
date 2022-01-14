@@ -24,7 +24,7 @@ public class RayCaster {
 		this.textures = textures;
 	}
 	
-	public void drawSprite(Graphics2D g2, Sprite[] sprites, boolean drawMap) {
+	public void drawSprite(Graphics2D g2, Sprite[] sprites) {
 
 		
 		class DistanceComparator implements Comparator<Sprite> {
@@ -79,8 +79,8 @@ public class RayCaster {
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
 				double thing = cameraX +j*step - scale/2 -5;
 				double thingCheck = cameraX +j*step- scale/2;
-				if ((spriteAngle.getAngleValue() < rightViewEdge && spriteAngle.getAngleValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getAngleValue() || rightViewEdge > spriteAngle.getAngleValue()))) {
-					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(rotatedVector.getY()) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
+				if ((spriteAngle.getAngleValue() < rightViewEdge && spriteAngle.getAngleValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getAngleValue() || rightViewEdge > spriteAngle.getAngleValue()))) {					
+					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
 							g2.setColor(new Color(sprite.getTexture().getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {

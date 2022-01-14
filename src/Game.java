@@ -42,8 +42,7 @@ public class Game {
 
 	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
 	static boolean up, down, left, right, turnRight, turnLeft;
-	static int xOffset = 0;
-	static int yOffset = 0;
+	static Vector cameraOffset = new Vector(0,0);
 
 	// --------------------------------------------------------------------------
 	// declare the properties of all game objects here
@@ -119,7 +118,7 @@ public class Game {
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
-			rayCaster.drawSprite(g2, test, false);
+			rayCaster.drawSprite(g2, test);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -142,23 +141,21 @@ public class Game {
 				for (int columns = 0; columns < currentLevel.getColumns(); columns++) {
 					if (currentLevel.getMapTile(rows, columns) == 0) {
 						g2.setColor(Color.WHITE);
-						g2.drawRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE,
+						g2.drawRect(columns * Const.BOXSIZE + (int)cameraOffset.getX(), rows * Const.BOXSIZE +  (int)cameraOffset.getY(), Const.BOXSIZE,
 								Const.BOXSIZE);
 					} else if (currentLevel.getMapTile(rows, columns) >= 1) {
 						g2.setColor(Color.BLACK);
-						g2.fillRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE,
+						g2.fillRect(columns * Const.BOXSIZE + +  (int)cameraOffset.getX(), rows * Const.BOXSIZE +  (int)cameraOffset.getY(), Const.BOXSIZE,
 								Const.BOXSIZE);
 					}
 					g2.setColor(Color.BLACK);
-					g2.drawRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE,
+					g2.drawRect(columns * Const.BOXSIZE + +  (int)cameraOffset.getX(), rows * Const.BOXSIZE +  (int)cameraOffset.getY(), Const.BOXSIZE,
 							Const.BOXSIZE);
 				}
 			}
 
-			rayCaster.rayCast(g2, true, player.getPosition().getX(), player.getPosition().getY(), player.getAngle(),
-					xOffset, yOffset, currentLevel);
-
-			rayCaster.drawSprite(g2, test, true);
+			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(),
+					cameraOffset, currentLevel);
 			
 			g.setColor(Color.ORANGE);	
 			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
