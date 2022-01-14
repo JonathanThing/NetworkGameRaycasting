@@ -76,7 +76,7 @@ public class RayCaster {
 				double section = Math.sin(pAngle.getAngleValue()-sA.getAngleValue())*distance;
 				double plane = Math.abs(Math.tan(pAngle.getAngleValue() - leftSide)*ray)*2;
 				double sy = tempVector.getY();
-				double sx = Const.TRUE_WIDTH/2 + Const.TRUE_WIDTH*(section/plane) ;
+				double sx = (double)Const.TRUE_WIDTH/2 + (double)Const.TRUE_WIDTH*(section/plane) ;
 				int scale=(int)(Const.TEXTURE_SIZE*Const.HEIGHT/sy);		
 				if (scale > Const.HEIGHT) {
 					scale = Const.HEIGHT;
@@ -92,11 +92,11 @@ public class RayCaster {
 					double thing = sx +j*step - scale/2 -5;
 					double thingCheck = sx +j*step- scale/2;
 					if ((sA.getAngleValue() < rightSide2 && sA.getAngleValue() > leftSide2) || (leftSide2 > rightSide2 && (leftSide2 < sA.getAngleValue() || rightSide2 > sA.getAngleValue()))) {
-						if ((((thingCheck)/Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(tempVector.getY()) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
+						if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(tempVector.getY()) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
 							for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
 								g2.setColor(new Color(sprite.getTexture().getRGB(j,k)));
 								if (!g2.getColor().equals(new Color (74,65,42))) {
-									g2.drawLine((int) (thing), (int)(Const.HEIGHT/2 - scale/2 + k*step)+scale/10, (int) (thing), (int) (Const.HEIGHT/2 - scale/2 + k*step)+scale/10);
+									g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step)+scale/10, (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step)+scale/10);
 								}
 							}
 						}

@@ -52,15 +52,18 @@ public class Game {
 
 		try {
 			textures = new TextureList(ImageIO.read(new File("images/textures.png")));
-			test[0] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
-			test[1] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
-			test[2] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
-			test[3] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
-			test[4] = new Sprite(new Vector ((4)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, ImageIO.read(new File("images/zombie.png")));
+			sprites = new TextureList(ImageIO.read(new File("images/spritesSheet.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
 		}
+		
+		test[0] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(0));
+		test[1] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(1));
+		test[2] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(2));
+		test[3] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(0));
+		test[4] = new Sprite(new Vector ((4)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(3));
+		
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
