@@ -37,6 +37,7 @@ public class Game {
         { 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 1 },
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, });
     
+    static Skeleton skeleton = new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2), null, 100, 4, null); 
     static Player player = new Player(
                                       new Vector((3) * Const.BOXSIZE - Const.BOXSIZE / 2, (2) * Const.BOXSIZE - Const.BOXSIZE / 2), 10, 10,
                                       "player", new Angle(3 * Math.PI / 2), null, 100, 4, null);
@@ -87,8 +88,12 @@ public class Game {
             player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
             player.moveProjectile();
             
+            //skeleton.shoot(player);
+            skeleton.moveProjectile();
+            
             if (shooting){
                 player.shoot();
+                skeleton.shoot(player);
                 System.out.println("bullet");
             }
             
@@ -152,13 +157,21 @@ public class Game {
             
             g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, xOffset, yOffset);
-
+            
+            g2.fillRect((int) skeleton.getPosition().getX() - skeleton.getWidth() / 2 + xOffset,
+                        (int) skeleton.getPosition().getY() - skeleton.getHeight() / 2 + yOffset, skeleton.getWidth(),
+                        skeleton.getHeight());
+            
+            skeleton.drawEnemyProjectile(g2, xOffset, yOffset);
+            
             g.setColor(Color.ORANGE);
             g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX() + xOffset,
                       player.getPosition().getY() + yOffset);
             g2.fillRect((int) player.getPosition().getX() - player.getWidth() / 2 + xOffset,
                         (int) player.getPosition().getY() - player.getHeight() / 2 + yOffset, player.getWidth(),
                         player.getHeight());
+            
+
 
         } // paintComponent method end
     } // GraphicsPanel class end
