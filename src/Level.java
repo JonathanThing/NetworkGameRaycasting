@@ -3,8 +3,8 @@ public class Level {
 	private int[][] map;
 	private int rows;
 	private int columns;
-	
-	public Level(int [][] map) {
+
+	public Level(int[][] map) {
 		this.map = map;
 		this.rows = map.length;
 		this.columns = map[0].length;
@@ -23,7 +23,7 @@ public class Level {
 	public int getMapTile(int row, int column) {
 		return map[row][column];
 	}
-	
+
 	public void setMapTile(int row, int column, int value) {
 		this.map[row][column] = value;
 	}
@@ -43,6 +43,5 @@ public class Level {
 	public void setColumns(int columns) {
 		this.columns = columns;
 	}
-	
 
 }

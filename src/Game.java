@@ -16,7 +16,7 @@ public class Game {
 	static JFrame mapWindow;
 	static GraphicsPanel canvas;
 	static MapPanel mapThing;
-	static RayCaster rayCaster; 
+	static RayCaster rayCaster;
 	static MyKeyListener keyListener = new MyKeyListener();
 	static MyMouseListener mouseListener = new MyMouseListener();
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
@@ -42,12 +42,14 @@ public class Game {
 
 	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
 	static boolean up, down, left, right, turnRight, turnLeft;
-	static Vector cameraOffset = new Vector(0,0);
+	static int xOffset = 0;
+	static int yOffset = 0;
+
 	// --------------------------------------------------------------------------
 	// declare the properties of all game objects here
 	// --------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------    
+	// ------------------------------------------------------------------------------
 	public static void main(String[] args) {
 
 		try {
@@ -72,22 +74,22 @@ public class Game {
 		canvas.addMouseMotionListener(mouseMotionListener);
 		canvas.addKeyListener(keyListener);
 		gameWindow.add(canvas);
-		
+
 		mapWindow = new JFrame("Map");
 		mapWindow.setSize(Const.WIDTH, Const.HEIGHT);
 		mapWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mapThing = new MapPanel();
 		mapWindow.add(mapThing);
-		
+
 		rayCaster = new RayCaster(textures);
-		
+
 		mapWindow.setVisible(true);
 		gameWindow.setVisible(true);
 		runGameLoop();
 
 	} // main method end
 
-//------------------------------------------------------------------------------   
+	// ------------------------------------------------------------------------------
 	public static void runGameLoop() {
 		while (true) {
 			gameWindow.repaint();
@@ -96,12 +98,12 @@ public class Game {
 				Thread.sleep(25);
 			} catch (Exception e) {
 			}
-			
-			player.movement(up,down,left,right,turnLeft,turnRight,currentLevel);
+
+			player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
 		}
 	} // runGameLoop method end
 
-//------------------------------------------------------------------------------  
+	// ------------------------------------------------------------------------------
 	static class GraphicsPanel extends JPanel {
 		public GraphicsPanel() {
 			setFocusable(true);
@@ -110,10 +112,10 @@ public class Game {
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); // required
-			
+
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
-			g2.fillRect(0,0,Const.WIDTH,Const.HEIGHT/2);
+			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
@@ -132,7 +134,7 @@ public class Game {
 			super.paintComponent(g); // required
 
 			Graphics2D g2 = (Graphics2D) g;
-			
+
 			g2.rotate(0);
 			g2.setStroke(new BasicStroke(4));
 			g2.setColor(Color.BLACK);
@@ -140,17 +142,21 @@ public class Game {
 				for (int columns = 0; columns < currentLevel.getColumns(); columns++) {
 					if (currentLevel.getMapTile(rows, columns) == 0) {
 						g2.setColor(Color.WHITE);
-						g2.drawRect(columns * Const.BOXSIZE + (int)cameraOffset.getX(), rows * Const.BOXSIZE + (int)cameraOffset.getY(), Const.BOXSIZE, Const.BOXSIZE);
+						g2.drawRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE,
+								Const.BOXSIZE);
 					} else if (currentLevel.getMapTile(rows, columns) >= 1) {
 						g2.setColor(Color.BLACK);
-						g2.fillRect(columns * Const.BOXSIZE + (int)cameraOffset.getX(), rows * Const.BOXSIZE + (int)cameraOffset.getY(), Const.BOXSIZE, Const.BOXSIZE);
+						g2.fillRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE,
+								Const.BOXSIZE);
 					}
 					g2.setColor(Color.BLACK);
-					g2.drawRect(columns * Const.BOXSIZE + (int)cameraOffset.getX(), rows * Const.BOXSIZE + (int)cameraOffset.getY(), Const.BOXSIZE, Const.BOXSIZE);
+					g2.drawRect(columns * Const.BOXSIZE + xOffset, rows * Const.BOXSIZE + yOffset, Const.BOXSIZE,
+							Const.BOXSIZE);
 				}
 			}
-			
-			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
+
+			rayCaster.rayCast(g2, true, player.getPosition().getX(), player.getPosition().getY(), player.getAngle(),
+					xOffset, yOffset, currentLevel);
 
 			rayCaster.drawSprite(g2, test, true);
 			
@@ -162,7 +168,7 @@ public class Game {
 		} // paintComponent method end
 	} // GraphicsPanel class end
 
-//------------------------------------------------------------------------------     
+	// ------------------------------------------------------------------------------
 	static class MyKeyListener implements KeyListener {
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == 'W') { // If the player hits/holds 'W', move up until they stop
@@ -173,11 +179,11 @@ public class Game {
 				down = true;
 			}
 
-			if (e.getKeyCode() == 'A' ) { // If the player hits/holds 'A', move left until they stop
+			if (e.getKeyCode() == 'A') { // If the player hits/holds 'A', move left until they stop
 				left = true;
 			}
 
-			if (e.getKeyCode() == 'D' ) { // If the player hits/holds 'D', move right until they stop
+			if (e.getKeyCode() == 'D') { // If the player hits/holds 'D', move right until they stop
 				right = true;
 			}
 
@@ -231,7 +237,7 @@ public class Game {
 		}
 	} // MyKeyListener class end
 
-//------------------------------------------------------------------------------ 
+	// ------------------------------------------------------------------------------
 	static class MyMouseListener implements MouseListener {
 		public void mouseClicked(MouseEvent e) {
 
@@ -252,7 +258,7 @@ public class Game {
 		}
 	} // MyMouseListener class end
 
-//------------------------------------------------------------------------------     
+	// ------------------------------------------------------------------------------
 	static class MyMouseMotionListener implements MouseMotionListener {
 		public void mouseMoved(MouseEvent e) {
 		}
