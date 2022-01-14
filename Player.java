@@ -28,14 +28,14 @@ class Player extends Character {
 		}
 
 		if (turnLeft) {
-			this.getAngle().changeAngleValue(Math.toRadians(5));
+			this.getAngle().changeAngle(Math.toRadians(5));
 		}
 
 		if (turnRight) {
-			this.getAngle().changeAngleValue(Math.toRadians(-5));
+			this.getAngle().changeAngle(Math.toRadians(-5));
 		}
 
-		double forwardAngle = this.getAngle().getAngleValue();
+		double forwardAngle = this.getAngle().getAngle();
 		double sideAngle = Angle.checkLimit(forwardAngle - Math.PI / 2);
 
 		Vector forwardVector = new Vector(Math.cos(forwardAngle) * yRaw, -Math.sin(forwardAngle) * yRaw);

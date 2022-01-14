@@ -144,7 +144,7 @@ public class Game {
 					xOffset, yOffset, currentLevel);
 
 			g.setColor(Color.ORANGE);
-			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX() + xOffset,
+			g2.rotate(-player.getAngle().getAngle(), player.getPosition().getX() + xOffset,
 					player.getPosition().getY() + yOffset);
 			g2.fillRect((int) player.getPosition().getX() - player.getWidth() / 2 + xOffset,
 					(int) player.getPosition().getY() - player.getHeight() / 2 + yOffset, player.getWidth(),
