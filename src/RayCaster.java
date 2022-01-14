@@ -1,3 +1,5 @@
+// pls remember to fix later
+
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -8,9 +10,8 @@ import java.util.Comparator;
 
 public class RayCaster {
 
-	private Graphics2D g2;
 	private Level map;
-	private Angle pAngle;
+	private Angle playerAngle;
 	private int wallType1;
 	private int wallType2;
 	private TextureList textures;
@@ -46,70 +47,55 @@ public class RayCaster {
 		Arrays.sort(sprites, new DistanceComparator());
 		
 		for (Sprite sprite: sprites) {
+			
 			Vector spritePosition = sprite.getPosition();
-			Vector spriteVector = spritePosition.subtract(playerPosition);
-			Vector tempVector = spriteVector.rotateVector(pAngle.getAngleValue()).flipXAndY();
-			Angle sA = new Angle(-Math.atan2(spriteVector.getY(),spriteVector.getX()));
+			Vector spriteVectorFromPlayer = spritePosition.subtract(playerPosition);
+			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getAngleValue());
+			Angle spriteAngle = new Angle(-Math.atan2(spriteVectorFromPlayer.getY(),spriteVectorFromPlayer.getX()));
 	
-			if (drawMap) {
+			double rightViewEdge = Angle.checkLimit(playerAngle.getAngleValue() + fov/2);
+			double leftViewEdge = Angle.checkLimit(playerAngle.getAngleValue() - fov/2);	
 			
-				g2.setColor(Color.BLUE);	
-				g2.fillRect((int) (sprite.getPosition().getX() -5), (int) (sprite.getPosition().getY() -5), 10, 10);
-				g2.setColor(Color.RED);
-				g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(sA.getAngleValue())), (int) (playerPosition.getY()-100*Math.sin(sA.getAngleValue())));
-				g2.setColor(Color.GREEN);
-				g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() - fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() - fov/2)));
-				g2.setColor(Color.BLUE);
-				g2.drawLine((int) (playerPosition.getX()), (int) (playerPosition.getY()), (int) (playerPosition.getX()+100*Math.cos(pAngle.getAngleValue() + fov/2)), (int) (playerPosition.getY()-100*Math.sin(pAngle.getAngleValue() + fov/2)));
-		
+			double distance = spriteVectorFromPlayer.magnitude();	
+			double ray = Math.cos(playerAngle.getAngleValue()-spriteAngle.getAngleValue())*distance;
+			double section = Math.sin(playerAngle.getAngleValue()-spriteAngle.getAngleValue())*distance;
+			double plane = Math.abs(Math.tan(playerAngle.getAngleValue() - leftViewEdge)*ray)*2;
+			double distanceToPlane = rotatedVector.getX();
+			double cameraX = (double)Const.TRUE_WIDTH/2 + (double)Const.TRUE_WIDTH*(section/plane) ;
+			int scale=(int)(Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane);		
+			double step = scale/(double)Const.TEXTURE_SIZE;
+			double strokeWidth = Math.abs(scale/(double)Const.TEXTURE_SIZE);		
+			g2.setStroke(new BasicStroke((int) strokeWidth+1));
+			double yOffset;
+			rightViewEdge = Angle.checkLimit(playerAngle.getAngleValue() + 2*fov/3);
+			leftViewEdge = Angle.checkLimit(playerAngle.getAngleValue() - 2*fov/3);
+			
+			scale *= sprite.getSize();
+			if (sprite.getZ() == 0) {
+				yOffset = 0;
 			} else {
-			
-				double rightSide = Angle.checkLimit(pAngle.getAngleValue() + fov/2);
-				double leftSide = Angle.checkLimit(pAngle.getAngleValue() - fov/2);
-				double rightSide2 = Angle.checkLimit(pAngle.getAngleValue() + 2*fov/3);
-				double leftSide2 = Angle.checkLimit(pAngle.getAngleValue() - 2*fov/3);
-				
-				
-				double distance = spriteVector.magnitude();
-				
-				double ray = Math.cos(pAngle.getAngleValue()-sA.getAngleValue())*distance;
-				double section = Math.sin(pAngle.getAngleValue()-sA.getAngleValue())*distance;
-				double plane = Math.abs(Math.tan(pAngle.getAngleValue() - leftSide)*ray)*2;
-				double sy = tempVector.getY();
-				double sx = (double)Const.TRUE_WIDTH/2 + (double)Const.TRUE_WIDTH*(section/plane) ;
-				int scale=(int)(Const.TEXTURE_SIZE*Const.HEIGHT/sy);		
-				if (scale > Const.HEIGHT) {
-					scale = Const.HEIGHT;
-				}
-				g2.setColor(Color.GREEN);
-				
-				double step = scale/(double)Const.TEXTURE_SIZE;
-				double strokeWidth = Math.abs(scale/(double)Const.TEXTURE_SIZE);		
-				g2.setStroke(new BasicStroke((int) strokeWidth+1));
-				
-				for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
-					
-					double thing = sx +j*step - scale/2 -5;
-					double thingCheck = sx +j*step- scale/2;
-					if ((sA.getAngleValue() < rightSide2 && sA.getAngleValue() > leftSide2) || (leftSide2 > rightSide2 && (leftSide2 < sA.getAngleValue() || rightSide2 > sA.getAngleValue()))) {
-						if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(tempVector.getY()) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
-							for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
-								g2.setColor(new Color(sprite.getTexture().getRGB(j,k)));
-								if (!g2.getColor().equals(new Color (74,65,42))) {
-									g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step)+scale/10, (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step)+scale/10);
-								}
+				yOffset = scale/sprite.getZ();
+			}
+			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
+				double thing = cameraX +j*step - scale/2 -5;
+				double thingCheck = cameraX +j*step- scale/2;
+				if ((spriteAngle.getAngleValue() < rightViewEdge && spriteAngle.getAngleValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getAngleValue() || rightViewEdge > spriteAngle.getAngleValue()))) {
+					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(rotatedVector.getY()) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
+						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
+							g2.setColor(new Color(sprite.getTexture().getRGB(j,k)));
+							if (!g2.getColor().equals(new Color (74,65,42))) {
+								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset) , (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
 							}
-						}
+						}						
 					}
 				}
 			}
 		}
 	}
 	
-	public void rayCast(Graphics2D g2, boolean drawMap, Vector playerPosition, Angle pAngle, Vector cameraOffset, Level map) {
-		this.g2 = g2;
+	public void rayCast(Graphics2D g2, boolean drawMap, Vector playerPosition, Angle playerAngle, Vector cameraOffset, Level map) {
 		this.map = map;
-		this.pAngle = pAngle;
+		this.playerAngle = playerAngle;
 		this.playerPosition = playerPosition;
 		
 		double dist1;
@@ -122,7 +108,7 @@ public class RayCaster {
 		
 		for (int rays = 0; rays < numberOfRays; rays++) {
 			
-			rayAngle = Angle.checkLimit(pAngle.getAngleValue() + Math.atan(inc*(rays-numberOfRays/2)));
+			rayAngle = Angle.checkLimit(playerAngle.getAngleValue() + Math.atan(inc*(rays-numberOfRays/2)));
 
 			dist1 = rayCastVerticalSides(rayAngle);
 			dist2 = rayCastHorizontalSides(rayAngle);
@@ -148,7 +134,7 @@ public class RayCaster {
 					
 				wallType1--;
 				
-				dist1 = dist1*Math.cos(rayAngle-pAngle.getAngleValue());
+				dist1 = dist1*Math.cos(rayAngle-playerAngle.getAngleValue());
 				dist[numberOfRays-rays-1] = dist1;
 				int strokeWidth = Const.WIDTH/numberOfRays;
 				g2.setStroke(new BasicStroke(strokeWidth));
@@ -174,11 +160,6 @@ public class RayCaster {
 						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType1)) % textures.getTextureWidth(wallType1))-1;
 					}
 				}
-
-				if (lineH > Const.HEIGHT) {
-					lineH = Const.HEIGHT;
-				}
-
 				
 				for (int i = 0; i < numbPixel; i++) {
 					textureY = (numbPixel-1-i);
@@ -229,11 +210,11 @@ public class RayCaster {
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
 			if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE-1) >= 1) {
 				wallType1 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE-1);
-				distance = distance(playerPosition.getX(), playerPosition.getY(), xInt, yInt);
+				distance = playerPosition.distance(new Vector(xInt, yInt));
 				break;
 			} else if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE) >= 1) {
 				wallType1 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE);
-				distance = distance(playerPosition.getX(), playerPosition.getY(), xInt, yInt);
+				distance = playerPosition.distance(new Vector(xInt, yInt));
 				break;
 			} else {
 				xInt += xStep;
@@ -270,11 +251,11 @@ public class RayCaster {
 		while (xInt < width && xInt >= 0 && yInt < height && yInt >= 0) {
 			if (map.getMapTile((int) yInt / Const.BOXSIZE-1,(int) xInt / Const.BOXSIZE) >= 1) {
 				wallType2 = map.getMapTile((int) yInt / Const.BOXSIZE-1,(int) xInt / Const.BOXSIZE);
-				distance = distance(playerPosition.getX(), playerPosition.getY(), xInt, yInt);
+				distance = playerPosition.distance(new Vector(xInt, yInt));
 				break;
 			} else if (map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE) >= 1) {
 				wallType2 = map.getMapTile((int) yInt / Const.BOXSIZE,(int) xInt / Const.BOXSIZE);
-				distance = distance(playerPosition.getX(), playerPosition.getY(), xInt, yInt);
+				distance = playerPosition.distance(new Vector(xInt, yInt));
 				break;
 			} else {
 				xInt -= xStep;
@@ -284,10 +265,4 @@ public class RayCaster {
 		
 		return distance;
 	}
-	
-	//REMOVE THIS ASAP AND FIX IT WITH PROPER VECTOR THING 
-	public static double distance(double x1, double y1, double x2, double y2) {
-		return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
-	}
-	
 }

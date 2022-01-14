@@ -1,4 +1,4 @@
- /* RayCasting
+/* RayCasting
  * Basic raycasting demo
  * @author Jonathan Cai
  * @version Dec 2021
@@ -52,17 +52,17 @@ public class Game {
 
 		try {
 			textures = new TextureList(ImageIO.read(new File("images/textures.png")));
-			sprites = new TextureList(ImageIO.read(new File("images/spritesSheet.png")));
+			sprites = new TextureList(ImageIO.read(new File("images/spriteSheet.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
 		}
 		
-		test[0] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(0));
-		test[1] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(1));
-		test[2] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(2));
-		test[3] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(0));
-		test[4] = new Sprite(new Vector ((4)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), 0, 0, sprites.getSingleTexture(3));
+		test[0] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(5),20,0.75);
+		test[1] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(4),0,1);
+		test[2] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(4),0,1);
+		test[3] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(4),0,1);
+		test[4] = new Sprite(new Vector ((4)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(1),20,0.75);
 		
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
