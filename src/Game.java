@@ -109,7 +109,6 @@ public class Game {
             if (shooting){
                 player.shoot();
                 skeleton.shoot(player);
-                System.out.println("bullet");
             }
 		}
 	} // runGameLoop method end
