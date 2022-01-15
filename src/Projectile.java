@@ -19,9 +19,8 @@ class Projectile extends Entity {
       g.fillRect((int) (getPosition().getX() - getWidth() / 2 - offSetX), (int) (getPosition().getY() - getHeight() / 2 - offSetY), getWidth(), getHeight()); //draw the projectile
   }
 
-  Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, int health,
-      double speed, double changeX, double changeY) {
-    super(position, width, height, name, angle, sprite, health, speed);
+  Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {
+    super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale);
     this.changeX = changeX;
     this.changeY = changeY;
   }

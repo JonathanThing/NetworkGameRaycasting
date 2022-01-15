@@ -1,11 +1,10 @@
-// pls remember to fix later
-
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class RayCaster {
@@ -24,13 +23,13 @@ public class RayCaster {
 		this.textures = textures;
 	}
 	
-	public void drawSprite(Graphics2D g2, Sprite[] sprites) {
+	public void drawSprite(Graphics2D g2, ArrayList<Entity> entity) {
 
 		
-		class DistanceComparator implements Comparator<Sprite> {
+		class DistanceComparator implements Comparator<Entity> {
             
             @Override
-            public int compare(Sprite a, Sprite b) {
+            public int compare(Entity a, Entity b) {
             	double dist1 = a.getPosition().distance(playerPosition);
             	double dist2 = b.getPosition().distance(playerPosition);
 
@@ -44,11 +43,11 @@ public class RayCaster {
             }
             
         }
-		Arrays.sort(sprites, new DistanceComparator());
+		Collections.sort(entity, new DistanceComparator());
 		
-		for (Sprite sprite: sprites) {
+		for (Entity sprite : entity) {
 			
-			Vector spritePosition = sprite.getPosition();
+            Vector spritePosition = sprite.getPosition();
 			Vector spriteVectorFromPlayer = spritePosition.subtract(playerPosition);
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getAngleValue());
 			Angle spriteAngle = new Angle(-Math.atan2(spriteVectorFromPlayer.getY(),spriteVectorFromPlayer.getX()));
@@ -70,19 +69,19 @@ public class RayCaster {
 			rightViewEdge = Angle.checkLimit(playerAngle.getAngleValue() + 2*fov/3);
 			leftViewEdge = Angle.checkLimit(playerAngle.getAngleValue() - 2*fov/3);
 			
-			scale *= sprite.getSize();
-			if (sprite.getZ() == 0) {
+			scale *= sprite.getSpriteScale();
+			if (sprite.getSpriteZOffset() == 0) {
 				yOffset = 0;
 			} else {
-				yOffset = scale/sprite.getZ();
+				yOffset = scale/sprite.getSpriteZOffset();
 			}
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
-				double thing = cameraX +j*step - scale/2 -5;
+				double thing = cameraX +j*step - scale/2-7;
 				double thingCheck = cameraX +j*step- scale/2;
 				if ((spriteAngle.getAngleValue() < rightViewEdge && spriteAngle.getAngleValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getAngleValue() || rightViewEdge > spriteAngle.getAngleValue()))) {					
 					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
-							g2.setColor(new Color(sprite.getTexture().getRGB(j,k)));
+							g2.setColor(new Color(sprite.getSprite().getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
 								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset) , (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
 							}

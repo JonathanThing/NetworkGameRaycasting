@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Game {
 	static JFrame gameWindow;
@@ -22,7 +23,6 @@ public class Game {
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
 	static TextureList textures;
 	static TextureList sprites;
-	static Sprite[] test = new Sprite[5];	
 	static Level currentLevel = new Level(new int[][]{
 												{2,2,2,1,2,1,2,2,2,2,2,2,2,2,2,2},
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
@@ -40,12 +40,13 @@ public class Game {
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
 												{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2}}); 
 
-	static Zombie zombie = new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), null, 100, 4, null); 
-	static Skeleton skeleton = new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2), null, 100, 4, null); 
-	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, null);
+	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, 20,0.75, null);
 	static boolean up, down, left, right, turnRight, turnLeft, shooting;
-	static Vector cameraOffset = new Vector(0,0);
-
+	static double deltaX;
+	static Vector cameraOffset = new Vector(0,0);	
+	static Robot robot;
+	static ArrayList<Entity> entities = new ArrayList<Entity>();
+	
 	// --------------------------------------------------------------------------
 	// declare the properties of all game objects here
 	// --------------------------------------------------------------------------
@@ -61,12 +62,8 @@ public class Game {
 			e.printStackTrace();
 		}
 		
-		test[0] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(5),20,0.75);
-		test[1] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(4),0,1);
-		test[2] = new Sprite(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(4),0,1);
-		test[3] = new Sprite(new Vector ((2)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(4),0,1);
-		test[4] = new Sprite(new Vector ((4)*Const.BOXSIZE - Const.BOXSIZE/2, (3)*Const.BOXSIZE - Const.BOXSIZE/2), sprites.getSingleTexture(1),20,0.75);
-		
+		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
+		entities.add(new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,13 +99,21 @@ public class Game {
 
 			player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
             player.moveProjectile();
-            
-            //skeleton.shoot(player);
-            skeleton.moveProjectile();
-            zombie.attack(player);
             if (shooting){
                 player.shoot();
-                skeleton.shoot(player);
+            }
+            
+            for (Entity thing : entities) {
+            	
+            	if (thing instanceof Skeleton) {
+	            	((Skeleton) thing).moveProjectile();
+		            if (shooting){
+		            	((Skeleton) thing).shoot(player);
+		            }
+	            
+            	} else if (thing instanceof Zombie) {
+                	((Zombie) thing).attack(player);
+            	}
             }
 		}
 	} // runGameLoop method end
@@ -122,14 +127,14 @@ public class Game {
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); // required
-
+			
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
 			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
-			rayCaster.drawSprite(g2, test);
+			rayCaster.drawSprite(g2, entities);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -138,6 +143,12 @@ public class Game {
 		public MapPanel() {
 			setFocusable(true);
 			requestFocusInWindow();
+			try {
+				robot = new Robot();
+			} catch (AWTException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		public void paintComponent(Graphics g) {
@@ -168,19 +179,24 @@ public class Game {
 			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(),
 					cameraOffset, currentLevel);
 			
-			g.setColor(Color.GREEN);
-            g2.fillRect((int) (zombie.getPosition().getX() - zombie.getWidth() / 2 + cameraOffset.getX()),
-                        (int) (zombie.getPosition().getY() - zombie.getHeight() / 2 + cameraOffset.getY()), zombie.getWidth(),
-                        zombie.getHeight());
-            
-            g.setColor(Color.RED);
+			for (Entity thing : entities) {
+
+				if (thing instanceof Skeleton) {
+					g.setColor(Color.RED);
+            	} else if (thing instanceof Zombie) {
+            		g.setColor(Color.GREEN);
+            	}
+								
+	            g2.fillRect((int) (thing.getPosition().getX() - thing.getWidth() / 2 + cameraOffset.getX()),
+	                        (int) (thing.getPosition().getY() - thing.getHeight() / 2 + cameraOffset.getY()), thing.getWidth(),
+	                        thing.getHeight());
+	            
+			}
+			
+			g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
             
-            g2.fillRect((int) (skeleton.getPosition().getX() - skeleton.getWidth() / 2 + cameraOffset.getX()),
-                        (int) (skeleton.getPosition().getY() - skeleton.getHeight() / 2 + cameraOffset.getY()), skeleton.getWidth(),
-                        skeleton.getHeight());
             
-            skeleton.drawEnemyProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
 			
 			g.setColor(Color.ORANGE);	
 			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
@@ -193,7 +209,7 @@ public class Game {
 	// ------------------------------------------------------------------------------
 	static class MyKeyListener implements KeyListener {
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == 'W') { // If the player hits/holds 'W', move up until they stop
+			if (e.getKeyCode() == 'W') { // If the player hits/holds 'W', mo)ve up until they stop
 				up = true;
 			}
 
@@ -271,9 +287,11 @@ public class Game {
         
         public void mouseReleased(MouseEvent e) {
             shooting = false;
+            
         }
 
 		public void mouseEntered(MouseEvent e) {
+			
 		}
 
 		public void mouseExited(MouseEvent e) {
@@ -283,6 +301,7 @@ public class Game {
 	// ------------------------------------------------------------------------------
 	static class MyMouseMotionListener implements MouseMotionListener {
 		public void mouseMoved(MouseEvent e) {
+
 		}
 
 		public void mouseDragged(MouseEvent e) {

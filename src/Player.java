@@ -10,7 +10,7 @@ class Player extends Character {
         double yComponent = -1* Math.sin(getAngle().getAngleValue());
         double xComponent = -1* Math.cos(getAngle().getAngleValue());
 
-        this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), getSprite(), 10,
+        this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), getSprite(), 0, 1, 10,
                                                      10, xComponent, yComponent));
     }
 
@@ -97,9 +97,8 @@ class Player extends Character {
     }
 
     Player(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health,
-           double speed,
-           Weapon weapon) {
-        super(position, width, height, name, angle, sprite, health, speed, weapon); // calls the constructor in the
+    		double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
+        super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); // calls the constructor in the
         // character super
         // class
     }

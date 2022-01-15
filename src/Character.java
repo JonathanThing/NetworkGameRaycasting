@@ -7,8 +7,8 @@ abstract class Character extends Entity {
   private ArrayList<Projectile> projectilesList = new ArrayList<Projectile>();
 
   Character(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health,
-      double speed, Weapon weapon) {
-    super(position, width, height, name, angle, sprite, health, speed);
+		double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
+    super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale);
     this.weapon = weapon;
 
   }
