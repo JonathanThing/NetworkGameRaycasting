@@ -6,11 +6,11 @@ class Player extends Character {
 
     private int ammo;
 
-    public void shoot(){ //BufferedImage sprite) {
-        double yComponent = -1* Math.sin(getAngle().getAngleValue());
-        double xComponent = -1* Math.cos(getAngle().getAngleValue());
+    public void shoot(BufferedImage sprite){ //BufferedImage sprite) {
+        double yComponent = -1* Math.sin(getAngle().getValue());
+        double xComponent = -1* Math.cos(getAngle().getValue());
 
-        this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), getSprite(), 0, 1, 10,
+        this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), sprite, 0, 1, 10,
                                                      10, xComponent, yComponent));
     }
 
@@ -48,14 +48,14 @@ class Player extends Character {
         }
 
         if (turnLeft) {
-            this.getAngle().changeAngleValue(Math.toRadians(5));
+            this.getAngle().changeValue(Math.toRadians(5));
         }
 
         if (turnRight) {
-            this.getAngle().changeAngleValue(Math.toRadians(-5));
+            this.getAngle().changeValue(Math.toRadians(-5));
         }
 
-        double forwardAngle = this.getAngle().getAngleValue();
+        double forwardAngle = this.getAngle().getValue();
         double sideAngle = Angle.checkLimit(forwardAngle - Math.PI / 2);
 
         Vector forwardVector = new Vector(Math.cos(forwardAngle) * yRaw, -Math.sin(forwardAngle) * yRaw);

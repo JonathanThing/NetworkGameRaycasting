@@ -9,8 +9,8 @@ class Skeleton extends Enemy {
     super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); //calls the constructor in the enemy super class
   }
 
-  public void attack(Player player) {
-      this.shoot(player); 
+  public void attack(Player player, BufferedImage sprite) {
+      this.shoot(player, sprite); 
   }
   
   public void moveProjectile() {    
@@ -26,10 +26,10 @@ class Skeleton extends Enemy {
       }
   }
   
-  public void shoot(Player player) {
+  public void shoot(Player player, BufferedImage sprite) {
       Vector distance = (this.getPosition()).subtract(player.getPosition());
       Vector hypotenuse = distance.normalized();
-      this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), getSprite(), 0 ,1 , 10,
+      this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,1 , 10,
       10,-1* hypotenuse.getX(), hypotenuse.getY()));
   }
   

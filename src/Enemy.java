@@ -7,7 +7,7 @@ abstract class Enemy extends Character {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon);
     }
 
-    public abstract void attack(Player player);
+    public abstract void attack(Player player, BufferedImage sprite);
     
     
     

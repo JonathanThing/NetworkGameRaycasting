@@ -6,12 +6,13 @@ class Zombie extends Enemy {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); 
     }  
     
-    public void attack(Player player){
+    public void attack(Player player, BufferedImage sprite){
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
              
         this.moveLeft(-hypotenuse.getX());      
         this.moveUp(hypotenuse.getY()); 
+        
     }
     
 }

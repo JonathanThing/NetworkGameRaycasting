@@ -47,10 +47,6 @@ public class Game {
 	static Robot robot;
 	static ArrayList<Entity> entities = new ArrayList<Entity>();
 	
-	// --------------------------------------------------------------------------
-	// declare the properties of all game objects here
-	// --------------------------------------------------------------------------
-
 	// ------------------------------------------------------------------------------
 	public static void main(String[] args) {
 
@@ -90,31 +86,30 @@ public class Game {
 	// ------------------------------------------------------------------------------
 	public static void runGameLoop() {
 		while (true) {
-			gameWindow.repaint();
-			mapWindow.repaint();
+			rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI/2);
 			try {
 				Thread.sleep(25);
-			} catch (Exception e) {
+			} catch (Exception e) {		
 			}
-
 			player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
             player.moveProjectile();
             if (shooting){
-                player.shoot();
+                player.shoot(sprites.getSingleTexture(7));
             }
             
             for (Entity thing : entities) {
-            	
             	if (thing instanceof Skeleton) {
 	            	((Skeleton) thing).moveProjectile();
 		            if (shooting){
-		            	((Skeleton) thing).shoot(player);
-		            }
-	            
+		            	((Skeleton) thing).shoot(player , sprites.getSingleTexture(7));
+		            }	            
             	} else if (thing instanceof Zombie) {
-                	((Zombie) thing).attack(player);
+                	((Zombie) thing).attack(player, null);
             	}
-            }
+            }    
+            
+			gameWindow.repaint();
+			mapWindow.repaint();
 		}
 	} // runGameLoop method end
 
@@ -133,7 +128,7 @@ public class Game {
 			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
-			rayCaster.rayCast(g2, false, player.getPosition(), player.getAngle(), cameraOffset, currentLevel);
+			rayCaster.rayCast(g2, false);
 			rayCaster.drawSprite(g2, entities);
 
 		} // paintComponent method end
@@ -176,13 +171,15 @@ public class Game {
 				}
 			}
 
-			rayCaster.rayCast(g2, true, player.getPosition(), player.getAngle(),
-					cameraOffset, currentLevel);
+			rayCaster.rayCast(g2, true);
 			
 			for (Entity thing : entities) {
 
 				if (thing instanceof Skeleton) {
 					g.setColor(Color.RED);
+		            g.setColor(Color.RED);
+		            ((Skeleton) thing).drawEnemyProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
+
             	} else if (thing instanceof Zombie) {
             		g.setColor(Color.GREEN);
             	}
@@ -190,16 +187,15 @@ public class Game {
 	            g2.fillRect((int) (thing.getPosition().getX() - thing.getWidth() / 2 + cameraOffset.getX()),
 	                        (int) (thing.getPosition().getY() - thing.getHeight() / 2 + cameraOffset.getY()), thing.getWidth(),
 	                        thing.getHeight());
-	            
 			}
 			
 			g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
             
             
-			
+
 			g.setColor(Color.ORANGE);	
-			g2.rotate(-player.getAngle().getAngleValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
+			g2.rotate(-player.getAngle().getValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
 			g2.fillRect((int) (player.getPosition().getX() - player.getWidth() / 2 + cameraOffset.getX()), (int) (player.getPosition().getY() - player.getHeight() / 2 + cameraOffset.getY()), player.getWidth(), player.getHeight());
 			
 		
