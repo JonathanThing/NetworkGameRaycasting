@@ -6,6 +6,10 @@ public class Vector {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Vector clone() {
+		return new Vector(this.getX(),this.getY());
+	}
 
 	public double getX() {
 		return x;

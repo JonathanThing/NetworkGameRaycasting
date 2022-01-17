@@ -16,7 +16,7 @@ class Projectile extends Entity {
   
   public void draw(Graphics g, double offSetX, double offSetY) {
       //System.out.println("drawing projectile");
-      g.fillRect((int) (getPosition().getX() - getWidth() / 2 - offSetX), (int) (getPosition().getY() - getHeight() / 2 - offSetY), getWidth(), getHeight()); //draw the projectile
+      g.fillRect((int) (getPosition().getX() - getWidth() / 2 + offSetX), (int) (getPosition().getY() - getHeight() / 2 + offSetY), getWidth(), getHeight()); //draw the projectile
   }
 
   Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {

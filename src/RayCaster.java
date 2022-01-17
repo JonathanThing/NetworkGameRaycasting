@@ -23,6 +23,7 @@ public class RayCaster {
 	public RayCaster (TextureList textures) { 
 		this.textures = textures;
 		this.playerAngle = new Angle(0);
+
 	}
 	
 	public void updateInformation(Player player, Vector cameraOffset, Level map, double fov) {
@@ -54,11 +55,9 @@ public class RayCaster {
         }
 		
 		Collections.sort(entity, new DistanceComparator());
-		
+				
 		for (Entity sprite : entity) {
-			
-			if (sprite instanceof Skeleton) {}
-			
+						
             Vector spritePosition = sprite.getPosition();
 			Vector spriteVectorFromPlayer = spritePosition.subtract(playerPosition);
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
@@ -81,12 +80,14 @@ public class RayCaster {
 			rightViewEdge = Angle.checkLimit(playerAngle.getValue() + 2*fov/3);
 			leftViewEdge = Angle.checkLimit(playerAngle.getValue() - 2*fov/3);
 			
-			scale *= sprite.getSpriteScale();
+			
 			if (sprite.getSpriteZOffset() == 0) {
 				yOffset = 0;
 			} else {
-				yOffset = scale/sprite.getSpriteZOffset();
+				yOffset = (scale/(double)Const.HEIGHT) * sprite.getSpriteZOffset();
 			}
+			scale *= sprite.getSpriteScale();
+			
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
 				double thing = cameraX +j*step - scale/2-7;
 				double thingCheck = cameraX +j*step- scale/2;
@@ -95,7 +96,7 @@ public class RayCaster {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
 							g2.setColor(new Color(sprite.getSprite().getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
-								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset) , (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
+								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
 							}
 						}						
 					}

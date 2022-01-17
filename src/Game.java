@@ -58,8 +58,9 @@ public class Game {
 			e.printStackTrace();
 		}
 		
-		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
-		entities.add(new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
+//		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
+		entities.add(new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 0,0.75, null));
+		entities.add(player);
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +77,7 @@ public class Game {
 		mapWindow.add(mapThing);
 
 		rayCaster = new RayCaster(textures);
-
+        rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI/2);
 		mapWindow.setVisible(true);
 		gameWindow.setVisible(true);
 		runGameLoop();
@@ -86,7 +87,6 @@ public class Game {
 	// ------------------------------------------------------------------------------
 	public static void runGameLoop() {
 		while (true) {
-			rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI/2);
 			try {
 				Thread.sleep(25);
 			} catch (Exception e) {		
@@ -94,20 +94,21 @@ public class Game {
 			player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
             player.moveProjectile();
             if (shooting){
-                player.shoot(sprites.getSingleTexture(7));
+                player.shoot(sprites.getSingleTexture(6));
             }
             
             for (Entity thing : entities) {
             	if (thing instanceof Skeleton) {
 	            	((Skeleton) thing).moveProjectile();
 		            if (shooting){
-		            	((Skeleton) thing).shoot(player , sprites.getSingleTexture(7));
+		            	((Skeleton) thing).shoot(player , sprites.getSingleTexture(6));
 		            }	            
             	} else if (thing instanceof Zombie) {
                 	((Zombie) thing).attack(player, null);
             	}
             }    
             
+            rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI/2);
 			gameWindow.repaint();
 			mapWindow.repaint();
 		}
@@ -129,7 +130,20 @@ public class Game {
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCast(g2, false);
-			rayCaster.drawSprite(g2, entities);
+			
+			ArrayList<Entity> allEntities = new ArrayList<Entity>();
+			
+			for (Entity thing : entities) {
+				allEntities.add(thing);
+				if (thing instanceof Character) {
+					for (Entity projectile : ((Character) thing).getProjectilesList()) {
+						allEntities.add(projectile);
+					}					
+				}
+
+			}
+
+			rayCaster.drawSprite(g2, allEntities);
 
 		} // paintComponent method end
 	} // GraphicsPanel class end
@@ -191,8 +205,6 @@ public class Game {
 			
 			g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
-            
-            
 
 			g.setColor(Color.ORANGE);	
 			g2.rotate(-player.getAngle().getValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
