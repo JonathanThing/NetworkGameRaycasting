@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
 	static JFrame gameWindow;
@@ -23,6 +24,7 @@ public class Game {
 	static TextureList textures;
 	static TextureList sprites;
 	static Sprite[] test = new Sprite[5];	
+	private static Robot robo;
 	static Level currentLevel = new Level(new int[][]{
 												{2,2,2,1,2,1,2,2,2,2,2,2,2,2,2,2},
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
@@ -52,10 +54,14 @@ public class Game {
 
 	// ------------------------------------------------------------------------------
 	public static void main(String[] args) {
-
 		try {
-			textures = new TextureList(ImageIO.read(new File("images/textures.png")));
-			sprites = new TextureList(ImageIO.read(new File("images/spriteSheet.png")));
+            robo = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+		try {
+			textures = new TextureList(ImageIO.read(new File("C://Users//pyrop//OneDrive//Pictures//textures.png")));
+			sprites = new TextureList(ImageIO.read(new File("C://Users//pyrop//OneDrive//Pictures//spriteSheet.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
@@ -112,7 +118,42 @@ public class Game {
             }
 		}
 	} // runGameLoop method end
-
+	// ------------------------------------------------------------------------------
+	
+	private static void move(MouseEvent e) {
+		 gameWindow.setCursor(Cursor.CROSSHAIR_CURSOR);
+		 final int fixX = Const.TRUE_WIDTH/2;
+		 final int fixY = Const.TRUE_HEIGHT/2;
+		 int adjfactor = -7;		 
+		 //adjfactor needs testing on different comupters to find optimal number
+		 //-7 on my laptop, -8 on my computer
+        if (e.getX() == fixX && e.getY() == fixY) {
+            return;
+        }
+        // move mouse to center (important)
+        robo.mouseMove(fixX + gameWindow.getX(), fixY + gameWindow.getY());
+        int moveX = e.getX() - fixX;
+        if(moveX > adjfactor+3) {
+        	turnRight = true;
+        	turnLeft = false;
+        }
+        else if (moveX < adjfactor-3){
+        	turnLeft = true;
+        	turnRight = false;    	
+        }
+        else{
+        	try {
+				TimeUnit.MILLISECONDS.sleep(10);
+			} catch (InterruptedException e1) {
+				//Change e1 to a better name
+				e1.printStackTrace();
+			} 
+        	turnRight = false;
+        	turnLeft = false;
+        }
+        System.out.println("Mouse X:" + moveX);
+	}
+	
 	// ------------------------------------------------------------------------------
 	static class GraphicsPanel extends JPanel {
 		public GraphicsPanel() {
@@ -283,6 +324,7 @@ public class Game {
 	// ------------------------------------------------------------------------------
 	static class MyMouseMotionListener implements MouseMotionListener {
 		public void mouseMoved(MouseEvent e) {
+			move(e);
 		}
 
 		public void mouseDragged(MouseEvent e) {
