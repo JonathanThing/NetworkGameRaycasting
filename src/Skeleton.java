@@ -29,7 +29,7 @@ class Skeleton extends Enemy {
   public void shoot(Player player, BufferedImage sprite) {
       Vector distance = (this.getPosition()).subtract(player.getPosition());
       Vector hypotenuse = distance.normalized();
-      this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,5 , 0,
+      this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,10, 0,
       1,-1* hypotenuse.getX(), hypotenuse.getY()));
   }
   

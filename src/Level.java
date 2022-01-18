@@ -23,6 +23,10 @@ public class Level {
 	public int getMapTile(int row, int column) {
 		return map[row][column];
 	}
+	
+	public int getMapTile(Vector position) {
+		return map[(int) position.getX()][(int) position.getY()];
+	}
 
 	public void setMapTile(int row, int column, int value) {
 		this.map[row][column] = value;

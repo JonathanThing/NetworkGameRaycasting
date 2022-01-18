@@ -18,7 +18,7 @@ public class Angle {
 	
 	//Limits the angle to between 0 and 2 pi
 	public static double checkLimit(double angle) {
-		if (angle > 2*Math.PI) {
+		if (angle >= 2*Math.PI) {
 			return angle % (2*Math.PI);
 		} else if (angle < 0) {
 			return angle + (2*Math.PI);
@@ -27,4 +27,7 @@ public class Angle {
 		}
 	}
 
+	public String toString() {
+		return "Degree: " + Math.toDegrees(angle);
+	}
 }

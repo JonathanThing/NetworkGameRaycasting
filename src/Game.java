@@ -44,7 +44,6 @@ public class Game {
 	static boolean up, down, left, right, turnRight, turnLeft, shooting;
 	static double deltaX;
 	static Vector cameraOffset = new Vector(0,0);	
-	static Robot robot;
 	static ArrayList<Entity> entities = new ArrayList<Entity>();
 	
 	// ------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ public class Game {
 		}
 		
 //		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
-		entities.add(new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 0,0.75, null));
+		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), sprites.getSingleTexture(0), 100, 4, 0,0.75, null));
 		entities.add(player);
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
@@ -108,7 +107,7 @@ public class Game {
             	}
             }    
             
-            rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI/2);
+            rayCaster.updateInformation(player, cameraOffset, currentLevel, Const.FOV);
 			gameWindow.repaint();
 			mapWindow.repaint();
 		}
@@ -129,7 +128,7 @@ public class Game {
 			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
-			rayCaster.rayCast(g2, false);
+			rayCaster.rayCastWalls(g2, false);
 			
 			ArrayList<Entity> allEntities = new ArrayList<Entity>();
 			
@@ -152,12 +151,6 @@ public class Game {
 		public MapPanel() {
 			setFocusable(true);
 			requestFocusInWindow();
-			try {
-				robot = new Robot();
-			} catch (AWTException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 
 		public void paintComponent(Graphics g) {
@@ -185,7 +178,7 @@ public class Game {
 				}
 			}
 
-			rayCaster.rayCast(g2, true);
+			rayCaster.rayCastWalls(g2, true);
 			
 			for (Entity thing : entities) {
 
@@ -201,14 +194,16 @@ public class Game {
 	            g2.fillRect((int) (thing.getPosition().getX() - thing.getWidth() / 2 + cameraOffset.getX()),
 	                        (int) (thing.getPosition().getY() - thing.getHeight() / 2 + cameraOffset.getY()), thing.getWidth(),
 	                        thing.getHeight());
+	            
+	            g2.drawLine((int) (thing.getPosition().getX() + cameraOffset.getX()), (int) (thing.getPosition().getY() + cameraOffset.getY()), (int) (thing.getPosition().getX() + cameraOffset.getX() + Math.cos(thing.getAngle().getValue())*200), (int) (thing.getPosition().getY() + cameraOffset.getY() - Math.sin(thing.getAngle().getValue())*200));
 			}
 			
 			g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
 
 			g.setColor(Color.ORANGE);	
-			g2.rotate(-player.getAngle().getValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
-			g2.fillRect((int) (player.getPosition().getX() - player.getWidth() / 2 + cameraOffset.getX()), (int) (player.getPosition().getY() - player.getHeight() / 2 + cameraOffset.getY()), player.getWidth(), player.getHeight());
+//			g2.rotate(-player.getAngle().getValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
+//			g2.fillRect((int) (player.getPosition().getX() - player.getWidth() / 2 + cameraOffset.getX()), (int) (player.getPosition().getY() - player.getHeight() / 2 + cameraOffset.getY()), player.getWidth(), player.getHeight());
 			
 		
 		} // paintComponent method end
@@ -290,7 +285,7 @@ public class Game {
 		}
 
         public void mousePressed(MouseEvent e) {
-            shooting = true;
+//            shooting = true;
         }
         
         public void mouseReleased(MouseEvent e) {
