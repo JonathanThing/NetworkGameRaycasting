@@ -3,30 +3,24 @@ import java.lang.Math;
 import java.awt.Graphics;
 
 class Player extends Character {
-
-    private int ammo;
-
-    public void shoot(){ //BufferedImage sprite) {
-        double yComponent = -1* Math.sin(getAngle().getAngleValue());
-        double xComponent = -1* Math.cos(getAngle().getAngleValue());
-
-        this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 20, 20, "Bullet", getAngle(), getSprite(), 10,
-                                                     10, xComponent, yComponent));
+	singleShot test = new singleShot(this.getPosition().getX(),this.getPosition().getY(),5,5,"test weapon", null, 20,20,20,30);
+	
+    public void shoot(){ //BufferedImage sprite) {                                                  //  10, xComponent, yComponent));//*/
+    	test.shoot(getAngle(), getPosition(),this.getProjectilesList());
+    	test.moveProjectile(getProjectilesList());
+        if(getProjectilesList().size() > test.getAmmoSize()) {
+        	getProjectilesList().remove(0);
+        }
     }
-
-    public void moveProjectile() {
-
-        for (int i = 0; i < this.getProjectilesList().size(); i++) { //loops through arrayList of projectiles
-
-            (getProjectilesList().get(i)).moveDown((getProjectilesList().get(i)).getChangeY()); //moves the projectils on the y-axis
-            (getProjectilesList().get(i)).moveRight((getProjectilesList().get(i)).getChangeX()); //moves the projectils on the x-axis
-
+    
+    public void drawPlayerProjectile(Graphics g, double offSetX, double offSetY) {
+        for (int i = 0; i < getProjectilesList().size(); i++) { //loop through arrayList
+            (getProjectilesList().get(i)).draw(g, offSetX, offSetY); //draws the projectile
         }
 
     }
 
-    public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight,
-                         Level map) {
+    public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight, Level map) {
 
         double xRaw = 0;
         double yRaw = 0;
@@ -87,12 +81,6 @@ class Player extends Character {
                                (int) this.getPosition().getX() / Const.BOXSIZE) < 1) {
                 this.moveDown(movementVector.getY());
             }
-        }
-    }
-
-    public void drawPlayerProjectile(Graphics g, double offSetX, double offSetY) {
-        for (int i = 0; i < getProjectilesList().size(); i++) { //loop through arrayList
-            (getProjectilesList().get(i)).draw(g, offSetX, offSetY); //draws the projectile
         }
     }
 
