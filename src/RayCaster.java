@@ -74,14 +74,11 @@ public class RayCaster {
 
 		if ((spriteAngle.getValue() < rightViewEdge && spriteAngle.getValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getValue() || rightViewEdge > spriteAngle.getValue()))) {					
 
-			
-			double stepAngle = Math.PI/4;
-			Angle spriteAngleDirection = new Angle (stepAngle * Math.round((spriteAngle.getValue()-sprite.getAngle().getValue())/stepAngle)); 
-			
-			System.out.println(Math.toDegrees(spriteAngleDirection.getValue()));
+			double stepAngle = (2*Math.PI)/sprite.getSprites().getNumberOfTextures();
+			Angle spriteAngleDirection = new Angle (Angle.checkLimit(stepAngle * Math.round((spriteAngle.getValue()-sprite.getAngle().getValue())/stepAngle) - Math.PI)); 
+		
 			
 			double distance = spriteVectorFromPlayer.magnitude();	
-			
 			double ray = Math.cos(playerAngle.getValue()-spriteAngle.getValue())*distance; //Distance of player to camera plane
 			double section = Math.sin(playerAngle.getValue()-spriteAngle.getValue())*distance; //length from player sprite on the camera plane
 			double cameraPlane = Math.tan(fov/2)*ray*2; //Length of the entire camera plane

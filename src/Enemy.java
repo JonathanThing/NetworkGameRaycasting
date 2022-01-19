@@ -1,4 +1,3 @@
-import java.awt.image.BufferedImage;
 
 abstract class Enemy extends Character {
     
@@ -7,7 +6,7 @@ abstract class Enemy extends Character {
         super(position, width, height, name, angle, sprites, health, speed, spriteZOffset, spriteScale, weapon);
     }
 
-    public abstract void attack(Player player, BufferedImage sprite);
+    public abstract void attack(Player player, TextureList sprites);
     
     
     

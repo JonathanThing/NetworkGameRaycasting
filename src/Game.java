@@ -24,6 +24,7 @@ public class Game {
 	static TextureList textures;
 	static TextureList sprites;
 	static TextureList personDirection;
+	static TextureList fireball;
 	static Level currentLevel = new Level(new int[][]{
 												{2,2,2,1,2,1,2,2,2,2,2,2,2,2,2,2},
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
@@ -54,13 +55,19 @@ public class Game {
 			textures = new TextureList(ImageIO.read(new File("images/WallTextures.png")));
 			sprites = new TextureList(ImageIO.read(new File("images/spriteSheet.png")));
 			personDirection = new TextureList(ImageIO.read(new File("images/PersonDirection.png")));
+			fireball = new TextureList(ImageIO.read(new File("images/FireBall.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
 		}
 		
 //		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
-		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (6)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((6)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((6)*Const.BOXSIZE - Const.BOXSIZE/2, (5)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((8)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(2*Math.PI), personDirection, 100, 4, 0,0.75, null));
+
 		entities.add(player);
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
@@ -95,14 +102,14 @@ public class Game {
 			player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
             player.moveProjectile();
             if (shooting){
-                player.shoot(sprites.getSingleTexture(6));
+                player.shoot(fireball);
             }
             
             for (Entity thing : entities) {
             	if (thing instanceof Skeleton) {
 	            	((Skeleton) thing).moveProjectile();
 		            if (shooting){
-		            	((Skeleton) thing).shoot(player , sprites.getSingleTexture(6));
+		            	((Skeleton) thing).shoot(player , fireball);
 		            }	            
             	} else if (thing instanceof Zombie) {
                 	((Zombie) thing).attack(player, null);
@@ -281,7 +288,7 @@ public class Game {
 		}
 
         public void mousePressed(MouseEvent e) {
-//            shooting = true;
+            shooting = true;
         }
         
         public void mouseReleased(MouseEvent e) {

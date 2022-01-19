@@ -1,4 +1,3 @@
-import java.awt.image.BufferedImage;
 
 class Zombie extends Enemy {
     
@@ -6,7 +5,7 @@ class Zombie extends Enemy {
         super(position, width, height, name, angle, sprites, health, speed, spriteZOffset, spriteScale, weapon); 
     }  
     
-    public void attack(Player player, BufferedImage sprite){
+    public void attack(Player player, TextureList sprite){
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
              

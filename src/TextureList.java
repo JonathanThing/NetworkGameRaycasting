@@ -17,6 +17,10 @@ public class TextureList {
 		return textures;
 	}
 	
+	public int getNumberOfTextures() {
+		return textures.length;
+	}
+	
 	public BufferedImage getSingleTexture(int index) {
 		return textures[index];
 	}
