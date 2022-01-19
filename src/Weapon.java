@@ -1,7 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-abstract class Weapon {
+abstract class Weapon{
 
   private int size;
 
@@ -9,9 +9,11 @@ abstract class Weapon {
 
   private double fireRate;
   
+  private int AmmoSize;
+  
   private long lastFire;
   
-  private int clipSize;
+  private long cooldown;
   
   public double getFireRate() {
     return this.fireRate;
@@ -30,19 +32,25 @@ abstract class Weapon {
   }
   
   public int getAmmoSize() {
-	    return this.clipSize;
+	    return this.AmmoSize;
 	  }
 
-  Weapon(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,
-      int size, int clipSize) {
-    this.damage = damage;
-    this.fireRate = fireRate;
-    this.size = size;
-    this.clipSize = clipSize;
-  }
+  long setCooldown(long lastFire, long timer) {
+		return(timer - lastFire) / 10;
+	}
   
   abstract void shoot(Angle angle, Vector playerPos, ArrayList<Projectile> projectilesList);
   
   abstract void moveProjectile(ArrayList<Projectile> projectilesList);
+  
+  Weapon(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,
+      int size, int AmmoSize) {
+    this.damage = damage;
+    this.fireRate = fireRate;
+    this.size = size;
+    this.AmmoSize = AmmoSize;
+  }
 
+
+  
 }
