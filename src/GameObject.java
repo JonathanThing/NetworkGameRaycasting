@@ -7,7 +7,7 @@ abstract class GameObject {
 
  private int width;
  private int height;
- private BufferedImage sprite;
+ private TextureList sprites;
  private String name;
  private Angle angle;
 
@@ -27,8 +27,8 @@ abstract class GameObject {
   this.height = height;
  }
 
- public void setSprite(BufferedImage sprite) {
-  this.sprite = sprite;
+ public void setSprites(TextureList sprites) {
+  this.sprites = sprites;
  }
 
  public void setName(String name) {
@@ -61,15 +61,15 @@ abstract class GameObject {
   return this.name;
  }
 
- public BufferedImage getSprite() {
-  return this.sprite;
+ public TextureList getSprites() {
+  return this.sprites;
  }
 
- GameObject(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite) {
+ GameObject(Vector position, int width, int height, String name, Angle angle, TextureList sprites) {
   this.position = position;
   this.width = width;
   this.height = height;
-  this.sprite = sprite;
+  this.sprites = sprites;
   this.name = name;
   this.angle = angle;
  }

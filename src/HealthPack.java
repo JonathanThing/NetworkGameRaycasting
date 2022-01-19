@@ -3,8 +3,8 @@ import java.awt.image.BufferedImage;
 public class HealthPack extends Item {
     private int value;
 
-    HealthPack(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, int value) {
-        super(position, width, height, name, angle, sprite);
+    HealthPack(Vector position, int width, int height, String name, Angle angle, TextureList sprites, int value) {
+        super(position, width, height, name, angle, sprites);
         this.value = value;
     }
 

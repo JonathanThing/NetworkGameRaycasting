@@ -76,7 +76,7 @@ public class RayCaster {
 
 			
 			double stepAngle = Math.PI/4;
-			Angle spriteAngleDirection = new Angle (stepAngle * Math.round((spriteAngle.getValue()-sprite.getAngle().getValue())/stepAngle)-Math.PI/2); 
+			Angle spriteAngleDirection = new Angle (stepAngle * Math.round((spriteAngle.getValue()-sprite.getAngle().getValue())/stepAngle)); 
 			
 			System.out.println(Math.toDegrees(spriteAngleDirection.getValue()));
 			
@@ -105,7 +105,7 @@ public class RayCaster {
 				double thingCheck = cameraX +j*step- scale/2;
 					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
-							g2.setColor(new Color(sprite.getSprite().getRGB(j,k)));
+							g2.setColor(new Color(sprite.getSprites().getSingleTexture((int) (spriteAngleDirection.getValue()/stepAngle)).getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
 								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
 							}

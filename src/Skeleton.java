@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 class Skeleton extends Enemy {
   
-  Skeleton(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
-    super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); //calls the constructor in the enemy super class
+  Skeleton(Vector position, int width, int height, String name, Angle angle, TextureList sprites, double health, double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
+    super(position, width, height, name, angle, sprites, health, speed, spriteZOffset, spriteScale, weapon); //calls the constructor in the enemy super class
   }
 
   public void attack(Player player, BufferedImage sprite) {
@@ -29,7 +29,7 @@ class Skeleton extends Enemy {
   public void shoot(Player player, BufferedImage sprite) {
       Vector distance = (this.getPosition()).subtract(player.getPosition());
       Vector hypotenuse = distance.normalized();
-      this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,10, 0,
+      this.getProjectilesList().add(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), this.getSprites(), 0 ,10, 0,
       1,-1* hypotenuse.getX(), hypotenuse.getY()));
   }
   

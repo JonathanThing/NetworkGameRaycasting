@@ -23,6 +23,7 @@ public class Game {
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
 	static TextureList textures;
 	static TextureList sprites;
+	static TextureList personDirection;
 	static Level currentLevel = new Level(new int[][]{
 												{2,2,2,1,2,1,2,2,2,2,2,2,2,2,2,2},
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
@@ -50,15 +51,16 @@ public class Game {
 	public static void main(String[] args) {
 
 		try {
-			textures = new TextureList(ImageIO.read(new File("images/textures.png")));
+			textures = new TextureList(ImageIO.read(new File("images/WallTextures.png")));
 			sprites = new TextureList(ImageIO.read(new File("images/spriteSheet.png")));
+			personDirection = new TextureList(ImageIO.read(new File("images/PersonDirection.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
 		}
 		
 //		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
-		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), sprites.getSingleTexture(0), 100, 4, 0,0.75, null));
+		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null));
 		entities.add(player);
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
@@ -126,7 +128,7 @@ public class Game {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
 			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
-			g2.setColor(Color.BLACK);
+			g2.setColor(Color.GRAY);
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 			rayCaster.rayCastWalls(g2, false);
 			
@@ -212,28 +214,25 @@ public class Game {
 	// ------------------------------------------------------------------------------
 	static class MyKeyListener implements KeyListener {
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == 'W') { // If the player hits/holds 'W', mo)ve up until they stop
+			switch (e.getKeyCode()) {
+			case 'W':
 				up = true;
-			}
-
-			if (e.getKeyCode() == 'S') { // If the player hits/holds 'S', move down until they stop
+				break;
+			case 'S':
 				down = true;
-			}
-
-			if (e.getKeyCode() == 'A') { // If the player hits/holds 'A', move left until they stop
+				break;
+			case 'A':
 				left = true;
-			}
-
-			if (e.getKeyCode() == 'D') { // If the player hits/holds 'D', move right until they stop
+				break;
+			case 'D':
 				right = true;
-			}
-
-			if (e.getKeyCode() == 'E') { // If the player hits/holds 'A', move left until they stop
+				break;
+			case 'E':
 				turnRight = true;
-			}
-
-			if (e.getKeyCode() == 'Q') { // If the player hits/holds 'D', move right until they stop
+				break;
+			case 'Q':
 				turnLeft = true;
+				break;			
 			}
 			
 			if (e.getKeyCode() == 'J'){
@@ -248,28 +247,25 @@ public class Game {
 		}
 
 		public void keyReleased(KeyEvent e) {
-			if (e.getKeyCode() == 'W') { // If the player hits/holds 'W', move up until they stop
+			switch (e.getKeyCode()) {
+			case 'W':
 				up = false;
-			}
-
-			if (e.getKeyCode() == 'S') { // If the player hits/holds 'S', move down until they stop
+				break;
+			case 'S':
 				down = false;
-			}
-
-			if (e.getKeyCode() == 'A') { // If the player hits/holds 'A', move left until they stop
+				break;
+			case 'A':
 				left = false;
-			}
-
-			if (e.getKeyCode() == 'D') { // If the player hits/holds 'D', move right until they stop
+				break;
+			case 'D':
 				right = false;
-			}
-
-			if (e.getKeyCode() == 'E') { // If the player hits/holds 'A', move left until they stop
+				break;
+			case 'E':
 				turnRight = false;
-			}
-
-			if (e.getKeyCode() == 'Q') { // If the player hits/holds 'D', move right until they stop
+				break;
+			case 'Q':
 				turnLeft = false;
+				break;			
 			}
 		}
 

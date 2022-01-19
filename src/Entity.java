@@ -56,9 +56,9 @@ abstract class Entity extends GameObject implements Moveable {
 		this.getPosition().changeY(n);
 	}
 
-	Entity(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health,
+	Entity(Vector position, int width, int height, String name, Angle angle, TextureList sprites, double health,
 			double speed, double spriteZOffset, double spriteScale) {
-		super(position, width, height, name, angle, sprite);
+		super(position, width, height, name, angle, sprites);
 		this.health = health;
 		this.speed = speed;
 		this.spriteZOffset = spriteZOffset;
