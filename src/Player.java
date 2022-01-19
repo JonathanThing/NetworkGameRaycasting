@@ -3,21 +3,18 @@ import java.lang.Math;
 import java.awt.Graphics;
 
 class Player extends Character {
-	singleShot test = new singleShot(this.getPosition().getX(),this.getPosition().getY(),5,5,"test weapon", null, 20,20,20,30);
+	singleShot testgun = new singleShot(this.getPosition().getX(),this.getPosition().getY(),5,5,
+			"test weapon", null, 20,20,20,30);
+
 	
-    public void shoot(){ //BufferedImage sprite) {                                                  //  10, xComponent, yComponent));//*/
-    	test.shoot(getAngle(), getPosition(),this.getProjectilesList());
-    	test.moveProjectile(getProjectilesList());
-        if(getProjectilesList().size() > test.getAmmoSize()) {
-        	getProjectilesList().remove(0);
-        }
+    public void shoot(){ //BufferedImage sprite) {                
+    	testgun.shoot(getAngle(), getPosition(),this.getProjectilesList());
     }
     
     public void drawPlayerProjectile(Graphics g, double offSetX, double offSetY) {
         for (int i = 0; i < getProjectilesList().size(); i++) { //loop through arrayList
             (getProjectilesList().get(i)).draw(g, offSetX, offSetY); //draws the projectile
         }
-
     }
 
     public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight, Level map) {
