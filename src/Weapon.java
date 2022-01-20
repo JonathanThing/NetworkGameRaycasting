@@ -13,7 +13,7 @@ abstract class Weapon{
   
   private long lastFire;
   
-  private long cooldown;
+  private int reloadTime;
   
   public double getFireRate() {
     return this.fireRate;
@@ -32,8 +32,12 @@ abstract class Weapon{
   }
   
   public int getAmmoSize() {
-	    return this.AmmoSize;
-	  }
+	  return this.AmmoSize;
+  }
+  
+  public int getReloadTime() {
+	  return this.reloadTime;
+  }
 
   long setCooldown(long lastFire, long timer) {
 		return(timer - lastFire) / 10;
@@ -44,11 +48,12 @@ abstract class Weapon{
   abstract void moveProjectile(ArrayList<Projectile> projectilesList);
   
   Weapon(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,
-      int size, int AmmoSize) {
+      int size, int AmmoSize, int reloadTime) {
     this.damage = damage;
     this.fireRate = fireRate;
     this.size = size;
     this.AmmoSize = AmmoSize;
+    this.reloadTime = reloadTime;
   }
 
 
