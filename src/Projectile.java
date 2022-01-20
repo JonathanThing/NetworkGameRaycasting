@@ -6,17 +6,6 @@ class Projectile extends Entity {
     private double changeX;
     private double changeY;
     
-    private boolean running = true;
-    
-    
-    public boolean keepRunning(){
-        return this.running == true;
-    }
-    
-    public void stopRunning(){
-        this.running = false;
-    }
-    
     public double getChangeX() {
         return this.changeX;
     }
@@ -35,12 +24,6 @@ class Projectile extends Entity {
         moveLeft(this.getChangeX());
     }
     
-    public void run(){
-        System.out.println("projectile created");
-        while(keepRunning()){
-            move();
-        }
-    }
     
     Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, 
                double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {

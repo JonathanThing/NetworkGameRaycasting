@@ -1,7 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-abstract class Character extends Entity {
+abstract class Character extends Entity implements Runnable {
 
   private Weapon weapon;
   private ArrayList<Projectile> projectilesList = new ArrayList<Projectile>();

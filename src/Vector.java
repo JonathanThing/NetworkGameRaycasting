@@ -68,6 +68,10 @@ public class Vector {
   return new Vector(this.y, this.x);
  }
  
+ public String toString(){
+     return "(" + this.x + ", " + this.y + ")";
+ }
+ 
  public boolean isZero() {
   if (this.x == 0 && this.y == 0) {
    return true;

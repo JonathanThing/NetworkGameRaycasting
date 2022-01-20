@@ -16,7 +16,7 @@ class Skeleton extends Enemy {
     public void attack(Player player, BufferedImage sprite) {
         this.shoot(player, sprite); 
     }
-   
+    
     
     public void moveProjectile() {    
         for (int i = 0; i < this.getProjectilesList().size(); i++) { //loops through arrayList of projectiles      
@@ -35,20 +35,20 @@ class Skeleton extends Enemy {
     public void shoot(Player player, BufferedImage sprite) {
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
-        Game.addEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,5 , 0,
-                                                     1,-1* hypotenuse.getX(), hypotenuse.getY()));
-
+        Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,5 , 0,
+                                                1,-1* hypotenuse.getX(), hypotenuse.getY()));
+        System.out.println("projectile created from skeleton");
     }
     
     public void run(){
         int count = 0;
         System.out.println("skeleton starting");
         while(keepRunning()){
-                      
+            
             if (count == 100){            
-            attack(Game.player, Game.sprites.getSingleTexture(6));
-            count = 0;
-            System.out.println("shoot");
+                attack(Game.player, Game.sprites.getSingleTexture(6));
+                count = 0;
+                System.out.println("shoot");
             }
             count++;
             //moveProjectile();
@@ -58,7 +58,7 @@ class Skeleton extends Enemy {
             }catch(Exception e){
                 e.printStackTrace();
             }
-
+            
         }                           
         
     }

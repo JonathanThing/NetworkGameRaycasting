@@ -1,7 +1,7 @@
 import java.util.UUID;
 import java.awt.image.BufferedImage;
 
-abstract class Entity extends GameObject implements Moveable, Runnable{
+abstract class Entity extends GameObject implements Moveable{
     
     private double health;
     private double speed;
