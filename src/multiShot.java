@@ -11,7 +11,6 @@ public class multiShot extends Weapon{
 	void shoot(Angle angle, Vector playerPos, ArrayList<Projectile> projectilesList) {
         cooldown = setCooldown(this.lastFire, this.timer);
         if(projectilesList.size() == this.getAmmoSize()*this.shots) {
-        	projectilesList.clear();
         	reloading = true;
         }
         else {
@@ -32,15 +31,16 @@ public class multiShot extends Weapon{
             			projectilesList.add(new Projectile(new Vector(playerPos.getX(),playerPos.getY()), 20, 20, "Bullet", angle, null, 10, 10, xComponent, yComponent));
             		}
                 }
-                else if(this.cooldown > this.getFireRate()*this.shots) {
+                else if(this.cooldown > this.getFireRate()) {
                 	lastFire = System.currentTimeMillis();
             	    cooldown = 0;           
                 }  		    		
         	}
-        	if (this.getReloadTime() < cooldown) {
-        		reloading = false;
-        	}
         }
+        if (this.getReloadTime() < cooldown) {
+    		reloading = false;
+        	projectilesList.clear();
+    	}
 	}
 	
 	void moveProjectile(ArrayList<Projectile> projectilesList) {
@@ -49,7 +49,7 @@ public class multiShot extends Weapon{
 				(projectilesList.get(i)).moveUp(projectilesList.get(i).getChangeY()*-projectilesList.get(i).getSpeed()); //moves the projectils on the y-axis
 		        (projectilesList.get(i)).moveLeft(projectilesList.get(i).getChangeX()*-projectilesList.get(i).getSpeed()); //moves the projectils on the x-axis   
 		}
-	    if(projectilesList.size() > this.getAmmoSize()) {
+	    if(projectilesList.size() > this.getAmmoSize()*this.shots) {
 	    	projectilesList.remove(0);
 	    }
 	}
