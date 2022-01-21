@@ -104,10 +104,10 @@ public class Game {
 			try {
 				Thread.sleep(25);
 			} catch (Exception e) {}
-
 			player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
-            player.testgun.moveProjectile(player.getProjectilesList());
+			
             //skeleton.shoot(player);
+			player.moveProjectiles();
             skeleton.moveProjectile();
             zombie.attack(player);
             if (shooting){
@@ -246,6 +246,22 @@ public class Game {
 
 			if (e.getKeyCode() == 'Q') { // If the player hits/holds 'D', move right until they stop
 				turnLeft = true;
+			}
+			
+			if (e.getKeyCode() == '1') { // If the player hits/holds 'D', move right until they stop
+				player.setSlot1(true);
+				player.setSlot2(false);
+				player.setSlot3(false);
+			}
+			if (e.getKeyCode() == '2') { // If the player hits/holds 'D', move right until they stop
+				player.setSlot1(false);
+				player.setSlot2(true);
+				player.setSlot3(false);
+			}
+			if (e.getKeyCode() == '3') { // If the player hits/holds 'D', move right until they stop
+				player.setSlot1(false);
+				player.setSlot2(false);
+				player.setSlot3(true);
 			}
 			
 			if (e.getKeyCode() == 'J'){
