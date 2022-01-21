@@ -53,7 +53,7 @@ public class Game {
 		try {
 			textures = new TextureManager(ImageIO.read(new File("images/WallTextures.png")));
 			sprites = new TextureManager(ImageIO.read(new File("images/spriteSheet.png")));
-			personDirection = new TextureManager(ImageIO.read(new File("images/PersonDirection.png")));
+			personDirection = new TextureManager(ImageIO.read(new File("images/PersonDirectionAnimation.png")));
 			fireball = new TextureManager(ImageIO.read(new File("images/FireBallAnimation.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
@@ -110,6 +110,12 @@ public class Game {
 		            if (shooting){
 		            	((Skeleton) thing).attack(player);
 		            }	            
+		            
+		        	long currentTime = System.currentTimeMillis();       	
+		        	if (thing.getSprites().getLastAnimationChange() + 500 <= currentTime) {
+		        		thing.getSprites().setLastAnimationChange(currentTime);
+		        		thing.getSprites().changeAnimationNumber(1);
+		        	}
             	} else if (thing instanceof Zombie) {
                 	((Zombie) thing).attack(player);
             	}

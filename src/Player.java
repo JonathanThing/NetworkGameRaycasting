@@ -17,10 +17,11 @@ class Player extends Character {
 
     public void moveProjectile() {
     	
+    	
         for (Projectile currentProjectile :  this.getProjectilesList()) { //loops through arrayList of projectiles
 
-        	long currentTime = System.currentTimeMillis();
-        	
+        	//for some reason it applies to all the projectiles, odd
+        	long currentTime = System.currentTimeMillis();       	
         	if (currentProjectile.getSprites().getLastAnimationChange() + 250 <= currentTime) {
         		currentProjectile.getSprites().setLastAnimationChange(currentTime);
         		currentProjectile.getSprites().changeAnimationNumber(1);
