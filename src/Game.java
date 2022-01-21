@@ -21,10 +21,10 @@ public class Game {
 	static MyKeyListener keyListener = new MyKeyListener();
 	static MyMouseListener mouseListener = new MyMouseListener();
 	static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
-	static TextureList textures;
-	static TextureList sprites;
-	static TextureList personDirection;
-	static TextureList fireball;
+	static TextureManager textures;
+	static TextureManager sprites;
+	static TextureManager personDirection;
+	static TextureManager fireball;
 	static Level currentLevel = new Level(new int[][]{
 												{2,2,2,1,2,1,2,2,2,2,2,2,2,2,2,2},
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
@@ -44,7 +44,6 @@ public class Game {
 
 	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, 20,0.75, null);
 	static boolean up, down, left, right, turnRight, turnLeft, shooting;
-	static double deltaX;
 	static Vector cameraOffset = new Vector(0,0);	
 	static ArrayList<Entity> entities = new ArrayList<Entity>();
 	
@@ -52,10 +51,10 @@ public class Game {
 	public static void main(String[] args) {
 
 		try {
-			textures = new TextureList(ImageIO.read(new File("images/WallTextures.png")));
-			sprites = new TextureList(ImageIO.read(new File("images/spriteSheet.png")));
-			personDirection = new TextureList(ImageIO.read(new File("images/PersonDirection.png")));
-			fireball = new TextureList(ImageIO.read(new File("images/FireBall.png")));
+			textures = new TextureManager(ImageIO.read(new File("images/WallTextures.png")));
+			sprites = new TextureManager(ImageIO.read(new File("images/spriteSheet.png")));
+			personDirection = new TextureManager(ImageIO.read(new File("images/PersonDirection.png")));
+			fireball = new TextureManager(ImageIO.read(new File("images/FireBallAnimation.png")));
 		} catch (IOException e) {
 			System.out.println("failed to get image");
 			e.printStackTrace();
@@ -63,7 +62,7 @@ public class Game {
 		
 //		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
 //		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
-		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (6)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (6)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null, fireball));
 //		entities.add(new Skeleton(new Vector((6)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI), personDirection, 100, 4, 0,0.75, null));
 //		entities.add(new Skeleton(new Vector((6)*Const.BOXSIZE - Const.BOXSIZE/2, (5)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
 //		entities.add(new Skeleton(new Vector((8)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(2*Math.PI), personDirection, 100, 4, 0,0.75, null));
@@ -109,10 +108,10 @@ public class Game {
             	if (thing instanceof Skeleton) {
 	            	((Skeleton) thing).moveProjectile();
 		            if (shooting){
-		            	((Skeleton) thing).shoot(player , fireball);
+		            	((Skeleton) thing).attack(player);
 		            }	            
             	} else if (thing instanceof Zombie) {
-                	((Zombie) thing).attack(player, null);
+                	((Zombie) thing).attack(player);
             	}
             }    
             

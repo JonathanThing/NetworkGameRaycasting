@@ -6,7 +6,7 @@ class Player extends Character {
 
     private int ammo;
 
-    public void shoot(TextureList sprites){ //BufferedImage sprite) {
+    public void shoot(TextureManager sprites){ //BufferedImage sprite) {
         double yComponent = -1* Math.sin(getAngle().getValue());
         double xComponent = -1* Math.cos(getAngle().getValue());
 
@@ -16,11 +16,19 @@ class Player extends Character {
     }
 
     public void moveProjectile() {
+    	
+        for (Projectile currentProjectile :  this.getProjectilesList()) { //loops through arrayList of projectiles
 
-        for (int i = 0; i < this.getProjectilesList().size(); i++) { //loops through arrayList of projectiles
-
-            (getProjectilesList().get(i)).moveDown((getProjectilesList().get(i)).getChangeY()); //moves the projectils on the y-axis
-            (getProjectilesList().get(i)).moveRight((getProjectilesList().get(i)).getChangeX()); //moves the projectils on the x-axis
+        	long currentTime = System.currentTimeMillis();
+        	
+        	if (currentProjectile.getSprites().getLastAnimationChange() + 250 <= currentTime) {
+        		currentProjectile.getSprites().setLastAnimationChange(currentTime);
+        		currentProjectile.getSprites().changeAnimationNumber(1);
+        	}
+        
+        	
+            (currentProjectile).moveDown(currentProjectile.getChangeY()); //moves the projectils on the y-axis
+            (currentProjectile).moveRight(currentProjectile.getChangeX()); //moves the projectils on the x-axis
 
         }
 
@@ -97,7 +105,7 @@ class Player extends Character {
         }
     }
 
-    Player(Vector position, int width, int height, String name, Angle angle, TextureList sprites, double health,
+    Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprites, double health,
     		double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
         super(position, width, height, name, angle, sprites, health, speed, spriteZOffset, spriteScale, weapon); // calls the constructor in the
         // character super

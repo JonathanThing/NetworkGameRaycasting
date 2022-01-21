@@ -2,7 +2,7 @@ import java.awt.image.BufferedImage;
 
 public class Wall extends Environment {
 
-  Wall(Vector position, String name, Angle angle, TextureList sprites) {
+  Wall(Vector position, String name, Angle angle, TextureManager sprites) {
     super(position, 32, 32, name, angle, sprites);
 
   }

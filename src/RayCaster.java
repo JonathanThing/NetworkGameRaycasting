@@ -14,13 +14,13 @@ public class RayCaster {
 	private double fov;
 	private Vector cameraOffset;
 	private Level map;
-	private TextureList textures;
+	private TextureManager textures;
 	private int numberOfRays = 360;
 	private double dist[] = new double[numberOfRays];
 	private int wallTypeHorizontal;
 	private int wallTypeVertical;
 	
-	public RayCaster (TextureList textures) { 
+	public RayCaster (TextureManager textures) { 
 		this.textures = textures;
 		this.playerAngle = new Angle(0);
 	}
@@ -74,7 +74,7 @@ public class RayCaster {
 
 		if ((spriteAngle.getValue() < rightViewEdge && spriteAngle.getValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getValue() || rightViewEdge > spriteAngle.getValue()))) {					
 
-			double stepAngle = (2*Math.PI)/sprite.getSprites().getNumberOfTextures();
+			double stepAngle = (2*Math.PI)/sprite.getSprites().getNumberOfDirectionTextures();
 			Angle spriteAngleDirection = new Angle (Angle.checkLimit(stepAngle * Math.round((spriteAngle.getValue()-sprite.getAngle().getValue())/stepAngle) - Math.PI)); 
 		
 			
@@ -101,8 +101,10 @@ public class RayCaster {
 				double thing = cameraX +j*step - scale/2-7;
 				double thingCheck = cameraX +j*step- scale/2;
 					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
-						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 		
-							g2.setColor(new Color(sprite.getSprites().getSingleTexture((int) (spriteAngleDirection.getValue()/stepAngle)).getRGB(j,k)));
+						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 	
+							int direction = (int) (spriteAngleDirection.getValue()/stepAngle);
+							int animationNumber = sprite.getSprites().getAnimationNumber() % sprite.getSprites().getNumberOfAnimationTextures(direction);
+							g2.setColor(new Color(sprite.getSprites().getSingleTexture(direction, animationNumber).getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
 								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
 							}
@@ -149,7 +151,7 @@ public class RayCaster {
 					floorX -= stepX;
 					floorY -= stepY;
 					
-					g2.setColor(new Color(textures.getSingleTexture(0).getRGB(pixelX, pixelY)));
+					g2.setColor(new Color(textures.getSingleTexture(0,0).getRGB(pixelX, pixelY)));
 					g2.setStroke(new BasicStroke((int)step+1));
 					g2.drawLine(x*widthStep, Const.HEIGHT - (int)(y*step), (x+1)*widthStep,  Const.HEIGHT - (int)(y*step));
 					g2.drawLine(x*widthStep, (int)(y*step), (x+1)*widthStep, (int)(y*step));
@@ -206,7 +208,7 @@ public class RayCaster {
 				g2.setStroke(new BasicStroke(strokeWidth));
 
 				
-				int numbPixel = textures.getTextureHeight(wallType);
+				int numbPixel = textures.getTextureHeight(wallType, 0);
 				double lineH = (Const.HEIGHT*Const.BOXSIZE/2)/rayDistance;
 				double middle = lineH/2;
 				double stepPattern = (lineH/numbPixel);
@@ -215,22 +217,22 @@ public class RayCaster {
 				
 				if (!verticalWall) {
 					if (rayAngle < Math.PI) {
-						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType)) % textures.getTextureWidth(wallType));
+						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0));
 					} else {
-						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType)) % textures.getTextureWidth(wallType))-1;
+						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0))-1;
 					}
 				} else {
 					if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) {
-						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType)) % textures.getTextureWidth(wallType));
+						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0));
 					} else {
-						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType)) % textures.getTextureWidth(wallType))-1;
+						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0))-1;
 					}
 				}
 				
 				for (int i = 0; i < numbPixel; i++) {
 					textureY = (numbPixel-1-i);
 					
-					BufferedImage thing = textures.getSingleTexture(wallType);
+					BufferedImage thing = textures.getSingleTexture(wallType, 0);
 					int value = thing.getRGB((int)textureX,(int)textureY);
 					
 					if (rayDistance == Const.NONE || wallType < 0) {

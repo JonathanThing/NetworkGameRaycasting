@@ -7,7 +7,7 @@ abstract class GameObject {
 
  private int width;
  private int height;
- private TextureList sprites;
+ private TextureManager sprites;
  private String name;
  private Angle angle;
 
@@ -27,7 +27,7 @@ abstract class GameObject {
   this.height = height;
  }
 
- public void setSprites(TextureList sprites) {
+ public void setSprites(TextureManager sprites) {
   this.sprites = sprites;
  }
 
@@ -61,11 +61,11 @@ abstract class GameObject {
   return this.name;
  }
 
- public TextureList getSprites() {
+ public TextureManager getSprites() {
   return this.sprites;
  }
 
- GameObject(Vector position, int width, int height, String name, Angle angle, TextureList sprites) {
+ GameObject(Vector position, int width, int height, String name, Angle angle, TextureManager sprites) {
   this.position = position;
   this.width = width;
   this.height = height;
