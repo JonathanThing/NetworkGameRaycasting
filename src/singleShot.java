@@ -44,9 +44,8 @@ public class singleShot extends Weapon{
 	    }
 	}
 
-	singleShot(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,
-			int size, int clipSize, int reloadTime) {
-		super(x, y, width, height, name, sprite, damage, fireRate, size, clipSize, reloadTime);
+	singleShot(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate, int clipSize, int reloadTime) {
+		super(x, y, width, height, name, sprite, damage, fireRate, clipSize, reloadTime);
 	}
 
 }
