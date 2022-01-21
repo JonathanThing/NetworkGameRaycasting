@@ -135,7 +135,7 @@ public class Game {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
 			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
-			g2.setColor(Color.GRAY);
+			g2.setColor(Color.GRAY.darker().darker());
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
 //			rayCaster.rayCastFloors(g2);
 			rayCaster.rayCastWalls(g2, false);
@@ -149,7 +149,6 @@ public class Game {
 						allEntities.add(projectile);
 					}					
 				}
-
 			}
 
 			rayCaster.drawSprite(g2, allEntities);
