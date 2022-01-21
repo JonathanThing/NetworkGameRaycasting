@@ -12,8 +12,7 @@ public class singleShot extends Weapon{
 	void shoot(Angle angle, Vector playerPos, ArrayList<Projectile> projectilesList) {
         cooldown = setCooldown(this.lastFire, this.timer);
         if(projectilesList.size() == this.getAmmoSize()) {
-        	projectilesList.clear();
-        	reloading = true;
+        	reloading = true;        	
         }
         else {
         	if(reloading == false) {
@@ -27,10 +26,11 @@ public class singleShot extends Weapon{
             	    cooldown = 0;           
                 }  		    		
         	}
-        	if (this.getReloadTime() < cooldown) {
-        		reloading = false;
-        	}
         }
+    	if (this.getReloadTime() < cooldown) {
+    		reloading = false;
+    		projectilesList.clear();
+    	}
 	}
 	
 	void moveProjectile(ArrayList<Projectile> projectilesList) {
