@@ -8,11 +8,9 @@ public class multiShot extends Weapon{
 	private boolean reloading = false;
 	private int shots;
 	
-	
-	
 	void shoot(Angle angle, Vector playerPos, ArrayList<Projectile> projectilesList) {
         cooldown = setCooldown(this.lastFire, this.timer);
-        if(projectilesList.size() == this.getAmmoSize()) {
+        if(projectilesList.size() == this.getAmmoSize()*this.shots) {
         	projectilesList.clear();
         	reloading = true;
         }
@@ -34,7 +32,7 @@ public class multiShot extends Weapon{
             			projectilesList.add(new Projectile(new Vector(playerPos.getX(),playerPos.getY()), 20, 20, "Bullet", angle, null, 10, 10, xComponent, yComponent));
             		}
                 }
-                else if(this.cooldown > this.getFireRate()) {
+                else if(this.cooldown > this.getFireRate()*this.shots) {
                 	lastFire = System.currentTimeMillis();
             	    cooldown = 0;           
                 }  		    		
@@ -56,13 +54,9 @@ public class multiShot extends Weapon{
 	    }
 	}
 
-	multiShot(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,
-			int size, int clipSize, int reloadTime, int numOfShots) {
-		super(x, y, width, height, name, sprite, damage, fireRate, size, clipSize, reloadTime);
+	multiShot(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate, 
+			int clipSize, int reloadTime, int numOfShots) {
+		super(x, y, width, height, name, sprite, damage, fireRate, clipSize, reloadTime);
 		this.shots = numOfShots;
-	}
-	
-	
-	
-	
+	}	
 }
