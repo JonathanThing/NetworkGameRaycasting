@@ -15,6 +15,7 @@ abstract class Enemy extends Character{
         return this.running == true;
     }
     
+    
     public void stopRunning(){
         this.running = false;
     }

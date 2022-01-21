@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class ProjectilesThread extends Thread{
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -10,6 +11,14 @@ public class ProjectilesThread extends Thread{
             
         }
     }
+    
+    public void removeProjectile(Projectile entity) {
+        synchronized(projectiles) {
+            projectiles.remove(entity);
+            
+        }
+    }
+   
     
     public ArrayList<Projectile> getProjectiles(){
         return this.projectiles;
@@ -24,18 +33,31 @@ public class ProjectilesThread extends Thread{
     }
     
     public void run() {
+        //Projectile item;
         System.out.println("This code for ProjectilesThread is running in a thread");
         while(keepRunning()){
             try {
-                Thread.sleep(25);
+                Thread.sleep(5);
             }catch(Exception e){
                 e.printStackTrace();
             }
             synchronized(projectiles) {
+                
+                try {
+                    Thread.sleep(5);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 for (Projectile item : projectiles) {
                     item.move();
+
+                    if(item.checkCollision(Game.currentLevel) == false){
+                        //System.out.println("collision");
+                        Game.removeProjectileEntity(item);
+                    }
                     
                 }
+                
             }
         }
     }
