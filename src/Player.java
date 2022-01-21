@@ -3,12 +3,45 @@ import java.lang.Math;
 import java.awt.Graphics;
 
 class Player extends Character {
+	private boolean slot1 = false;
+	private boolean slot2 = false;
+	private boolean slot3 = false;
+	
 	singleShot testgun = new singleShot(this.getPosition().getX(),this.getPosition().getY(),5,5,
-			"test weapon", null, 20,20,20,30);
-
+			"test weapon", null, 20,20,30,200);
+	
+	singleShot pistol = new singleShot(this.getPosition().getX(),this.getPosition().getX(),5,5,"revolver",null,40,75,6,100);
+	singleShot ar = new singleShot(this.getPosition().getX(),this.getPosition().getX(),5,5,"AR",null,10,10,30,300);
+	singleShot sniper = new singleShot(this.getPosition().getX(),this.getPosition().getX(),5,5,"sniper",null,100,100,4,500);
+	
+	multiShot autoShotgun = new multiShot(this.getPosition().getX(),this.getPosition().getX(),5,5,"Auto Shotgun",null,20,20,8,500,3);
+	multiShot Shotgun = new multiShot(this.getPosition().getX(),this.getPosition().getX(),5,5,"Shotgun",null,35,40,4,200,5);
 	
     public void shoot(){ //BufferedImage sprite) {                
-    	testgun.shoot(getAngle(), getPosition(),this.getProjectilesList());
+    	if(this.slot1 == true) {
+    		pistol.shoot(getAngle(), getPosition(), getProjectilesList());
+    	}
+    	else if(this.slot2 == true) {
+        	Shotgun.shoot(getAngle(), getPosition(),this.getProjectilesList());
+    	}
+    	else if(this.slot3 == true) {
+    		ar.shoot(getAngle(), getPosition(),this.getProjectilesList());
+    	}
+    }  
+    
+    public void moveProjectiles() {
+    	if(this.slot1 == true) {
+    		pistol.moveProjectile(this.getProjectilesList());
+    		//this.getProjectilesList().clear();
+    	}
+    	else if(this.slot2 == true) {
+        	Shotgun.moveProjectile(this.getProjectilesList());
+        	//this.getProjectilesList().clear();
+    	}
+    	else if(this.slot3 == true) {
+    		ar.moveProjectile(this.getProjectilesList());
+    		//this.getProjectilesList().clear();
+    	}
     }
     
     public void drawPlayerProjectile(Graphics g, double offSetX, double offSetY) {
@@ -81,6 +114,26 @@ class Player extends Character {
         }
     }
 
+    public boolean getSlot1() {
+    	return this.slot1;
+    }
+    public boolean setSlot2() {
+    	return this.slot2;
+    }
+    public boolean getSlot3() {
+    	return this.slot3;
+    }
+    
+    public void setSlot1(boolean Slot) {
+    	this.slot1 = Slot;
+    }
+    public void setSlot2(boolean Slot) {
+    	this.slot2 = Slot;
+    }
+    public void setSlot3(boolean Slot) {
+    	this.slot3 = Slot;
+    }
+    
     Player(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health,
            double speed,
            Weapon weapon) {
