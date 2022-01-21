@@ -46,7 +46,7 @@ class Skeleton extends Enemy {
         while(keepRunning()){
             
             if (count == 100){            
-                attack(Game.player, Game.sprites.getSingleTexture(6));
+                attack(Game.player, Game.fireBall.getSingleTexture(0));
                 count = 0;
                 System.out.println("shoot");
             }

@@ -57,7 +57,7 @@ public class RayCaster {
         Collections.sort(entity, new DistanceComparator());
         
         for (Entity sprite : entity) {
-            
+        	
             Vector spritePosition = sprite.getPosition();
             Vector spriteVectorFromPlayer = spritePosition.subtract(playerPosition);
             Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
