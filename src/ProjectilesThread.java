@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.Iterator;
 
 public class ProjectilesThread extends Thread{
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -18,7 +18,7 @@ public class ProjectilesThread extends Thread{
             
         }
     }
-   
+    
     
     public ArrayList<Projectile> getProjectiles(){
         return this.projectiles;
@@ -42,20 +42,18 @@ public class ProjectilesThread extends Thread{
                 e.printStackTrace();
             }
             synchronized(projectiles) {
-                
-                try {
-                    Thread.sleep(5);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                for (Projectile item : projectiles) {
+
+               for (Iterator<Projectile> iterator = projectiles.iterator(); iterator.hasNext();) {
+
+                    Projectile item = iterator.next();
                     item.move();
 
-                    if(item.checkCollision(Game.currentLevel) == false){
-                        //System.out.println("collision");
-                        Game.removeProjectileEntity(item);
-                    }
-                    
+                    if(item.checkCollision(Game.map,Game.entities)){//;
+                      iterator.remove();
+                      Game.removeProjectileEntity(item.getUUID());
+                    } 
+      
+
                 }
                 
             }

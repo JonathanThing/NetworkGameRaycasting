@@ -13,7 +13,7 @@ class Skeleton extends Enemy {
     }
     
     
-    public void attack(Player player, BufferedImage sprite) {
+    public void attack(Player player, BufferedImage sprite, Environment[][] e) {
         this.shoot(player, sprite); 
     }
     
@@ -36,7 +36,7 @@ class Skeleton extends Enemy {
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
         Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,0.5 , 0,
-                                                1,-1* hypotenuse.getX(), hypotenuse.getY()));
+                                                1,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton"));
         System.out.println("projectile created from skeleton");
     }
     
@@ -46,7 +46,7 @@ class Skeleton extends Enemy {
         while(keepRunning()){
             
             if (count == 100){            
-                attack(Game.player, Game.fireBall.getSingleTexture(0));
+                attack(Game.player, Game.fireBall.getSingleTexture(0), Game.map);
                 count = 0;
                 System.out.println("shoot");
             }

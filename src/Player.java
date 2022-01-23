@@ -10,7 +10,7 @@ class Player extends Character {
         double yComponent = Math.sin(getAngle().getValue());
         double xComponent = Math.cos(getAngle().getValue());
         
-        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprite, 0, 0.5, 0, 1, xComponent, yComponent));
+        Game.addProjectileEntity(new Projectile((this.getPosition().clone()).add(new Vector(xComponent*35, -yComponent*35)), 20, 20, "Bullet", getAngle(), sprite, 0, 0.5, 0, 1, xComponent, yComponent, "player"));
         System.out.println("projectile created from player");
         //this.getProjectilesList().add(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprite, 0, 5, 0, 1, xComponent, yComponent));
         //Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {
@@ -18,7 +18,7 @@ class Player extends Character {
     }
     
     
-    public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight,
+    public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight,
                          Level map) {
         
         double xRaw = 0;
@@ -48,6 +48,7 @@ class Player extends Character {
             this.getAngle().changeValue(Math.toRadians(-5));
         }
         
+
         double forwardAngle = this.getAngle().getValue();
         double sideAngle = Angle.checkLimit(forwardAngle - Math.PI / 2);
         
@@ -56,6 +57,7 @@ class Player extends Character {
         Vector sideVector = new Vector(Math.cos(sideAngle) * xRaw, -Math.sin(sideAngle) * xRaw);
         
         Vector movementVector = forwardVector.add(sideVector).normalized().multiplyByScalar(this.getSpeed());
+        
         
         if (!movementVector.isZero()) {
             

@@ -1,10 +1,16 @@
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 class Projectile extends Entity {
     
     private double changeX;
     private double changeY;
+    private String shooter;
+    
+    public String getShooter(){
+        return this.shooter;
+    }
     
     public double getChangeX() {
         return this.changeX;
@@ -14,34 +20,38 @@ class Projectile extends Entity {
         return this.changeY;
     }
     
-    public synchronized boolean checkCollision(Level map){
-        // door collision
-        
-         Vector movementVector = new Vector(getChangeX(), getChangeY());
-         Vector futurePosition = this.getPosition().add(movementVector.multiplyByScalar(4));
-         
-        if (map.getMapTile((int) futurePosition.getY() / Const.BOXSIZE,
-                           (int) futurePosition.getX() / Const.BOXSIZE) == 4) {
-            return true;
+    public synchronized boolean checkCollision(Environment[][] e, ArrayList<Entity> entities){
+        for (int i = 0; i < e.length; i++) {
+            for (int j = 0; j < e[0].length; j++) {
+                if (e[i][j] instanceof Wall){
+                    if  (isColliding(e[i][j])){
+                        System.out.println("hit wall");
+                        return true;
+                    }
+                }
+            }
         }
-        
-        // wall side collision
-        futurePosition = this.getPosition().add(movementVector.multiplyByScalar(2));
-        if (map.getMapTile((int) this.getPosition().getY() / Const.BOXSIZE,
-                           (int) futurePosition.getX() / Const.BOXSIZE) < 1) {
-            //this.moveLeft(movementVector.getX());
-            return true;
+        for (int i = 0; i < entities.size(); i++){
+            if ((entities.get(i) instanceof Player) && (getShooter().equals("skeleton"))){
+                if(isColliding(entities.get(i))){
+                    System.out.println("hit player");
+                    return true;
+                }
+            } else if ((entities.get(i) instanceof Enemy) && (getShooter().equals("player"))){
+                if(isColliding(entities.get(i))){
+                    System.out.println("hit enemy");
+                    return true;
+                }
+            }
         }
-        
-        // wall forward collision
-        if (map.getMapTile((int) futurePosition.getY() / Const.BOXSIZE,
-                           (int) this.getPosition().getX() / Const.BOXSIZE) < 1) {
-            //this.moveDown(movementVector.getY());
-            return true;
-        }
-        
         return false;
     }
+    
+    /*
+     public synchronized boolean checkEnemyCollision(){
+     
+     }
+     */
     
     public void draw(Graphics g, double offSetX, double offSetY) {
         //System.out.println("drawing projectile");
@@ -55,10 +65,11 @@ class Projectile extends Entity {
     
     
     Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, 
-               double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {
+               double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY, String shooter) {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale);
         this.changeX = changeX;
         this.changeY = changeY;
+        this.shooter = shooter;
     }
     
 }

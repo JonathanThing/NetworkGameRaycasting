@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.UUID;
 
 public class Game {
     static JFrame gameWindow;
@@ -26,6 +27,7 @@ public class Game {
     static TextureList textures;
     static TextureList sprites;
     static TextureList fireBall;
+    public static volatile Environment[][] map;
     public static volatile Level currentLevel = new Level(new int[][] { { 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
         { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, { 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
         { 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 6, 0, 2 }, { 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 6, 6, 0, 2 },
@@ -56,12 +58,13 @@ public class Game {
             e.printStackTrace();
         }
         
-        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 30, 30, "zombie", new Angle(2),
+        generateMap(currentLevel.getMap());
+        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(2),
                                            sprites.getSingleTexture(0), 100, 4, 20, 0.75, null));
         
         // Skeleton skeleton = new Skeleton(new Vector(200, 200), 30, 30, "skeleton",
         // new Angle(2), sprites.getSingleTexture(0), 100, 4, 0,0.75, null);
-        Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 30, 30, "skeleton", new Angle(2),
+        Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(2),
                                              sprites.getSingleTexture(0), 100, 4, 0, 0.75, null));
         entities.add(player);
         
@@ -90,37 +93,84 @@ public class Game {
         
     } // main method end
     
-    public static synchronized void addCharacterEntity(Character entity) {
-        entities.add(entity);
+    public static void generateMap(int[][] tempMap){
+        map = new Environment[tempMap.length][tempMap[0].length];
+        for (int i = 0; i < tempMap.length; i++) {
+            //System.out.println();
+            for (int j = 0; j < tempMap[0].length; j++) {
+                //System.out.print(tempMap[i][j]);
+                
+                switch (tempMap[i][j]) {
+                    case 1: // Creates a Wall object
+                        map[i][j] = new Wall(new Vector(j * Const.BOXSIZE + Const.BOXSIZE / 2, i * Const.BOXSIZE + Const.BOXSIZE / 2), "wall", textures.getSingleTexture(1));                        
+                        break;
+                        
+                    case 2: // Creates a special wall object                      
+                        map[i][j] = new Wall(new Vector(j * Const.BOXSIZE + Const.BOXSIZE / 2, i * Const.BOXSIZE + Const.BOXSIZE / 2), "wall", textures.getSingleTexture(2));
+                        break;
+                        
+                    case 3: 
+                        System.out.println(tempMap[i][j]);
+                        map[i][j] = new Wall(new Vector(j * Const.BOXSIZE + Const.BOXSIZE / 2, i * Const.BOXSIZE + Const.BOXSIZE / 2), "wall", textures.getSingleTexture(3));
+                        break;
+                        
+                    case 4: 
+                        map[i][j] = new Door(new Vector(j * Const.BOXSIZE + Const.BOXSIZE / 2, i * Const.BOXSIZE + Const.BOXSIZE / 2), "door", textures.getSingleTexture(4));
+                        break;
+                        
+                    case 5:
+                        map[i][j] = new Wall(new Vector(j * Const.BOXSIZE + Const.BOXSIZE / 2, i * Const.BOXSIZE + Const.BOXSIZE / 2), "wall", textures.getSingleTexture(5));
+                        break;
+                        
+                    case 6: 
+                        map[i][j] = new Wall(new Vector(j * Const.BOXSIZE + Const.BOXSIZE / 2, i * Const.BOXSIZE + Const.BOXSIZE / 2), "wall", textures.getSingleTexture(6));
+                        break;
+                        
+                }
+                
+            }
+        }
+    }
+    
+    
+    
+    public static void addCharacterEntity(Character entity) {
+        synchronized(entities) {
+            entities.add(entity);
+        }
+        
         CharacterThread thread = new CharacterThread(entity);
         thread.start();
+        
         characterThreads.add(thread);
     }
     
-    public static synchronized void removeCharacterEntity(Entity entity) {
-        entities.remove(entity);
+    public static void removeCharacterEntity(Entity entity) {
+        synchronized(entities) {
+            entities.remove(entity);
+        }
         // to be implemented
     }
     
-    public static synchronized void addProjectileEntity(Projectile entity) {
-        entities.add(entity);
+    public static void addProjectileEntity(Projectile entity) {
+        synchronized(entities) {
+            entities.add(entity);
+        }
         projectilesThread.addProjectile(entity);
         // System.out.println("added projectile entity");
     }
     
-    public static synchronized void removeProjectileEntity(Entity entity) {
-        entities.remove(entity);
-        projectilesThread.getProjectiles().remove(entity);
+    public static void removeProjectileEntity(UUID uuid) {
 
-        /*
-        for (int i = 0; i < ( projectilesThread.getProjectiles()).size(); i++){
-            Projectile temp = (projectilesThread.getProjectiles()).get(i);
-            if (entity.getUUID().equals(temp.getUUID())){
-                (projectilesThread.getProjectiles()).remove(temp);
-                
+        synchronized(entities) {
+            for (int i = 0; i < entities.size(); i++){
+                Entity temp = entities.get(i);
+                if (uuid.equals(temp.getUUID())){
+                    entities.remove(temp);
+                    
+                }
             }
-        }
-        */
+        }      
     }
     
     public static synchronized ArrayList<Entity> copyEntities() {
@@ -131,17 +181,18 @@ public class Game {
         return allEntities;
     }
     
-    // ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
     public static void runGameLoop() {
         while (true) {
             try {
-                Thread.sleep(25);
+                Thread.sleep(30);
             } catch (Exception e) {
             }
             player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
             
             if (shooting) {
                 player.shoot(fireBall.getSingleTexture(0));
+                shooting = false;
             }
             
             rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
@@ -150,7 +201,7 @@ public class Game {
         }
     } // runGameLoop method end
     
-    // ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
     static class GraphicsPanel extends JPanel {
         public GraphicsPanel() {
             setFocusable(true);
@@ -243,7 +294,7 @@ public class Game {
         } // paintComponent method end
     } // GraphicsPanel class end
     
-    // ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
     static class MyKeyListener implements KeyListener {
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == 'W') { // If the player hits/holds 'W', mo)ve up until they stop
@@ -312,7 +363,7 @@ public class Game {
         }
     } // MyKeyListener class end
     
-    // ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
     static class MyMouseListener implements MouseListener {
         public void mouseClicked(MouseEvent e) {
             
@@ -335,7 +386,7 @@ public class Game {
         }
     } // MyMouseListener class end
     
-    // ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
     static class MyMouseMotionListener implements MouseMotionListener {
         public void mouseMoved(MouseEvent e) {
             

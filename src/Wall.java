@@ -3,8 +3,8 @@ import java.awt.image.BufferedImage;
 
 public class Wall extends Environment {
 
-  Wall(Vector position, String name, Angle angle, BufferedImage sprite) {
-    super(position, 32, 32, name, angle, sprite);
+  Wall(Vector position, String name, BufferedImage sprite) {
+    super(position, Const.BOXSIZE, Const.BOXSIZE, name, null, sprite);
     
   }
 
