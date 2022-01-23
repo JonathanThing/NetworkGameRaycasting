@@ -10,7 +10,7 @@ class Player extends Character {
         double yComponent = Math.sin(getAngle().getValue());
         double xComponent = Math.cos(getAngle().getValue());
         
-        Game.addProjectileEntity(new Projectile((this.getPosition().clone()).add(new Vector(xComponent*35, -yComponent*35)), 20, 20, "Bullet", getAngle(), sprite, 0, 0.5, 0, 1, xComponent, yComponent, "player"));
+        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprite, 0, 0.5, 0, 1, xComponent, yComponent, "player"));
         System.out.println("projectile created from player");
         //this.getProjectilesList().add(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprite, 0, 5, 0, 1, xComponent, yComponent));
         //Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {
