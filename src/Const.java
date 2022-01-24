@@ -1,7 +1,7 @@
 public class Const {
     public static final int NONE = (int) 1e8;
 	public static final int TEXTURE_SIZE = 32;
-    public static final int BOXSIZE = 64;
+    public static final int BOX_SIZE = 64;
     public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
 	public static final int SCREEN_WIDTH = WIDTH+17;

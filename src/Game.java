@@ -42,7 +42,7 @@ public class Game {
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
 												{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2}}); 
 
-	static Player player = new Player(new Vector ((3)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, 20,0.75, null);
+	static Player player = new Player(new Vector ((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (2)*Const.BOX_SIZE - Const.BOX_SIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, 20,0.75, null);
 	static boolean up, down, left, right, turnRight, turnLeft, shooting;
 	static Vector cameraOffset = new Vector(0,0);	
 	static ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -61,11 +61,11 @@ public class Game {
 		}
 		
 //		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
-//		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
-		entities.add(new Skeleton(new Vector((3)*Const.BOXSIZE - Const.BOXSIZE/2, (6)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null, fireball));
-//		entities.add(new Skeleton(new Vector((6)*Const.BOXSIZE - Const.BOXSIZE/2, (2)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI), personDirection, 100, 4, 0,0.75, null));
-//		entities.add(new Skeleton(new Vector((6)*Const.BOXSIZE - Const.BOXSIZE/2, (5)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
-//		entities.add(new Skeleton(new Vector((8)*Const.BOXSIZE - Const.BOXSIZE/2, (4)*Const.BOXSIZE - Const.BOXSIZE/2), 30, 30, "skeleton", new Angle(2*Math.PI), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (4)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+		entities.add(new Skeleton(new Vector((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (6)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null, fireball));
+//		entities.add(new Skeleton(new Vector((6)*Const.BOX_SIZE - Const.BOX_SIZE/2, (2)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(Math.PI), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((6)*Const.BOX_SIZE - Const.BOX_SIZE/2, (5)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
+//		entities.add(new Skeleton(new Vector((8)*Const.BOX_SIZE - Const.BOX_SIZE/2, (4)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(2*Math.PI), personDirection, 100, 4, 0,0.75, null));
 
 		entities.add(player);
 		gameWindow = new JFrame("Game Window");
@@ -176,16 +176,16 @@ public class Game {
 				for (int columns = 0; columns < currentLevel.getColumns(); columns++) {
 					if (currentLevel.getMapTile(rows, columns) == 0) {
 						g2.setColor(Color.WHITE);
-						g2.drawRect(columns * Const.BOXSIZE + (int)cameraOffset.getX(), rows * Const.BOXSIZE +  (int)cameraOffset.getY(), Const.BOXSIZE,
-								Const.BOXSIZE);
+						g2.drawRect(columns * Const.BOX_SIZE + (int)cameraOffset.getX(), rows * Const.BOX_SIZE +  (int)cameraOffset.getY(), Const.BOX_SIZE,
+								Const.BOX_SIZE);
 					} else if (currentLevel.getMapTile(rows, columns) >= 1) {
 						g2.setColor(Color.BLACK);
-						g2.fillRect(columns * Const.BOXSIZE + +  (int)cameraOffset.getX(), rows * Const.BOXSIZE +  (int)cameraOffset.getY(), Const.BOXSIZE,
-								Const.BOXSIZE);
+						g2.fillRect(columns * Const.BOX_SIZE + +  (int)cameraOffset.getX(), rows * Const.BOX_SIZE +  (int)cameraOffset.getY(), Const.BOX_SIZE,
+								Const.BOX_SIZE);
 					}
 					g2.setColor(Color.BLACK);
-					g2.drawRect(columns * Const.BOXSIZE + +  (int)cameraOffset.getX(), rows * Const.BOXSIZE +  (int)cameraOffset.getY(), Const.BOXSIZE,
-							Const.BOXSIZE);
+					g2.drawRect(columns * Const.BOX_SIZE + +  (int)cameraOffset.getX(), rows * Const.BOX_SIZE +  (int)cameraOffset.getY(), Const.BOX_SIZE,
+							Const.BOX_SIZE);
 				}
 			}
 
@@ -241,13 +241,13 @@ public class Game {
 			}
 			
 			if (e.getKeyCode() == 'J'){
-				cameraOffset.changeX(Const.BOXSIZE);
+				cameraOffset.changeX(Const.BOX_SIZE);
             } else if (e.getKeyCode() =='L'){
-            	cameraOffset.changeX(-Const.BOXSIZE);
+            	cameraOffset.changeX(-Const.BOX_SIZE);
             } else if (e.getKeyCode() == 'I'){
-            	cameraOffset.changeY(Const.BOXSIZE);
+            	cameraOffset.changeY(Const.BOX_SIZE);
             } else if (e.getKeyCode() == 'K'){
-            	cameraOffset.changeY(-Const.BOXSIZE);
+            	cameraOffset.changeY(-Const.BOX_SIZE);
             }   
 		}
 
