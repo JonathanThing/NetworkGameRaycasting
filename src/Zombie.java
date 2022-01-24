@@ -42,8 +42,8 @@ class Zombie extends Enemy {
         System.out.println("zombie starting");
         // this.moveLeft(100);
         while (keepRunning()) {
-            attack(Game.player, Game.sprites.getSingleTexture(0, 1), Game.map);
-            // detectCollision(Game.map, Game.player);
+            //attack(Game.player, null, Game.map);
+            detectCollision(Game.map, Game.player);
             try {
                 Thread.sleep(20);
             } catch (Exception e) {

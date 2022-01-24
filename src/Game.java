@@ -37,24 +37,25 @@ public class Game {
         { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
         { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 5, 5, 0, 2 }, { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5, 5, 0, 2 },
         { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 } });
-
+    
     static Player player;
-	static Player other;
+    static Player other;
     static boolean up, down, left, right, turnRight, turnLeft, shooting, otherShooting, twoPlayers = false;
     static Vector cameraOffset = new Vector(0, 0);
-	static int playerID;
-	static ReadFromServer rfsThread;
-	static WriteToServer wtsThread;
-	static Socket socket;
+    static int playerID;
+    static ReadFromServer rfsThread;
+    static WriteToServer wtsThread;
+    static Socket socket;
     public static volatile Environment[][] map;
     // 0 = singe player, 1 = coop, 2 = multiplayer, 3 = map editor
     static int gameState;
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
     static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
     static ProjectilesThread projectilesThread = new ProjectilesThread();
-
+    
     // ------------------------------------------------------------------------------
     public static void main(String[] args) {
+        
         Menu menu = new Menu();
         while (menu.getState() == -1){
             try {
@@ -78,36 +79,36 @@ public class Game {
                 break;
         }
     }
-
-	// ------------------------------------------------------------------------------
-	public static void init(){
-		try {
-			textures = new TextureManager(ImageIO.read(new File("images/WallTextures.png")));
-			sprites = new TextureManager(ImageIO.read(new File("images/spriteSheet.png")));
-			personDirection = new TextureManager(ImageIO.read(new File("images/PersonDirectionAnimation.png")));
-			fireBall = new TextureManager(ImageIO.read(new File("images/FireBallAnimation.png")));
-		} catch (IOException e) {
-			System.out.println("failed to get image");
-			e.printStackTrace();
-		}
+    
+    // ------------------------------------------------------------------------------
+    public static void init(){
+        try {
+            textures = new TextureManager(ImageIO.read(new File("images/WallTextures.png")));
+            sprites = new TextureManager(ImageIO.read(new File("images/spriteSheet.png")));
+            personDirection = new TextureManager(ImageIO.read(new File("images/PersonDirectionAnimation.png")));
+            fireBall = new TextureManager(ImageIO.read(new File("images/FireBallAnimation.png")));
+        } catch (IOException e) {
+            System.out.println("failed to get image");
+            e.printStackTrace();
+        }
         generateMap(currentLevel.getMap());
-		Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(2),
-            new TextureManager(sprites.getSingleTexture(2, 0)), 100, 4, 20, 0.75, null));
+        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(2),
+                                          new TextureManager(sprites.getSingleTexture(2, 0)), 100, 4, 20, 0.75, null));
         Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(2),
-            new TextureManager(sprites.getSingleTexture(1, 0)), 100, 4, 0, 0.75, null));
+                                             new TextureManager(sprites.getSingleTexture(1, 0)), 100, 4, 0, 0.75, null));
         projectilesThread.start();
-		gameWindow = new JFrame("Game Window");
-		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
-		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		canvas = new GraphicsPanel();
-		canvas.addMouseListener(mouseListener);
-		canvas.addMouseMotionListener(mouseMotionListener);
-		canvas.addKeyListener(keyListener);
-		gameWindow.add(canvas);
-
-		mapWindow = new JFrame("Map");
-		mapWindow.setSize(Const.WIDTH, Const.HEIGHT);
-		mapWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameWindow = new JFrame("Game Window");
+        gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
+        gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        canvas = new GraphicsPanel();
+        canvas.addMouseListener(mouseListener);
+        canvas.addMouseMotionListener(mouseMotionListener);
+        canvas.addKeyListener(keyListener);
+        gameWindow.add(canvas);
+        
+        mapWindow = new JFrame("Map");
+        mapWindow.setSize(Const.WIDTH, Const.HEIGHT);
+        mapWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         if (twoPlayers) {
             other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
             entities.add(other);
@@ -115,16 +116,16 @@ public class Game {
         }
         player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
         entities.add(player);
-		mapThing = new MapPanel();
-		mapWindow.add(mapThing);
-
-		rayCaster = new RayCaster(textures);
-		rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
-		mapWindow.setVisible(true);
-		gameWindow.setVisible(true);
-		runGameLoop();
-	}
-
+        mapThing = new MapPanel();
+        mapWindow.add(mapThing);
+        
+        rayCaster = new RayCaster(textures);
+        rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
+        mapWindow.setVisible(true);
+        gameWindow.setVisible(true);
+        runGameLoop();
+    }
+    
     public static void generateMap(int[][] tempMap){
         map = new Environment[tempMap.length][tempMap[0].length];
         for (int i = 0; i < tempMap.length; i++) {
@@ -161,32 +162,32 @@ public class Game {
             }
         }
     }
-
-	// ------------------------------------------------------------------------------
-	public static void connect(TextureManager sprites) {
-		try {
-			// Connects to port 45371
-			socket = new Socket("localhost", 45371);
-			System.out.println(socket);
-
-			// Input and Output streams to send and receive information to and from the server
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-
-			playerID = in.readInt();
-			System.out.println("You Are Player" + playerID);
-			gameWindow.setTitle("Player " + playerID);
-
-			// Create the read and write threads and then await start
-			rfsThread = new ReadFromServer(in);
-			wtsThread = new WriteToServer(out);
-			rfsThread.waitForStart();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+    
+    // ------------------------------------------------------------------------------
+    public static void connect(TextureManager sprites) {
+        try {
+            // Connects to port 45371
+            socket = new Socket("localhost", 45371);
+            System.out.println(socket);
+            
+            // Input and Output streams to send and receive information to and from the server
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            
+            playerID = in.readInt();
+            System.out.println("You Are Player" + playerID);
+            gameWindow.setTitle("Player " + playerID);
+            
+            // Create the read and write threads and then await start
+            rfsThread = new ReadFromServer(in);
+            wtsThread = new WriteToServer(out);
+            rfsThread.waitForStart();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     // ------------------------------------------------------------------------------
     public static void runGameLoop() {
         while (true) {
@@ -206,13 +207,13 @@ public class Game {
                 player.shoot(fireBall);
                 shooting = false;
             }
-
+            
             rayCaster.updateInformation(player, cameraOffset, currentLevel, Const.FOV);
             gameWindow.repaint();
             mapWindow.repaint();
         }
     }
-
+    
     public static void addCharacterEntity(Character entity) {
         synchronized(entities) {
             entities.add(entity);
@@ -228,7 +229,6 @@ public class Game {
         synchronized(entities) {
             entities.remove(entity);
         }
-        // to be implemented
     }
     
     public static void addProjectileEntity(Projectile entity) {
@@ -236,11 +236,11 @@ public class Game {
             entities.add(entity);
         }
         projectilesThread.addProjectile(entity);
-        // System.out.println("added projectile entity");
+        System.out.println("added projectile entity");
     }
     
     public static void removeProjectileEntity(UUID uuid) {
-
+        
         synchronized(entities) {
             for (int i = 0; i < entities.size(); i++){
                 Entity temp = entities.get(i);
@@ -251,7 +251,7 @@ public class Game {
             }
         }      
     }
-
+    
     public static synchronized ArrayList<Entity> copyEntities() {
         ArrayList<Entity> allEntities = new ArrayList<Entity>();
         for (Entity thing : entities) {
@@ -259,8 +259,8 @@ public class Game {
         }
         return allEntities;
     }
-
-	// ------------------------------------------------------------------------------
+    
+    // ------------------------------------------------------------------------------
     static class GraphicsPanel extends JPanel {
         public GraphicsPanel() {
             setFocusable(true);
@@ -352,7 +352,7 @@ public class Game {
             
         } // paintComponent method end
     } // GraphicsPanel class end
-
+    
     // ------------------------------------------------------------------------------
     static class MyKeyListener implements KeyListener {
         public void keyPressed(KeyEvent e) {
@@ -377,7 +377,7 @@ public class Game {
                     break;
             }
         }
-
+        
         public void keyReleased(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case 'W':
@@ -400,128 +400,128 @@ public class Game {
                     break;
             }
         }
-
+        
         public void keyTyped(KeyEvent e) {
         }
     }
-
+    
     // ------------------------------------------------------------------------------
     static class MyMouseListener implements MouseListener {
         public void mouseClicked(MouseEvent e) {
         }
-
+        
         public void mousePressed(MouseEvent e) {
             shooting = true;
         }
-
+        
         public void mouseReleased(MouseEvent e) {
             shooting = false;
         }
-
+        
         public void mouseEntered(MouseEvent e) {
         }
-
+        
         public void mouseExited(MouseEvent e) {
         }
     }
-
+    
     // ------------------------------------------------------------------------------
     static class MyMouseMotionListener implements MouseMotionListener {
         public void mouseMoved(MouseEvent e) {
         }
-
+        
         public void mouseDragged(MouseEvent e) {
         }
     }
-
-	// ------------------------------------------------------------------------------
-	private static class ReadFromServer implements Runnable {
-
-		private final DataInputStream in;
-
-		// Constructor
-		public ReadFromServer(DataInputStream in) {
-			this.in = in;
-			System.out.println("Read From Server Thread Created");
-		}
-
-		@Override
-		public void run() {
-			try {
-				// Runs forever in the background
-				while (true) {
-					//System.out.println("updated other position");
-					if (other != null) {
-						// Set the location of the other sprite based on data from the server
-						other.setPosition(new Vector(in.readDouble(), in.readDouble()));
-						other.setAngle(new Angle(in.readDouble()));
-						if (in.readBoolean()) {
-							otherShooting = true;
-							System.out.println("other shot");
-						} else {
-							otherShooting = false;
-							System.out.println("shooting stopped");
-						}
-						Thread.sleep(25);
-					}
-				}
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		// ------------------------------------------------------------------------------
-		public void waitForStart() {
-			try {
-				String start = in.readUTF();
-				System.out.println("Msg From Server: " + start);
-
-				// Create and start read and write threads when the server allows us to start
-				Thread readThread = new Thread(rfsThread);
-				Thread writeThread = new Thread(wtsThread);
-				System.out.println("Threads Started");
-				readThread.start();
-				writeThread.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	// This method writes data to the server
-	private static class WriteToServer implements Runnable {
-
-		private final DataOutputStream out;
-
-		// Constructor
-		public WriteToServer(DataOutputStream out) {
-			this.out = out;
-			System.out.println("Write To Server Thread Created");
-		}
-
-		@Override
-		public void run() {
-			try {
-				// Run forever in the background
-				while (true) {
-					if (player != null) {
-						// Tell the server your x and y coordinates
-						out.writeDouble(player.getPosition().getX());
-						out.writeDouble(player.getPosition().getY());
-						out.writeDouble(player.getAngle().getValue());
-						out.writeBoolean(shooting);
-						out.flush();
-					}
-					try {
-						// Sleep for 25ms to allow time for the server to receive the data
-						Thread.sleep(25);
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    
+    // ------------------------------------------------------------------------------
+    private static class ReadFromServer implements Runnable {
+        
+        private final DataInputStream in;
+        
+        // Constructor
+        public ReadFromServer(DataInputStream in) {
+            this.in = in;
+            System.out.println("Read From Server Thread Created");
+        }
+        
+        @Override
+        public void run() {
+            try {
+                // Runs forever in the background
+                while (true) {
+                    //System.out.println("updated other position");
+                    if (other != null) {
+                        // Set the location of the other sprite based on data from the server
+                        other.setPosition(new Vector(in.readDouble(), in.readDouble()));
+                        other.setAngle(new Angle(in.readDouble()));
+                        if (in.readBoolean()) {
+                            otherShooting = true;
+                            System.out.println("other shot");
+                        } else {
+                            otherShooting = false;
+                            System.out.println("shooting stopped");
+                        }
+                        Thread.sleep(25);
+                    }
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        // ------------------------------------------------------------------------------
+        public void waitForStart() {
+            try {
+                String start = in.readUTF();
+                System.out.println("Msg From Server: " + start);
+                
+                // Create and start read and write threads when the server allows us to start
+                Thread readThread = new Thread(rfsThread);
+                Thread writeThread = new Thread(wtsThread);
+                System.out.println("Threads Started");
+                readThread.start();
+                writeThread.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    // This method writes data to the server
+    private static class WriteToServer implements Runnable {
+        
+        private final DataOutputStream out;
+        
+        // Constructor
+        public WriteToServer(DataOutputStream out) {
+            this.out = out;
+            System.out.println("Write To Server Thread Created");
+        }
+        
+        @Override
+        public void run() {
+            try {
+                // Run forever in the background
+                while (true) {
+                    if (player != null) {
+                        // Tell the server your x and y coordinates
+                        out.writeDouble(player.getPosition().getX());
+                        out.writeDouble(player.getPosition().getY());
+                        out.writeDouble(player.getAngle().getValue());
+                        out.writeBoolean(shooting);
+                        out.flush();
+                    }
+                    try {
+                        // Sleep for 25ms to allow time for the server to receive the data
+                        Thread.sleep(25);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -24,11 +24,16 @@ public class Level {
         return map[row][column];
     }
 
+    /*
     public int getMapTile(Vector pos){
         if (pos.inRange(this)){
             return map[(int)pos.getY()][(int)pos.getX()];
         }
-        throw new ArrayIndexOutOfBoundsException("Map Index Out of Bounds");
+        //throw new ArrayIndexOutOfBoundsException("Map Index Out of Bounds");
+    }
+    */
+    public int getMapTile(Vector position) {
+        return map[(int) position.getX()][(int) position.getY()];
     }
     
     public void setMapTile(int row, int column, int value) {
