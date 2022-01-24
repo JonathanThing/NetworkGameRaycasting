@@ -3,7 +3,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -22,7 +21,6 @@ public class RayCaster {
 	
 	public RayCaster (TextureManager textures) { 
 		this.textures = textures;
-		this.playerAngle = new Angle(0);
 	}
 	
 	public void updateInformation(Player player, Vector cameraOffset, Level map, double fov) {
@@ -34,7 +32,7 @@ public class RayCaster {
 	}
 	
 	public void drawSprite(Graphics2D g2, ArrayList<Entity> entities) {
-
+		
 		//1. Sort the sprites from closest to fathest from player
 		//2. Find position of the sprites relative to the camera
 		//3. Draw the sprite
@@ -87,30 +85,30 @@ public class RayCaster {
 			double section = Math.sin(spriteAngleFromCentre)*distance; //length from player sprite on the camera plane from middle
 			double cameraPlaneLength = Math.tan(fov/2)*cameraRayLength*2; //Length of the entire camera plane
 
-			double cameraX = (double)Const.WIDTH/2 + (double)Const.WIDTH*(section/cameraPlaneLength) ;
+			double cameraX = Const.WIDTH/2 + Const.WIDTH*(section/cameraPlaneLength);
 						
-			//Rotate camera plane to face right so that x is distance between camera plane and sprite (not eculidean distance)
+			//Use a rotated camera plane to face right so that x is distance between sprite and player (not euclidean distance)
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
 			double distanceToPlane = rotatedVector.getX();
 			
-			int scale=(int)(Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane);		
-			double step = scale/(double)Const.TEXTURE_SIZE;
-			double strokeWidth = Math.abs(scale/(double)Const.TEXTURE_SIZE);		
+			int scale = (int)(Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane);		
+			double step = scale/Const.D_TEXTURE_SIZE;
+			double strokeWidth = Math.abs(scale/Const.D_TEXTURE_SIZE);		
 			g2.setStroke(new BasicStroke((int) strokeWidth+1));
 						
-			double yOffset = (scale/(double)Const.HEIGHT) * entity.getSpriteZOffset();
+			double yOffset = (scale/(double)Const.D_HEIGHT) * entity.getSpriteZOffset();
 			scale *= entity.getSpriteScale();
 			
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
 				double cameraXPosition = cameraX +j*step - scale/2-7;
 				double cameraXPositionCheck = cameraX +j*step- scale/2;
-					if ((((cameraXPositionCheck)/(double)Const.WIDTH)*numberOfRays) >= 0 && (((cameraXPositionCheck)/(double)Const.WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((cameraXPositionCheck)/Const.WIDTH)*numberOfRays)]) {
+					if ((((cameraXPositionCheck)/Const.D_WIDTH)*numberOfRays) >= 0 && (((cameraXPositionCheck)/Const.D_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((cameraXPositionCheck)/Const.D_WIDTH)*numberOfRays)]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 	
 							int direction = (int) (spriteAngleDirection.getValue()/directionalStepAngle);
 							int animationNumber = entity.getSprites().getAnimationNumber() % entity.getSprites().getNumberOfAnimationTextures(direction);
 							g2.setColor(new Color(entity.getSprites().getSingleTexture(direction, animationNumber).getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
-								g2.drawLine((int) (cameraXPosition), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (cameraXPosition), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
+								g2.drawLine((int) (cameraXPosition), (int)(Const.D_HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (cameraXPosition), (int) (Const.D_HEIGHT/2 - scale/2 + k*step+yOffset));
 							}
 						}						
 					}
@@ -129,13 +127,13 @@ public class RayCaster {
 		double posZ;
 		int p;
 		int numberOfRays = 150;
-		double step = (((double)Const.HEIGHT/2.0)/numberOfRays);
+		double step = ((Const.D_HEIGHT/2.0)/numberOfRays);
 
 		for (int y = 0; y < numberOfRays; y ++) {
 
-			p = (int) (((double)Const.HEIGHT/2)- (y*step));
-			posZ = ((double)Const.HEIGHT/2.0);
-			double rowDistance = (posZ/p) * (double)Const.BOXSIZE;
+			p = (int) ((Const.D_HEIGHT/2)- (y*step));
+			posZ = (Const.D_HEIGHT/2.0);
+			double rowDistance = (posZ/p) * Const.BOXSIZE;
 
 			Vector leftSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2))));
 			Vector rightSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2))));
@@ -146,15 +144,15 @@ public class RayCaster {
 			double floorX = playerPosition.getX() + (rowDistance) * Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2));
 			double floorY = playerPosition.getY() - (rowDistance) * Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2));
 			
-			int widthStep = (int) ((double)Const.WIDTH/numberOfRays);
+			int widthStep = (int) (Const.D_WIDTH/numberOfRays);
 					
 				for(int x = 0; x < numberOfRays; x++) {
 				
-					int tileX = (int)(floorX/(double)Const.BOXSIZE);
-					int tileY = (int)(floorY/(double)Const.BOXSIZE);
+					int tileX = (int)(floorX/Const.D_BOXSIZE);
+					int tileY = (int)(floorY/Const.D_BOXSIZE);
 					
-					int pixelX = (int) Math.abs(floorX % (double)Const.TEXTURE_SIZE);
-					int pixelY = (int) Math.abs(floorY % (double)Const.TEXTURE_SIZE);
+					int pixelX = (int) Math.abs(floorX % Const.D_TEXTURE_SIZE);
+					int pixelY = (int) Math.abs(floorY % Const.D_TEXTURE_SIZE);
 					
 					floorX -= stepX;
 					floorY -= stepY;
@@ -239,8 +237,8 @@ public class RayCaster {
 				for (int i = 0; i < numbPixel; i++) {
 					textureY = (numbPixel-1-i);
 					
-					BufferedImage thing = textures.getSingleTexture(wallType, 0);
-					int value = thing.getRGB((int)textureX,(int)textureY);
+					BufferedImage texture = textures.getSingleTexture(wallType, 0);
+					int value = texture.getRGB((int)textureX,(int)textureY);
 					
 					if (rayDistance == Const.NONE || wallType < 0) {
 						g2.setColor(Color.WHITE);
