@@ -6,6 +6,15 @@ public class Vector {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Vector() {
+		this.x = 0;
+		this.y = 0;
+	}
+	
+	public Vector clone() {
+		return new Vector(this.getX(),this.getY());
+	}
 
 	public double getX() {
 		return x;
@@ -48,6 +57,10 @@ public class Vector {
 		return new Vector(this.x * value, this.y * value);
 	}
 	
+	public Vector divideByScalar(double value) {
+		return new Vector(this.x / value, this.y / value);
+	}
+	
 	public Vector rotateVector(double radians) {
 		return new Vector(this.x*Math.cos(radians) - this.y*Math.sin(radians), this.x*Math.sin(radians) + this.y*Math.cos(radians));
 	}
@@ -60,8 +73,16 @@ public class Vector {
 		return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
 	}
 	
-	public Vector flipXAndY() {
-		return new Vector(this.y, this.x);
+	public boolean inRange(Level map) {
+		if (this.getX() < map.getColumns()*Const.BOXSIZE && this.getX() >= 0 && this.getY() < map.getRows()*Const.BOXSIZE && this.getY() >= 0) {
+			return true;
+		} 
+		
+		return false;
+	}
+	
+	public Vector flipXY() {
+		return new Vector(this.y,this.x);
 	}
 	
 	public boolean isZero() {
@@ -70,6 +91,10 @@ public class Vector {
 		} else {
 			return false;
 		}
+	}
+	
+	public String toString() {
+		return "(" + this.x + ", " + this.y + ")";
 	}
 	
 }
