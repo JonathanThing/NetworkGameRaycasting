@@ -98,24 +98,23 @@ public class RayCaster {
 				scale = 0;
 			}
 			
+			double yOffset = (scale/Const.HEIGHT) * entity.getSpriteZOffset();
+			scale *= entity.getSpriteScale();
 			double stepPerPixel = scale/Const.TEXTURE_SIZE;
 			double strokeWidth = Math.abs(scale/Const.TEXTURE_SIZE);
 
 			g2.setStroke(new BasicStroke((int) strokeWidth+1));
-
-			double yOffset = (scale/Const.HEIGHT) * entity.getSpriteZOffset();
-			scale *= entity.getSpriteScale();
-			
+		
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
 				double spriteXPosition = cameraX + j*stepPerPixel - scale/2;	
 				int rayNumber = (int) (((spriteXPosition)/Const.WIDTH)*numberOfRays);
 					if (rayNumber >= 0 && rayNumber < 360 && Math.abs(distanceToPlane) < dist[rayNumber]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 	
-							TextureManager texture = entity.getSprites();
+							TextureManager textures = entity.getSprites();
 							double spriteYPosition = Const.HEIGHT/2.0 - scale/2 + k*stepPerPixel+ yOffset;
 							int directionSprite = (int) (spriteAngleDirection.getValue()/directionalStepAngle);
-							int animationNumber = texture.getAnimationNumber() % texture.getNumberOfAnimationTextures(directionSprite);
-							g2.setColor(new Color(texture.getSingleTexture(directionSprite, animationNumber).getRGB(j,k)));
+							int animationNumber = textures.getAnimationNumber() % textures.getNumberOfAnimationTextures(directionSprite);
+							g2.setColor(new Color(textures.getSingleTexture(directionSprite, animationNumber).getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
 								g2.drawLine((int) (spriteXPosition), (int)(spriteYPosition), (int) (spriteXPosition), (int) (spriteYPosition));
 							}

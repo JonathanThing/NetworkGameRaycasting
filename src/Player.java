@@ -10,7 +10,7 @@ class Player extends Character {
         double yComponent = -1* Math.sin(getAngle().getValue());
         double xComponent = -1* Math.cos(getAngle().getValue());
 
-        this.getProjectilesList().add(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprites, 0, 10, 0, 1, xComponent, yComponent));
+        this.getProjectilesList().add(new Projectile(this.getPosition().clone(), 10, 10, "Bullet", getAngle(), sprites, 0, 10, 0, 0.25, xComponent, yComponent));
         //Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {
 
     }
