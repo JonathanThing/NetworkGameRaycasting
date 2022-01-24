@@ -3,8 +3,8 @@ import java.awt.Graphics;
 
 public class Item extends GameObject implements Pickupable {
 
-    Item(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite) {
-        super(position, width, height, name, angle, sprite);
+    Item(Vector position, int width, int height, String name, Angle angle, TextureManager sprites) {
+        super(position, width, height, name, angle, sprites);
         
     }
 
