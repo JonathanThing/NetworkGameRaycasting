@@ -69,7 +69,7 @@ public class Game {
 
 		entities.add(player);
 		gameWindow = new JFrame("Game Window");
-		gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
+		gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		canvas = new GraphicsPanel();
 		canvas.addMouseListener(mouseListener);
@@ -139,9 +139,9 @@ public class Game {
 			
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.GRAY);
-			g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
+			g2.fillRect(0, 0, Const.WIDTH+1, Const.HEIGHT / 2);
 			g2.setColor(Color.GRAY.darker().darker());
-			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH,Const.HEIGHT);
+			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH+1,Const.HEIGHT);
 //			rayCaster.rayCastFloors(g2);
 			rayCaster.rayCastWalls(g2, false);
 			
@@ -192,31 +192,27 @@ public class Game {
 
 			rayCaster.rayCastWalls(g2, true);
 			
-			for (Entity thing : entities) {
+			for (Entity entity : entities) {
 
-				if (thing instanceof Skeleton) {
+				if (entity instanceof Skeleton) {
 					g.setColor(Color.RED);
 		            g.setColor(Color.RED);
-		            ((Skeleton) thing).drawEnemyProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
+		            ((Skeleton) entity).drawEnemyProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
 
-            	} else if (thing instanceof Zombie) {
+            	} else if (entity instanceof Zombie) {
             		g.setColor(Color.GREEN);
             	}
 								
-	            g2.fillRect((int) (thing.getPosition().getX() - thing.getWidth() / 2 + cameraOffset.getX()),
-	                        (int) (thing.getPosition().getY() - thing.getHeight() / 2 + cameraOffset.getY()), thing.getWidth(),
-	                        thing.getHeight());
+	            g2.fillRect((int) (entity.getPosition().getX() - entity.getWidth() / 2 + cameraOffset.getX()),
+	                        (int) (entity.getPosition().getY() - entity.getHeight() / 2 + cameraOffset.getY()), entity.getWidth(),
+	                        entity.getHeight());
 	            
-	            g2.drawLine((int) (thing.getPosition().getX() + cameraOffset.getX()), (int) (thing.getPosition().getY() + cameraOffset.getY()), (int) (thing.getPosition().getX() + cameraOffset.getX() + Math.cos(thing.getAngle().getValue())*200), (int) (thing.getPosition().getY() + cameraOffset.getY() - Math.sin(thing.getAngle().getValue())*200));
+	            g2.drawLine((int) (entity.getPosition().getX() + cameraOffset.getX()), (int) (entity.getPosition().getY() + cameraOffset.getY()), (int) (entity.getPosition().getX() + cameraOffset.getX() + Math.cos(entity.getAngle().getValue())*200), (int) (entity.getPosition().getY() + cameraOffset.getY() - Math.sin(entity.getAngle().getValue())*200));
 			}
 			
 			g.setColor(Color.RED);
             player.drawPlayerProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
 
-			g.setColor(Color.ORANGE);	
-//			g2.rotate(-player.getAngle().getValue(), player.getPosition().getX()+ cameraOffset.getX(), player.getPosition().getY()+ cameraOffset.getY());
-//			g2.fillRect((int) (player.getPosition().getX() - player.getWidth() / 2 + cameraOffset.getX()), (int) (player.getPosition().getY() - player.getHeight() / 2 + cameraOffset.getY()), player.getWidth(), player.getHeight());
-			
 		
 		} // paintComponent method end
 	} // GraphicsPanel class end

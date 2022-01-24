@@ -33,7 +33,7 @@ public class RayCaster {
 		this.map = map;
 	}
 	
-	public void drawSprite(Graphics2D g2, ArrayList<Entity> entity) {
+	public void drawSprite(Graphics2D g2, ArrayList<Entity> entities) {
 
 		//1. Sort the sprites from closest to fathest from player
 		//2. Find position of the sprites relative to the camera
@@ -57,33 +57,37 @@ public class RayCaster {
             
         }
 	
-		Collections.sort(entity, new DistanceComparator());
+		Collections.sort(entities, new DistanceComparator());
 				
-		for (Entity sprite : entity) {
+		//Left and Right edges of the player Fov, with a little extra space to allow sprites to be partially drawn when offscreen
+		double rightEdgeView = Angle.checkLimit(playerAngle.getValue() + 2*fov/3);
+		double leftEdgeView = Angle.checkLimit(playerAngle.getValue() - 2*fov/3);	
+		
+		for (Entity entity : entities) {
 						
-			//very bad code fix later lol
-			if (sprite.getPosition().equals(playerPosition)) {
+			//Do not draw if the entity position is on the same position as the player
+			if (entity.getPosition().equals(playerPosition)) {
 				continue;
 			}
-			
-            Vector spritePosition = sprite.getPosition();
-			Vector spriteVectorFromPlayer = spritePosition.subtract(playerPosition);
+					
+			Vector spriteVectorFromPlayer = entity.getPosition().subtract(playerPosition);
 			Angle spriteAngle = new Angle(-Math.atan2(spriteVectorFromPlayer.getY(),spriteVectorFromPlayer.getX()));
-			double rightViewEdge = Angle.checkLimit(playerAngle.getValue() + 2*fov/3);
-			double leftViewEdge = Angle.checkLimit(playerAngle.getValue() - 2*fov/3);	
-
-		if ((spriteAngle.getValue() < rightViewEdge && spriteAngle.getValue() > leftViewEdge) || (leftViewEdge > rightViewEdge && (leftViewEdge < spriteAngle.getValue() || rightViewEdge > spriteAngle.getValue()))) {					
-
-			double stepAngle = (2*Math.PI)/sprite.getSprites().getNumberOfDirectionTextures();
-			Angle spriteAngleDirection = new Angle (Angle.checkLimit(stepAngle * Math.round((spriteAngle.getValue()-sprite.getAngle().getValue())/stepAngle) - Math.PI)); 
-		
 			
-			double distance = spriteVectorFromPlayer.magnitude();	
-			double ray = Math.cos(playerAngle.getValue()-spriteAngle.getValue())*distance; //Distance of player to camera plane
-			double section = Math.sin(playerAngle.getValue()-spriteAngle.getValue())*distance; //length from player sprite on the camera plane
-			double cameraPlane = Math.tan(fov/2)*ray*2; //Length of the entire camera plane
+		if (inView(leftEdgeView, rightEdgeView, spriteAngle)) {
 
-			double cameraX = (double)Const.TRUE_WIDTH/2 + (double)Const.TRUE_WIDTH*(section/cameraPlane) ;
+			//Calculate the step angles for the entity's directional sprites
+			double directionalStepAngle = (2*Math.PI)/entity.getSprites().getNumberOfDirectionTextures();
+			//Calculate what direction the player sees
+			double angleDifference = Math.round((spriteAngle.getValue()-entity.getAngle().getValue())/directionalStepAngle);
+			Angle spriteAngleDirection = new Angle (Angle.checkLimit((directionalStepAngle * angleDifference) - Math.PI)); 
+			
+			double spriteAngleFromCentre = playerAngle.getValue()-spriteAngle.getValue();
+			double distance = spriteVectorFromPlayer.magnitude();	
+			double cameraRayLength = Math.cos(spriteAngleFromCentre)*distance; //Distance of player to camera plane
+			double section = Math.sin(spriteAngleFromCentre)*distance; //length from player sprite on the camera plane from middle
+			double cameraPlaneLength = Math.tan(fov/2)*cameraRayLength*2; //Length of the entire camera plane
+
+			double cameraX = (double)Const.WIDTH/2 + (double)Const.WIDTH*(section/cameraPlaneLength) ;
 						
 			//Rotate camera plane to face right so that x is distance between camera plane and sprite (not eculidean distance)
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
@@ -94,25 +98,29 @@ public class RayCaster {
 			double strokeWidth = Math.abs(scale/(double)Const.TEXTURE_SIZE);		
 			g2.setStroke(new BasicStroke((int) strokeWidth+1));
 						
-			double yOffset = (scale/(double)Const.HEIGHT) * sprite.getSpriteZOffset();
-			scale *= sprite.getSpriteScale();
+			double yOffset = (scale/(double)Const.HEIGHT) * entity.getSpriteZOffset();
+			scale *= entity.getSpriteScale();
 			
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
-				double thing = cameraX +j*step - scale/2-7;
-				double thingCheck = cameraX +j*step- scale/2;
-					if ((((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) >= 0 && (((thingCheck)/(double)Const.TRUE_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((thingCheck)/Const.TRUE_WIDTH)*numberOfRays)]) {
+				double cameraXPosition = cameraX +j*step - scale/2-7;
+				double cameraXPositionCheck = cameraX +j*step- scale/2;
+					if ((((cameraXPositionCheck)/(double)Const.WIDTH)*numberOfRays) >= 0 && (((cameraXPositionCheck)/(double)Const.WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((cameraXPositionCheck)/Const.WIDTH)*numberOfRays)]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 	
-							int direction = (int) (spriteAngleDirection.getValue()/stepAngle);
-							int animationNumber = sprite.getSprites().getAnimationNumber() % sprite.getSprites().getNumberOfAnimationTextures(direction);
-							g2.setColor(new Color(sprite.getSprites().getSingleTexture(direction, animationNumber).getRGB(j,k)));
+							int direction = (int) (spriteAngleDirection.getValue()/directionalStepAngle);
+							int animationNumber = entity.getSprites().getAnimationNumber() % entity.getSprites().getNumberOfAnimationTextures(direction);
+							g2.setColor(new Color(entity.getSprites().getSingleTexture(direction, animationNumber).getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
-								g2.drawLine((int) (thing), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (thing), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
+								g2.drawLine((int) (cameraXPosition), (int)((double)Const.HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (cameraXPosition), (int) ((double)Const.HEIGHT/2 - scale/2 + k*step+yOffset));
 							}
 						}						
 					}
 				}
 			}
 		}
+	}
+	
+	public boolean inView(double leftEdgeView, double rightEdgeView, Angle spriteAngle) {
+		return (leftEdgeView < spriteAngle.getValue() && spriteAngle.getValue() < rightEdgeView ) || (leftEdgeView > rightEdgeView && (leftEdgeView < spriteAngle.getValue() || rightEdgeView > spriteAngle.getValue()));		
 	}
 	
 	//It doesnt work well if you want to use it, use it at your own risk
@@ -204,9 +212,8 @@ public class RayCaster {
 					
 				rayDistance = rayDistance*Math.cos(rayAngle-playerAngle.getValue());
 				dist[numberOfRays-rays-1] = rayDistance;
-				int strokeWidth = Const.WIDTH/numberOfRays;
-				g2.setStroke(new BasicStroke(strokeWidth));
-
+				double strokeWidth = (double)Const.WIDTH/numberOfRays;
+				g2.setStroke(new BasicStroke((int)strokeWidth+1));
 				
 				int numbPixel = textures.getTextureHeight(wallType, 0);
 				double lineH = (Const.HEIGHT*Const.BOXSIZE/2)/rayDistance;
@@ -245,8 +252,9 @@ public class RayCaster {
 						}
 					}
 
-					g2.drawLine(Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2+(middle) - i*stepPattern) , Const.WIDTH-rays*strokeWidth - 80, (int) (Const.HEIGHT/2 + (middle) - (i+1)*stepPattern ));
+					g2.drawLine((int) (Const.WIDTH-rays*strokeWidth), (int) (Const.HEIGHT/2+(middle) - i*stepPattern) ,(int) (Const.WIDTH-rays*strokeWidth), (int) (Const.HEIGHT/2 + (middle) - (i+1)*stepPattern ));
 				}		
+
 			}	
 		}
 	}
