@@ -91,20 +91,18 @@ public class RayCaster {
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
 			double distanceToPlane = rotatedVector.getX();
 			
-			double scale; 
-			if (distanceToPlane != 0) {
-				scale = Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane;	
-			} else {
-				scale = 0;
-			}
-			
+			double scale = Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane;	
 			double yOffset = (scale/Const.HEIGHT) * entity.getSpriteZOffset();
 			scale *= entity.getSpriteScale();
 			double stepPerPixel = scale/Const.TEXTURE_SIZE;
 			double strokeWidth = Math.abs(scale/Const.TEXTURE_SIZE);
+			if ((int) strokeWidth+1 == Integer.MIN_VALUE) {
+				strokeWidth = 0;
+			}
 
 			g2.setStroke(new BasicStroke((int) strokeWidth+1));
-		
+
+			
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
 				double spriteXPosition = cameraX + j*stepPerPixel - scale/2;	
 				int rayNumber = (int) (((spriteXPosition)/Const.WIDTH)*numberOfRays);
