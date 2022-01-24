@@ -69,7 +69,7 @@ abstract class GameObject {
   this.position = position;
   this.width = width;
   this.height = height;
-  this.sprites = sprites;
+  this.sprites = new TextureManager(sprites);
   this.name = name;
   this.angle = angle;
  }

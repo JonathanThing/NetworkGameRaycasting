@@ -42,7 +42,7 @@ public class Game {
 												{2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,2},
 												{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2}}); 
 
-	static Player player = new Player(new Vector ((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (2)*Const.BOX_SIZE - Const.BOX_SIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), null, 100, 4, 0,0.75, null);
+	static Player player;
 	static boolean up, down, left, right, turnRight, turnLeft, shooting;
 	static Vector cameraOffset = new Vector(0,0);	
 	static ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -60,7 +60,11 @@ public class Game {
 			e.printStackTrace();
 		}
 		
+		player = new Player(new Vector ((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (2)*Const.BOX_SIZE - Const.BOX_SIZE/2), 10, 10, "player", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null);
 		entities.add(new Skeleton(new Vector((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (6)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 120,0.75, null, fireball));
+		entities.add(new Skeleton(new Vector((4)*Const.BOX_SIZE - Const.BOX_SIZE/2, (5)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 120,0.75, null, fireball));
+		entities.add(new Skeleton(new Vector((2)*Const.BOX_SIZE - Const.BOX_SIZE/2, (3)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 120,0.75, null, fireball));
+
 		entities.add(player);
 		
 		gameWindow = new JFrame("Game Window");

@@ -26,6 +26,10 @@ public class TextureManager {
 			}
 		}
 	}
+	
+	public TextureManager(TextureManager other) {
+		this.textures = other.getTextures();
+	}
 
 	public BufferedImage[][] getTextures() {
 		return textures;
@@ -78,5 +82,5 @@ public class TextureManager {
 	public void setLastAnimationChange(long lastAnimationChange) {
 		this.lastAnimationChange = lastAnimationChange;
 	}
-	
+
 }

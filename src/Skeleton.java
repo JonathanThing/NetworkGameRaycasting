@@ -16,10 +16,21 @@ class Skeleton extends Enemy {
 	}
 
 	public void moveProjectile() {
-		for (int i = 0; i < this.getProjectilesList().size(); i++) { 
-			(this.getProjectilesList().get(i)).moveUp((this.getProjectilesList().get(i)).getChangeY()); 
-			(this.getProjectilesList().get(i)).moveLeft((this.getProjectilesList().get(i)).getChangeX()); 
-		}
+	
+    for (Projectile currentProjectile :  this.getProjectilesList()) { //loops through arrayList of projectiles
+
+    	//for some reason it applies to all the projectiles, odd
+    	long currentTime = System.currentTimeMillis();       	
+    	if (currentProjectile.getSprites().getLastAnimationChange() + 250 <= currentTime) {
+    		currentProjectile.getSprites().setLastAnimationChange(currentTime);
+    		currentProjectile.getSprites().changeAnimationNumber(1);
+    	}
+    
+    	
+    	currentProjectile.moveUp(currentProjectile.getChangeY()); 
+    	currentProjectile.moveLeft(currentProjectile.getChangeX()); 
+
+    }
 		
 		
 	}
