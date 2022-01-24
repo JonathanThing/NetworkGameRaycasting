@@ -4,21 +4,21 @@ public class Angle {
 		this.angle = checkLimit(angle);
 	}
 	
-	public double getAngleValue() {
+	public double getValue() {
 		return this.angle;
 	}
 	
-	public void changeAngleValue(double change) {
+	public void changeValue(double change) {
 		this.angle = checkLimit(angle+change);
 	}
 	
-	public void setAngleValue(double angle) {
+	public void setValue(double angle) {
 		this.angle = checkLimit(angle);
 	}
 	
 	//Limits the angle to between 0 and 2 pi
 	public static double checkLimit(double angle) {
-		if (angle > 2*Math.PI) {
+		if (angle >= 2*Math.PI) {
 			return angle % (2*Math.PI);
 		} else if (angle < 0) {
 			return angle + (2*Math.PI);
@@ -27,4 +27,7 @@ public class Angle {
 		}
 	}
 
+	public String toString() {
+		return "Degree: " + Math.toDegrees(angle);
+	}
 }
