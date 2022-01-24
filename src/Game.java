@@ -60,14 +60,9 @@ public class Game {
 			e.printStackTrace();
 		}
 		
-//		entities.add(new Zombie(new Vector(400, 300), 30, 30, "skeleton", new Angle(2), sprites.getSingleTexture(0), 100, 4, 20,0.75, null));
-//		entities.add(new Skeleton(new Vector((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (4)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
 		entities.add(new Skeleton(new Vector((3)*Const.BOX_SIZE - Const.BOX_SIZE/2, (6)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(3*Math.PI/2), personDirection, 100, 4, 0,0.75, null, fireball));
-//		entities.add(new Skeleton(new Vector((6)*Const.BOX_SIZE - Const.BOX_SIZE/2, (2)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(Math.PI), personDirection, 100, 4, 0,0.75, null));
-//		entities.add(new Skeleton(new Vector((6)*Const.BOX_SIZE - Const.BOX_SIZE/2, (5)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(Math.PI/2), personDirection, 100, 4, 0,0.75, null));
-//		entities.add(new Skeleton(new Vector((8)*Const.BOX_SIZE - Const.BOX_SIZE/2, (4)*Const.BOX_SIZE - Const.BOX_SIZE/2), 30, 30, "skeleton", new Angle(2*Math.PI), personDirection, 100, 4, 0,0.75, null));
-
 		entities.add(player);
+		
 		gameWindow = new JFrame("Game Window");
 		gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

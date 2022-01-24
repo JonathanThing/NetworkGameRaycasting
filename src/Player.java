@@ -79,22 +79,22 @@ class Player extends Character {
             Vector futurePosition = this.getPosition().add(movementVector.multiplyByScalar(4));
 
             // door collision
-            if (map.getMapTile((int) futurePosition.getY() / Const.BOXSIZE,
-                               (int) futurePosition.getX() / Const.BOXSIZE) == 4) {
-                map.setMapTile((int) futurePosition.getY() / Const.BOXSIZE, (int) futurePosition.getX() / Const.BOXSIZE,
+            if (map.getMapTile((int) futurePosition.getY() / Const.BOX_SIZE,
+                               (int) futurePosition.getX() / Const.BOX_SIZE) == 4) {
+                map.setMapTile((int) futurePosition.getY() / Const.BOX_SIZE, (int) futurePosition.getX() / Const.BOX_SIZE,
                                0);
             }
 
             // wall side collision
             futurePosition = this.getPosition().add(movementVector.multiplyByScalar(2));
-            if (map.getMapTile((int) this.getPosition().getY() / Const.BOXSIZE,
-                               (int) futurePosition.getX() / Const.BOXSIZE) < 1) {
+            if (map.getMapTile((int) this.getPosition().getY() / Const.BOX_SIZE,
+                               (int) futurePosition.getX() / Const.BOX_SIZE) < 1) {
                 this.moveLeft(movementVector.getX());
             }
 
             // wall forward collision
-            if (map.getMapTile((int) futurePosition.getY() / Const.BOXSIZE,
-                               (int) this.getPosition().getX() / Const.BOXSIZE) < 1) {
+            if (map.getMapTile((int) futurePosition.getY() / Const.BOX_SIZE,
+                               (int) this.getPosition().getX() / Const.BOX_SIZE) < 1) {
                 this.moveDown(movementVector.getY());
             }
         }

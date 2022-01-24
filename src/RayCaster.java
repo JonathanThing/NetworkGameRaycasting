@@ -91,11 +91,18 @@ public class RayCaster {
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
 			double distanceToPlane = rotatedVector.getX();
 			
-			double scale = (Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane);		
+			double scale; 
+			if (distanceToPlane != 0) {
+				scale = Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane;	
+			} else {
+				scale = 0;
+			}
+			
 			double stepPerPixel = scale/Const.TEXTURE_SIZE;
-			double strokeWidth = Math.abs(scale/Const.TEXTURE_SIZE);		
+			double strokeWidth = Math.abs(scale/Const.TEXTURE_SIZE);
+
 			g2.setStroke(new BasicStroke((int) strokeWidth+1));
-						
+
 			double yOffset = (scale/Const.HEIGHT) * entity.getSpriteZOffset();
 			scale *= entity.getSpriteScale();
 			
@@ -135,7 +142,7 @@ public class RayCaster {
 //
 //			p = (int) ((Const.HEIGHT/2.0)- (y*step));
 //			posZ = (Const.HEIGHT/2.0);
-//			double rowDistance = (posZ/p) * Const.BOXSIZE;
+//			double rowDistance = (posZ/p) * Const.BOX_SIZE;
 //
 //			Vector leftSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2))));
 //			Vector rightSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2))));
@@ -150,8 +157,8 @@ public class RayCaster {
 //					
 //				for(int x = 0; x < numberOfRays; x++) {
 //				
-//					int tileX = (int)(floorX/Const.D_BOXSIZE);
-//					int tileY = (int)(floorY/Const.D_BOXSIZE);
+//					int tileX = (int)(floorX/Const.D_BOX_SIZE);
+//					int tileY = (int)(floorY/Const.D_BOX_SIZE);
 //					
 //					int pixelX = (int) Math.abs(floorX % Const.D_TEXTURE_SIZE);
 //					int pixelY = (int) Math.abs(floorY % Const.D_TEXTURE_SIZE);
@@ -214,7 +221,7 @@ public class RayCaster {
 				g2.setStroke(new BasicStroke((int)strokeWidth+1));
 				
 				int numbPixel = textures.getTextureHeight(wallType, 0);
-				double lineH = (Const.HEIGHT*Const.BOXSIZE/2)/rayDistance;
+				double lineH = (Const.HEIGHT*Const.BOX_SIZE/2)/rayDistance;
 				double middle = lineH/2;
 				double stepPattern = (lineH/numbPixel);
 				int textureX;
@@ -224,15 +231,15 @@ public class RayCaster {
 				
 				if (!verticalWall) {
 					if (rayAngle < Math.PI) {
-						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textureWidth) % textureWidth);
+						textureX = (int)(rayVector.getX() / (Const.BOX_SIZE/textureWidth) % textureWidth);
 					} else {
-						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textureWidth) % textureWidth)-1;
+						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOX_SIZE/textureWidth) % textureWidth)-1;
 					}
 				} else {
 					if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) {
-						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textureWidth) % textureWidth);
+						textureX = (int)(rayVector.getY() / (Const.BOX_SIZE/textureWidth) % textureWidth);
 					} else {
-						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textureWidth) % textureWidth)-1;
+						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOX_SIZE/textureWidth) % textureWidth)-1;
 					}
 				}
 				
@@ -269,20 +276,20 @@ public class RayCaster {
 		if (rayAngle == Math.PI/2 || rayAngle == 3*Math.PI/2) { // Looking up or down
 			return distance;
 		} else if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) { //Looking right
-			gridLines.setX(Const.BOXSIZE * (Math.ceil(playerPosition.getX() / Const.BOXSIZE))); 
+			gridLines.setX(Const.BOX_SIZE * (Math.ceil(playerPosition.getX() / Const.BOX_SIZE))); 
 			gridLines.setY(playerPosition.getY() - ((gridLines.getX()-playerPosition.getX()) * Math.tan(rayAngle)));
-			step.setX(Const.BOXSIZE);
+			step.setX(Const.BOX_SIZE);
 			step.setY(-Math.tan(rayAngle) * step.getX());			
 		} else { //Looking left
-			gridLines.setX(Const.BOXSIZE * (Math.floor(playerPosition.getX() / Const.BOXSIZE)));
+			gridLines.setX(Const.BOX_SIZE * (Math.floor(playerPosition.getX() / Const.BOX_SIZE)));
 			gridLines.setY(playerPosition.getY() - ((gridLines.getX()-playerPosition.getX()) * Math.tan(rayAngle)));
-			step.setX(-Const.BOXSIZE);
+			step.setX(-Const.BOX_SIZE);
 			step.setY(-Math.tan(rayAngle) * step.getX());		
 		}
 
 		while (gridLines.inRange(map)) {
 			//Get current tile in relation to the row and column of the level
-			Vector currentTile = gridLines.divideByScalar(Const.BOXSIZE).flipXY();
+			Vector currentTile = gridLines.divideByScalar(Const.BOX_SIZE).flipXY();
 			Vector currentTileBehind = currentTile.subtract(new Vector(0,1));
 			
 			if (map.getMapTile(currentTileBehind) >= 1) {
@@ -309,20 +316,20 @@ public class RayCaster {
 		if (rayAngle == Math.PI || rayAngle == 0 || rayAngle == 2*Math.PI) { //Looking left or right
 			return distance;
 		} else if (rayAngle < Math.PI) { //Looking up
-			gridLines.setY(Const.BOXSIZE * (Math.floor(playerPosition.getY() / Const.BOXSIZE)));
+			gridLines.setY(Const.BOX_SIZE * (Math.floor(playerPosition.getY() / Const.BOX_SIZE)));
 			gridLines.setX(playerPosition.getX() + ((gridLines.getY() - playerPosition.getY()) / Math.tan(-rayAngle)));
-			step.setY(-Const.BOXSIZE);
+			step.setY(-Const.BOX_SIZE);
 			step.setX(-step.getY() / Math.tan(rayAngle));			
 		} else { //Looking down
-			gridLines.setY(Const.BOXSIZE * (Math.ceil(playerPosition.getY() / Const.BOXSIZE)));
+			gridLines.setY(Const.BOX_SIZE * (Math.ceil(playerPosition.getY() / Const.BOX_SIZE)));
 			gridLines.setX(playerPosition.getX() + ((gridLines.getY() - playerPosition.getY()) / Math.tan(-rayAngle)));
-			step.setY(Const.BOXSIZE);
+			step.setY(Const.BOX_SIZE);
 			step.setX(-step.getY()/ Math.tan(rayAngle));
 		}
 
 		while (gridLines.inRange(map)) {
 			
-			Vector currentTile = gridLines.divideByScalar(Const.BOXSIZE).flipXY();
+			Vector currentTile = gridLines.divideByScalar(Const.BOX_SIZE).flipXY();
 			Vector currentTileBehind = currentTile.subtract(new Vector(1,0));
 			
 			if (map.getMapTile(currentTileBehind) >= 1) {

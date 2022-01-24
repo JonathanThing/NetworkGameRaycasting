@@ -74,7 +74,7 @@ public class Vector {
 	}
 	
 	public boolean inRange(Level map) {
-		if (this.getX() < map.getColumns()*Const.BOXSIZE && this.getX() >= 0 && this.getY() < map.getRows()*Const.BOXSIZE && this.getY() >= 0) {
+		if (this.getX() < map.getColumns()*Const.BOX_SIZE && this.getX() >= 0 && this.getY() < map.getRows()*Const.BOX_SIZE && this.getY() >= 0) {
 			return true;
 		} 
 		
