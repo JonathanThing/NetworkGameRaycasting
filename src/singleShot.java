@@ -1,6 +1,10 @@
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 //Note: Need to make lastFire,timer,cooldown extend from weapon
+
+import javax.imageio.ImageIO;
 
 
 public class singleShot extends Weapon{
@@ -17,9 +21,10 @@ public class singleShot extends Weapon{
         else {
         	if(reloading == false) {
         		if(this.cooldown < 5) {    
-            		double yComponent = -1* Math.sin(angle.getAngleValue());
-            		double xComponent = -1* Math.cos(angle.getAngleValue());		
-            		projectilesList.add(new Projectile(new Vector(playerPos.getX(),playerPos.getY()), 20, 20, "Bullet", angle, null, 10, 10, xComponent, yComponent));
+            		double yComponent = -1* Math.sin(angle.getValue());
+            		double xComponent = -1* Math.cos(angle.getValue());		
+            		projectilesList.add(new Projectile(new Vector(playerPos.getX(),playerPos.getY()), 20, 20, "Bullet", angle, fireball,
+            				10, 10, 0, 1, xComponent, yComponent));
                 }
                 else if(this.cooldown > this.getFireRate()) {
                 	lastFire = System.currentTimeMillis();
@@ -44,8 +49,9 @@ public class singleShot extends Weapon{
 	    }
 	}
 
-	singleShot(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate, int clipSize, int reloadTime) {
+	singleShot(double x, double y, int width, int height, String name, TextureManager sprite, double damage, double fireRate, int clipSize, int reloadTime) {
 		super(x, y, width, height, name, sprite, damage, fireRate, clipSize, reloadTime);
+		
 	}
 
 }
