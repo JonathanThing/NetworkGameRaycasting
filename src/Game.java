@@ -142,7 +142,6 @@ public class Game {
 			g2.fillRect(0, 0, Const.WIDTH+1, Const.HEIGHT / 2);
 			g2.setColor(Color.GRAY.darker().darker());
 			g2.fillRect(0,Const.HEIGHT/2,Const.WIDTH+1,Const.HEIGHT);
-//			rayCaster.rayCastFloors(g2);
 			rayCaster.rayCastWalls(g2, false);
 			
 			ArrayList<Entity> allEntities = new ArrayList<Entity>();

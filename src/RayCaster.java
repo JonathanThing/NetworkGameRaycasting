@@ -91,24 +91,26 @@ public class RayCaster {
 			Vector rotatedVector = spriteVectorFromPlayer.rotateVector(playerAngle.getValue());
 			double distanceToPlane = rotatedVector.getX();
 			
-			int scale = (int)(Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane);		
-			double step = scale/Const.D_TEXTURE_SIZE;
-			double strokeWidth = Math.abs(scale/Const.D_TEXTURE_SIZE);		
+			double scale = (Const.TEXTURE_SIZE*Const.HEIGHT/distanceToPlane);		
+			double stepPerPixel = scale/Const.TEXTURE_SIZE;
+			double strokeWidth = Math.abs(scale/Const.TEXTURE_SIZE);		
 			g2.setStroke(new BasicStroke((int) strokeWidth+1));
 						
-			double yOffset = (scale/(double)Const.D_HEIGHT) * entity.getSpriteZOffset();
+			double yOffset = (scale/Const.HEIGHT) * entity.getSpriteZOffset();
 			scale *= entity.getSpriteScale();
 			
 			for (int j = 0; j < Const.TEXTURE_SIZE; j++) {
-				double cameraXPosition = cameraX +j*step - scale/2-7;
-				double cameraXPositionCheck = cameraX +j*step- scale/2;
-					if ((((cameraXPositionCheck)/Const.D_WIDTH)*numberOfRays) >= 0 && (((cameraXPositionCheck)/Const.D_WIDTH)*numberOfRays) < 360 && Math.abs(distanceToPlane) < dist[(int)(((cameraXPositionCheck)/Const.D_WIDTH)*numberOfRays)]) {
+				double spriteXPosition = cameraX + j*stepPerPixel - scale/2;	
+				int rayNumber = (int) (((spriteXPosition)/Const.WIDTH)*numberOfRays);
+					if (rayNumber >= 0 && rayNumber < 360 && Math.abs(distanceToPlane) < dist[rayNumber]) {
 						for (int k = 0; k < Const.TEXTURE_SIZE; k++) { 	
-							int direction = (int) (spriteAngleDirection.getValue()/directionalStepAngle);
-							int animationNumber = entity.getSprites().getAnimationNumber() % entity.getSprites().getNumberOfAnimationTextures(direction);
-							g2.setColor(new Color(entity.getSprites().getSingleTexture(direction, animationNumber).getRGB(j,k)));
+							TextureManager texture = entity.getSprites();
+							double spriteYPosition = Const.HEIGHT/2.0 - scale/2 + k*stepPerPixel+ yOffset;
+							int directionSprite = (int) (spriteAngleDirection.getValue()/directionalStepAngle);
+							int animationNumber = texture.getAnimationNumber() % texture.getNumberOfAnimationTextures(directionSprite);
+							g2.setColor(new Color(texture.getSingleTexture(directionSprite, animationNumber).getRGB(j,k)));
 							if (!g2.getColor().equals(new Color (74,65,42))) {
-								g2.drawLine((int) (cameraXPosition), (int)(Const.D_HEIGHT/2 - scale/2 + k*step+ yOffset), (int) (cameraXPosition), (int) (Const.D_HEIGHT/2 - scale/2 + k*step+yOffset));
+								g2.drawLine((int) (spriteXPosition), (int)(spriteYPosition), (int) (spriteXPosition), (int) (spriteYPosition));
 							}
 						}						
 					}
@@ -121,51 +123,49 @@ public class RayCaster {
 		return (leftEdgeView < spriteAngle.getValue() && spriteAngle.getValue() < rightEdgeView ) || (leftEdgeView > rightEdgeView && (leftEdgeView < spriteAngle.getValue() || rightEdgeView > spriteAngle.getValue()));		
 	}
 	
-	//It doesnt work well if you want to use it, use it at your own risk
-	public void rayCastFloors(Graphics2D g2) {
-		
-		double posZ;
-		int p;
-		int numberOfRays = 150;
-		double step = ((Const.D_HEIGHT/2.0)/numberOfRays);
-
-		for (int y = 0; y < numberOfRays; y ++) {
-
-			p = (int) ((Const.D_HEIGHT/2)- (y*step));
-			posZ = (Const.D_HEIGHT/2.0);
-			double rowDistance = (posZ/p) * Const.BOXSIZE;
-
-			Vector leftSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2))));
-			Vector rightSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2))));
-			
-			double stepX = (leftSide.getX() - rightSide.getX())/numberOfRays;
-			double stepY = (rightSide.getY() - leftSide.getY())/numberOfRays;
-			
-			double floorX = playerPosition.getX() + (rowDistance) * Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2));
-			double floorY = playerPosition.getY() - (rowDistance) * Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2));
-			
-			int widthStep = (int) (Const.D_WIDTH/numberOfRays);
-					
-				for(int x = 0; x < numberOfRays; x++) {
-				
-					int tileX = (int)(floorX/Const.D_BOXSIZE);
-					int tileY = (int)(floorY/Const.D_BOXSIZE);
-					
-					int pixelX = (int) Math.abs(floorX % Const.D_TEXTURE_SIZE);
-					int pixelY = (int) Math.abs(floorY % Const.D_TEXTURE_SIZE);
-					
-					floorX -= stepX;
-					floorY -= stepY;
-					
-					g2.setColor(new Color(textures.getSingleTexture(0,0).getRGB(pixelX, pixelY)));
-					g2.setStroke(new BasicStroke((int)step+1));
-					g2.drawLine(x*widthStep, Const.HEIGHT - (int)(y*step), (x+1)*widthStep,  Const.HEIGHT - (int)(y*step));
-					g2.drawLine(x*widthStep, (int)(y*step), (x+1)*widthStep, (int)(y*step));
-			}	
-		}
-			
-			
-	}
+//	//It doesnt work well if you want to use it, use it at your own risk
+//	public void rayCastFloors(Graphics2D g2) {
+//		
+//		double posZ;
+//		int p;
+//		int numberOfRays = 150;
+//		double step = ((Const.HEIGHT/2.0)/numberOfRays);
+//
+//		for (int y = 0; y < numberOfRays; y ++) {
+//
+//			p = (int) ((Const.HEIGHT/2.0)- (y*step));
+//			posZ = (Const.HEIGHT/2.0);
+//			double rowDistance = (posZ/p) * Const.BOXSIZE;
+//
+//			Vector leftSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2))));
+//			Vector rightSide = new Vector(rowDistance* Math.cos(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2)), (rowDistance* Math.sin(Angle.checkLimit(playerAngle.getValue()-Const.FOV/2))));
+//			
+//			double stepX = (leftSide.getX() - rightSide.getX())/numberOfRays;
+//			double stepY = (rightSide.getY() - leftSide.getY())/numberOfRays;
+//			
+//			double floorX = playerPosition.getX() + (rowDistance) * Math.cos(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2));
+//			double floorY = playerPosition.getY() - (rowDistance) * Math.sin(Angle.checkLimit(playerAngle.getValue()+Const.FOV/2));
+//			
+//			int widthStep = (int) (Const.D_WIDTH/numberOfRays);
+//					
+//				for(int x = 0; x < numberOfRays; x++) {
+//				
+//					int tileX = (int)(floorX/Const.D_BOXSIZE);
+//					int tileY = (int)(floorY/Const.D_BOXSIZE);
+//					
+//					int pixelX = (int) Math.abs(floorX % Const.D_TEXTURE_SIZE);
+//					int pixelY = (int) Math.abs(floorY % Const.D_TEXTURE_SIZE);
+//					
+//					floorX -= stepX;
+//					floorY -= stepY;
+//					
+//					g2.setColor(new Color(textures.getSingleTexture(0,0).getRGB(pixelX, pixelY)));
+//					g2.setStroke(new BasicStroke((int)step+1));
+//					g2.drawLine(x*widthStep, Const.HEIGHT - (int)(y*step), (x+1)*widthStep,  Const.HEIGHT - (int)(y*step));
+//					g2.drawLine(x*widthStep, (int)(y*step), (x+1)*widthStep, (int)(y*step));
+//			}	
+//		}	
+//	}
 
 	
 	public void rayCastWalls(Graphics2D g2, boolean drawingMap) {
@@ -220,37 +220,41 @@ public class RayCaster {
 				int textureX;
 				int textureY = 0;
 				
+				int textureWidth = textures.getTextureWidth(wallType, 0);
+				
 				if (!verticalWall) {
 					if (rayAngle < Math.PI) {
-						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0));
+						textureX = (int)(rayVector.getX() / (Const.BOXSIZE/textureWidth) % textureWidth);
 					} else {
-						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0))-1;
+						textureX = numbPixel- (int)(rayVector.getX() / (Const.BOXSIZE/textureWidth) % textureWidth)-1;
 					}
 				} else {
 					if (rayAngle < Math.PI/2 || rayAngle > 3*Math.PI/2) {
-						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0));
+						textureX = (int)(rayVector.getY() / (Const.BOXSIZE/textureWidth) % textureWidth);
 					} else {
-						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textures.getTextureWidth(wallType, 0)) % textures.getTextureWidth(wallType, 0))-1;
+						textureX = numbPixel- (int)(rayVector.getY() / (Const.BOXSIZE/textureWidth) % textureWidth)-1;
 					}
 				}
 				
 				for (int i = 0; i < numbPixel; i++) {
-					textureY = (numbPixel-1-i);
+					textureY = (numbPixel-i-1);
 					
 					BufferedImage texture = textures.getSingleTexture(wallType, 0);
-					int value = texture.getRGB((int)textureX,(int)textureY);
+					int valueRGB = texture.getRGB((int)textureX,(int)textureY);
 					
 					if (rayDistance == Const.NONE || wallType < 0) {
 						g2.setColor(Color.WHITE);
 					} else {
 						if (verticalWall) {
-							g2.setColor(new Color(value));
+							g2.setColor(new Color(valueRGB));
 						} else {
-							g2.setColor(new Color(value).darker().darker());
+							g2.setColor(new Color(valueRGB).darker().darker());
 						}
 					}
 
-					g2.drawLine((int) (Const.WIDTH-rays*strokeWidth), (int) (Const.HEIGHT/2+(middle) - i*stepPattern) ,(int) (Const.WIDTH-rays*strokeWidth), (int) (Const.HEIGHT/2 + (middle) - (i+1)*stepPattern ));
+					int xPosition = (int) (Const.WIDTH-rays*strokeWidth);
+					int yPosition = (int) (Const.HEIGHT/2+(middle) - i*stepPattern); 
+					g2.drawLine(xPosition, yPosition , xPosition, yPosition + (int)stepPattern);
 				}		
 
 			}	
