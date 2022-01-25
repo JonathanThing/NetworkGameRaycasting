@@ -66,15 +66,15 @@ public class Vector {
  }
  
  public double distance(Vector other) {
-  return Math.sqrt(Math.pow(this.getX()-other.getX(), 2) + Math.pow(this.getY()-other.getY(), 2));
+  return Math.sqrt(Math.pow(this.x-other.getX(), 2) + Math.pow(y-other.getY(), 2));
  }
  
  public double magnitude() {
-  return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
+  return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
  }
  
  public boolean inRange(Level map) {
-  if (this.getX() < map.getColumns() * Const.BOX_SIZE && this.getX() >= 0 && this.getY() < map.getRows() * Const.BOX_SIZE && this.getY() >= 0) {
+  if (this.x < map.getColumns() * Const.BOX_SIZE && this.x >= 0 && this.y < map.getRows() * Const.BOX_SIZE && this.y >= 0) {
    return true;
   } 
   return false;

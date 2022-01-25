@@ -14,7 +14,7 @@ class Player extends Character {
 
     public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,
             boolean turnRight,
-            Level map) {
+            Level map, double deltaX) {
 
         double xRaw = 0;
         double yRaw = 0;
@@ -43,6 +43,14 @@ class Player extends Character {
             this.getAngle().changeValue(Math.toRadians(-5));
         }
 
+        if (deltaX < 0) {
+            this.getAngle().changeValue(Math.toRadians(5));
+        }
+
+        if (deltaX > 0) {
+            this.getAngle().changeValue(Math.toRadians(-5));
+        }
+        
         double forwardAngle = this.getAngle().getValue();
         double sideAngle = Angle.checkLimit(forwardAngle - Math.PI / 2);
 

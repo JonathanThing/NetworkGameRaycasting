@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.awt.Cursor;
 
 public class Game {
     static JFrame gameWindow;
@@ -31,11 +33,11 @@ public class Game {
     static TextureManager personDirection;
     public static volatile Level currentLevel = new Level(new int[][] { { 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
+																        { 1, 0, -1, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
 																        { 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 6, 0, 2 }, 
-																        { 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 6, 6, 0, 2 },
+																        { 1, 0, 0, 0, 2, 0, 0, -2, 2, 0, 0, 0, 6, 6, 0, 2 },
 																        { 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
+																        { 2, 0, 0, -3, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
 																        { 2, 2, 4, 2, 1, 2, 4, 2, 2, 0, 0, 0, 3, 3, 0, 2 }, 
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 3, 0, 2 },
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
@@ -59,6 +61,11 @@ public class Game {
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
     static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
     static ProjectilesThread projectilesThread = new ProjectilesThread();
+    static double deltaX;
+    static Robot robot;
+    static boolean mouseMove = true;
+    static Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "blank cursor");
+    
     
     // ------------------------------------------------------------------------------
     public static void main(String[] args) {
@@ -74,7 +81,14 @@ public class Game {
         gameState = menu.getState();
         switch(gameState){
             case 0:
+				try {
+					robot = new Robot();
+				} catch (AWTException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 init();
+                
                 break;
             case 3:
                 // map editor
@@ -99,17 +113,7 @@ public class Game {
             e.printStackTrace();
         }
         generateMap(currentLevel.getMap());
-        if (twoPlayers) {
-            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
-            entities.add(other);
-            connect(sprites);
-        }
-        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
-
-        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(Math.PI/2),
-                                          new TextureManager(personDirection), 50, 4, 120, 0.75, null));
-        Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(Math.PI/2),
-                                             new TextureManager(personDirection), 50, 4, 120, 0.75, null));
+        
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
         gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -131,6 +135,9 @@ public class Game {
         rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
         mapWindow.setVisible(true);
         gameWindow.setVisible(true);
+       
+        gameWindow.setCursor(blankCursor);
+        
         runGameLoop();
     }
     
@@ -163,6 +170,26 @@ public class Game {
                     case 6: 
                         map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(6, 0));
                         break;       
+                    case -1:
+                    	if (twoPlayers) {
+                            other = new Player(new Vector((j) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+                            entities.add(other);
+                            connect(sprites);
+                        }
+                        player = new Player(new Vector((j) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+
+                        break;
+                        
+                    case -2: 
+                        addCharacterEntity(new Skeleton(new Vector((j+1) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "skeleton", new Angle(Math.PI/2),
+                                new TextureManager(personDirection), 50, 4, 120, 0.75, null));
+                    	break;  
+                    	
+                    case -3: 
+                        addCharacterEntity(new Zombie(new Vector((j+1) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "zombie", new Angle(Math.PI/2),
+                                new TextureManager(personDirection), 50, 4, 120, 0.75, null));
+
+                    	break;  
                 }
             }
         }
@@ -194,20 +221,28 @@ public class Game {
     }
     
     // ------------------------------------------------------------------------------
-    public static void runGameLoop() {
+	public static void runGameLoop() {
         while (true) {
             try {
                 Thread.sleep(25);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            
+            if (!mouseMove) {
+            	gameWindow.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            } else {
+            	gameWindow.setCursor(blankCursor);
+
+            }
+            
             if (twoPlayers){
                 if (otherShooting){
                     other.shoot(fireBall);
                     otherShooting = false;
                 }
             }
-            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
+            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel, deltaX);
             if (shooting) {
                 player.shoot(fireBall);
                 shooting = false;
@@ -216,6 +251,7 @@ public class Game {
             rayCaster.updateInformation(player, cameraOffset, currentLevel, Const.FOV);
             gameWindow.repaint();
             mapWindow.repaint();
+
         }
     }
     
@@ -317,11 +353,11 @@ public class Game {
                                     rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
                     } else if (currentLevel.getMapTile(rows, columns) >= 1) {
                         g2.setColor(Color.BLACK);
-                        g2.fillRect(columns * Const.BOX_SIZE + +(int) cameraOffset.getX(),
+                        g2.fillRect(columns * Const.BOX_SIZE + (int) cameraOffset.getX(),
                                     rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
                     }
                     g2.setColor(Color.BLACK);
-                    g2.drawRect(columns * Const.BOX_SIZE + +(int) cameraOffset.getX(),
+                    g2.drawRect(columns * Const.BOX_SIZE + (int) cameraOffset.getX(),
                                 rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
                 }
             }
@@ -397,10 +433,14 @@ public class Game {
                 case 'Q':
                     turnLeft = false;
                     break;
-            }
+                case KeyEvent.VK_ESCAPE:
+                	mouseMove = !mouseMove;
+            		break;
+            }       
         }
         
         public void keyTyped(KeyEvent e) {
+
         }
     }
     
@@ -418,16 +458,25 @@ public class Game {
         }
         
         public void mouseEntered(MouseEvent e) {
+        	
         }
         
         public void mouseExited(MouseEvent e) {
-        }
+
+    	}
     }
     
     // ------------------------------------------------------------------------------
     static class MyMouseMotionListener implements MouseMotionListener {
+    	
         public void mouseMoved(MouseEvent e) {
-        }
+        	if (mouseMove) {
+        		deltaX = e.getX() - Const.WIDTH/2.0;
+        		robot.mouseMove(Const.SCREEN_WIDTH/2 + gameWindow.getX(),Const.SCREEN_HEIGHT/2 + gameWindow.getY());
+        	} else {
+        		deltaX = 0;
+        	}
+    	}
         
         public void mouseDragged(MouseEvent e) {
         }
