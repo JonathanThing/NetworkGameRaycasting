@@ -30,13 +30,20 @@ public class Game {
     static TextureManager fireBall;
     static TextureManager personDirection;
     public static volatile Level currentLevel = new Level(new int[][] { { 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
-        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, { 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
-        { 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 6, 0, 2 }, { 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 6, 6, 0, 2 },
-        { 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, { 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
-        { 2, 2, 4, 2, 1, 2, 4, 2, 2, 0, 0, 0, 3, 3, 0, 2 }, { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 3, 0, 2 },
-        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
-        { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 5, 5, 0, 2 }, { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5, 5, 0, 2 },
-        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 } });
+																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
+																        { 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
+																        { 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 6, 0, 2 }, 
+																        { 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 6, 6, 0, 2 },
+																        { 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
+																        { 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
+																        { 2, 2, 4, 2, 1, 2, 4, 2, 2, 0, 0, 0, 3, 3, 0, 2 }, 
+																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 3, 0, 2 },
+																        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
+																        { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
+																        { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 5, 5, 0, 2 }, 
+																        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5, 5, 0, 2 },
+																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
+																        { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 } });
     
     static Player player;
     static Player other;
@@ -92,13 +99,20 @@ public class Game {
             e.printStackTrace();
         }
         generateMap(currentLevel.getMap());
+        if (twoPlayers) {
+            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
+            entities.add(other);
+            connect(sprites);
+        }
+        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
+
         Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(2),
                                           new TextureManager(sprites.getSingleTexture(2, 0)), 100, 4, 20, 0.75, null));
         Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(2),
                                              new TextureManager(sprites.getSingleTexture(1, 0)), 100, 4, 0, 0.75, null));
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
-        gameWindow.setSize(Const.TRUE_WIDTH, Const.TRUE_HEIGHT);
+        gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         canvas = new GraphicsPanel();
         canvas.addMouseListener(mouseListener);
@@ -107,14 +121,8 @@ public class Game {
         gameWindow.add(canvas);
         
         mapWindow = new JFrame("Map");
-        mapWindow.setSize(Const.WIDTH, Const.HEIGHT);
+        mapWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
         mapWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        if (twoPlayers) {
-            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
-            entities.add(other);
-            connect(sprites);
-        }
-        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
         entities.add(player);
         mapThing = new MapPanel();
         mapWindow.add(mapThing);
@@ -129,9 +137,7 @@ public class Game {
     public static void generateMap(int[][] tempMap){
         map = new Environment[tempMap.length][tempMap[0].length];
         for (int i = 0; i < tempMap.length; i++) {
-            //System.out.println();
             for (int j = 0; j < tempMap[0].length; j++) {
-                //System.out.print(tempMap[i][j]);
                 
                 switch (tempMap[i][j]) {
                     case 1: // Creates a Wall object
@@ -143,7 +149,6 @@ public class Game {
                         break;
                         
                     case 3: 
-                        System.out.println(tempMap[i][j]);
                         map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(3, 0));
                         break;
                         
@@ -236,7 +241,6 @@ public class Game {
             entities.add(entity);
         }
         projectilesThread.addProjectile(entity);
-        System.out.println("added projectile entity");
     }
     
     public static void removeProjectileEntity(UUID uuid) {
@@ -295,8 +299,7 @@ public class Game {
             super.paintComponent(g); // required
             
             Graphics2D g2 = (Graphics2D) g;
-            
-            g2.rotate(0);
+           
             g2.setStroke(new BasicStroke(4));
             g2.setColor(Color.BLACK);
             for (int rows = 0; rows < currentLevel.getRows(); rows++) {
@@ -322,33 +325,20 @@ public class Game {
                 
                 if (thing instanceof Skeleton) {
                     g.setColor(Color.RED);
-                    // g.setColor(Color.RED);
-                    // ((Skeleton) thing).drawEnemyProjectile(g2, cameraOffset.getX(),
-                    // cameraOffset.getY());
-                    
+                   
                 } else if (thing instanceof Zombie) {
                     g.setColor(Color.GREEN);
-                    // System.out.println("Zombie detected");
                 } else if (thing instanceof Projectile) {
                     g.setColor(Color.RED);
-                    
-                    // System.out.println("Projectile detected");
+                } else {
+                    g.setColor(Color.ORANGE);
                 }
                 
                 g2.fillRect((int) (thing.getPosition().getX() - thing.getWidth() / 2 + cameraOffset.getX()),
                             (int) (thing.getPosition().getY() - thing.getHeight() / 2 + cameraOffset.getY()),
                             thing.getWidth(), thing.getHeight());
             }
-            
-            g.setColor(Color.RED);
-            // player.drawPlayerProjectile(g2, cameraOffset.getX(), cameraOffset.getY());
-            
-            g.setColor(Color.ORANGE);
-            g2.rotate(-player.getAngle().getValue(), player.getPosition().getX() + cameraOffset.getX(),
-                      player.getPosition().getY() + cameraOffset.getY());
-            g2.fillRect((int) (player.getPosition().getX() - player.getWidth() / 2 + cameraOffset.getX()),
-                        (int) (player.getPosition().getY() - player.getHeight() / 2 + cameraOffset.getY()),
-                        player.getWidth(), player.getHeight());
+
             
         } // paintComponent method end
     } // GraphicsPanel class end
@@ -450,17 +440,14 @@ public class Game {
             try {
                 // Runs forever in the background
                 while (true) {
-                    //System.out.println("updated other position");
                     if (other != null) {
                         // Set the location of the other sprite based on data from the server
                         other.setPosition(new Vector(in.readDouble(), in.readDouble()));
                         other.setAngle(new Angle(in.readDouble()));
                         if (in.readBoolean()) {
                             otherShooting = true;
-                            System.out.println("other shot");
                         } else {
                             otherShooting = false;
-                            System.out.println("shooting stopped");
                         }
                         Thread.sleep(25);
                     }

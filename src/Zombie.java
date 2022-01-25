@@ -25,21 +25,18 @@ class Zombie extends Enemy {
             for (int j = 0; j < e[0].length; j++) {
                 if (e[i][j] instanceof Wall) {
                     if (isColliding(e[i][j])) {
-                        System.out.println("hit wall");
                         return true;
                     }
                 }
             }
         }
         if (isColliding(player)) {
-            System.out.println("hit player");
             return true;
         }
         return false;
     }
 
     public void run() {
-        System.out.println("zombie starting");
         // this.moveLeft(100);
         while (keepRunning()) {
             //attack(Game.player, null, Game.map);

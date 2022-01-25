@@ -33,18 +33,15 @@ class Skeleton extends Enemy {
         Vector hypotenuse = distance.normalized();
         Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,0.5 , 0,
                                                 1,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton"));
-        System.out.println("projectile created from skeleton");
     }
     
     public void run(){
         int count = 0;
-        System.out.println("skeleton starting");
         while(keepRunning()){
             
             if (count == 100){            
                 attack(Game.player, Game.fireBall, Game.map);
                 count = 0;
-                System.out.println("shoot");
             }
             count++;
             //moveProjectile();

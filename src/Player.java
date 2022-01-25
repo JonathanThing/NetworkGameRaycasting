@@ -10,7 +10,6 @@ class Player extends Character {
 
         Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprite, 0,
                 0.5, 0, 1, xComponent, yComponent, "player"));
-        System.out.println("projectile created from player");
     }
 
     public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,

@@ -6,19 +6,17 @@ abstract class GameObject {
 
     private int width;
     private int height;
-    private TextureManager sprite;
+    private TextureManager sprites;
     private String name;
     private Angle angle;
-    private Rectangle hitbox;
 
-    GameObject(Vector position, int width, int height, String name, Angle angle, TextureManager sprite) {
+    GameObject(Vector position, int width, int height, String name, Angle angle, TextureManager sprites) {
         this.position = position;
         this.width = width;
         this.height = height;
-        this.sprite = sprite;
+        this.sprites = sprites;
         this.name = name;
         this.angle = angle;
-        this.hitbox = new Rectangle((int) position.getX(), (int) position.getY(), this.width, this.height);
     }
 
     public Vector getPosition() {
@@ -67,8 +65,8 @@ abstract class GameObject {
         this.name = name;
     }
 
-    public TextureManager getSprite() {
-        return this.sprite;
+    public TextureManager getSprites() {
+        return this.sprites;
     }
 
     public boolean isColliding(GameObject other) {
@@ -78,7 +76,7 @@ abstract class GameObject {
         return false;
     }
 
-    public void setSprite(TextureManager sprite) {
-        this.sprite = sprite;
+    public void setSprites(TextureManager sprites) {
+        this.sprites = sprites;
     }
 }

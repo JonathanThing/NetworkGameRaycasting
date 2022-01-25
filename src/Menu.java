@@ -11,14 +11,15 @@ public class Menu extends JFrame {
     private int state = -1;
 
     Menu() {
-        this.panel = new optionPanel();
+      
         this.setTitle("Java Knight 2D");
-        this.add(panel);
         this.setSize(new Dimension(1280, 720));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setMinimumSize(this.getMinimumSize());
         this.setResizable(false);
         this.setVisible(true);
+        this.panel = new optionPanel();
+        this.add(panel);
     }
 
     private class optionPanel extends JPanel {
@@ -80,7 +81,6 @@ public class Menu extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Play Button Clicked");
             Object[] buttons = {"Singleplayer", "Coop", "Multiplayer"};
             int optionDialog = JOptionPane.showOptionDialog(null, "Pick an Option", "Menu",
                     JOptionPane.YES_NO_CANCEL_OPTION, 0, null, buttons, buttons[2]);
@@ -109,7 +109,6 @@ public class Menu extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Edit Button Clicked");
         }
     }
 

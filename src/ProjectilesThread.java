@@ -33,7 +33,6 @@ public class ProjectilesThread extends Thread {
 
     public void run() {
         // Projectile item;
-        System.out.println("This code for ProjectilesThread is running in a thread");
         while (keepRunning()) {
             try {
                 Thread.sleep(5);
