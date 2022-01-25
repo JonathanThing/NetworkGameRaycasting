@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.awt.Cursor;
 
 public class Game {
     static JFrame gameWindow;
@@ -59,7 +60,9 @@ public class Game {
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
     static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
     static ProjectilesThread projectilesThread = new ProjectilesThread();
-    
+    static int deltaX;
+    static Robot robot;
+    static boolean mouseMove = true;
     // ------------------------------------------------------------------------------
     public static void main(String[] args) {
         
@@ -74,7 +77,14 @@ public class Game {
         gameState = menu.getState();
         switch(gameState){
             case 0:
+				try {
+					robot = new Robot();
+				} catch (AWTException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 init();
+                
                 break;
             case 3:
                 // map editor
@@ -99,7 +109,6 @@ public class Game {
             e.printStackTrace();
         }
         generateMap(currentLevel.getMap());
-             
         
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
@@ -122,6 +131,7 @@ public class Game {
         rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
         mapWindow.setVisible(true);
         gameWindow.setVisible(true);
+        
         runGameLoop();
     }
     
@@ -218,7 +228,7 @@ public class Game {
                     otherShooting = false;
                 }
             }
-            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
+            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel, deltaX);
             if (shooting) {
                 player.shoot(fireBall);
                 shooting = false;
@@ -227,6 +237,7 @@ public class Game {
             rayCaster.updateInformation(player, cameraOffset, currentLevel, Const.FOV);
             gameWindow.repaint();
             mapWindow.repaint();
+
         }
     }
     
@@ -408,10 +419,14 @@ public class Game {
                 case 'Q':
                     turnLeft = false;
                     break;
-            }
+                case KeyEvent.VK_ESCAPE:
+                	mouseMove = !mouseMove;
+            		break;
+            }       
         }
         
         public void keyTyped(KeyEvent e) {
+
         }
     }
     
@@ -437,8 +452,15 @@ public class Game {
     
     // ------------------------------------------------------------------------------
     static class MyMouseMotionListener implements MouseMotionListener {
+    	
         public void mouseMoved(MouseEvent e) {
-        }
+        	if (mouseMove) {
+        		deltaX = e.getX() - Const.WIDTH/2;
+        		robot.mouseMove(Const.SCREEN_WIDTH/2,Const.SCREEN_HEIGHT/2);
+        	} else {
+        		deltaX = 0;
+        	}
+    	}
         
         public void mouseDragged(MouseEvent e) {
         }
