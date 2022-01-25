@@ -100,16 +100,16 @@ public class Game {
         }
         generateMap(currentLevel.getMap());
         if (twoPlayers) {
-            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 10, 4, 120, 0.75, null);
+            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
             entities.add(other);
             connect(sprites);
         }
-        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 10, 4, 120, 0.75, null);
+        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
 
         Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(Math.PI/2),
-                                          new TextureManager(personDirection), 10, 4, 120, 0.75, null));
+                                          new TextureManager(personDirection), 50, 4, 120, 0.75, null));
         Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(Math.PI/2),
-                                             new TextureManager(personDirection), 10, 4, 120, 0.75, null));
+                                             new TextureManager(personDirection), 50, 4, 120, 0.75, null));
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
         gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -287,6 +287,12 @@ public class Game {
             g2.setColor(Color.GREEN);
             g2.fillRect(Const.WIDTH/2-1, Const.HEIGHT/2-4, 2,8);
             g2.fillRect(Const.WIDTH/2-4, Const.HEIGHT/2-1, 8,2);
+            
+            g2.setColor(Color.RED);
+            g2.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
+            g2.drawString(Double.toString(player.getHealth()), 10,Const.HEIGHT-20);
+            g2.setColor(Color.YELLOW);
+            g2.drawString(Double.toString(player.getAmmo()), 120,Const.HEIGHT-20);
         } // paintComponent method end
     } // GraphicsPanel class end
     

@@ -32,7 +32,7 @@ class Skeleton extends Enemy {
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
         Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle().clone(), sprite, 0 , 1 , 0,
-                                                0.25,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton"));
+                                                0.25,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton", 10));
     }
     
     public void run(){

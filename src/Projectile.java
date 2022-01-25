@@ -5,6 +5,7 @@ class Projectile extends Entity {
     
     private double changeX;
     private double changeY;
+    private double damage;
     private String shooter;
     
     public String getShooter(){
@@ -29,13 +30,15 @@ class Projectile extends Entity {
                 }
             }
         }
-        for (int i = 0; i < entities.size(); i++){
-            if ((entities.get(i) instanceof Player) && (getShooter().equals("skeleton"))){
-                if(isColliding(entities.get(i))){
+        for (Entity entity : entities) {
+            if ((entity instanceof Player) && (getShooter().equals("skeleton"))){
+                if(isColliding(entity)){
+                	entity.changeHealth(-damage);
                     return true;
                 }
-            } else if ((entities.get(i) instanceof Enemy) && (getShooter().equals("player"))){
-                if(isColliding(entities.get(i))){
+            } else if ((entity instanceof Enemy) && (getShooter().equals("player"))){
+                if(isColliding(entity)){
+                	entity.changeHealth(-damage);
                     return true;
                 }
             }
@@ -60,11 +63,12 @@ class Projectile extends Entity {
     
     
     Projectile(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, 
-               double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY, String shooter) {
+               double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY, String shooter, double damage) {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale);
         this.changeX = changeX;
         this.changeY = changeY;
         this.shooter = shooter;
+        this.damage = damage;
     }
     
 }

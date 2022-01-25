@@ -9,7 +9,7 @@ class Player extends Character {
         double xComponent = Math.cos(getAngle().getValue());
 
         Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 10, 10, "Bullet", getAngle().clone(), sprite, 0,
-                1, 0, 0.25, xComponent, yComponent, "player"));
+                1, 0, 0.25, xComponent, yComponent, "player", 10));
     }
 
     public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,
@@ -85,5 +85,18 @@ class Player extends Character {
     Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
             double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); 
+        ammo = 40;
     }
+
+	public int getAmmo() {
+		return ammo;
+	}
+
+	public void setAmmo(int ammo) {
+		this.ammo = ammo;
+	}
+	
+	public void changeAmmo(int change) {
+		this.ammo += change;
+	}
 }
