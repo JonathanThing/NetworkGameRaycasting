@@ -31,8 +31,8 @@ class Skeleton extends Enemy {
     public void shoot(Player player, TextureManager sprite) {
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
-        Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle(), sprite, 0 ,0.5 , 0,
-                                                1,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton"));
+        Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle().clone(), sprite, 0 , 1 , 0,
+                                                0.25,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton"));
     }
     
     public void run(){

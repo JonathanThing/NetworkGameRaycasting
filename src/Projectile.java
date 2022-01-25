@@ -50,6 +50,12 @@ class Projectile extends Entity {
     public void move(){
         moveUp(this.getChangeY() * getSpeed());
         moveLeft(this.getChangeX() * getSpeed());
+        
+        long currentTime = System.currentTimeMillis();       	
+    	if (this.getSprites().getLastAnimationChange() + 250 <= currentTime) {
+    		this.getSprites().setLastAnimationChange(currentTime);
+    		this.getSprites().changeAnimationNumber(1);
+    	}
     }
     
     

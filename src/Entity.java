@@ -41,6 +41,10 @@ abstract class Entity extends GameObject implements Moveable {
     public void setHealth(double health) {
         this.health = health;
     }
+    
+    public void changeHealth(double change) {
+        this.health += change;
+    }
 
     public double getSpeed() {
         return this.speed;

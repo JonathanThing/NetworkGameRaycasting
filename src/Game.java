@@ -100,16 +100,16 @@ public class Game {
         }
         generateMap(currentLevel.getMap());
         if (twoPlayers) {
-            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
+            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 10, 4, 120, 0.75, null);
             entities.add(other);
             connect(sprites);
         }
-        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 20, 0.75, null);
+        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 10, 4, 120, 0.75, null);
 
-        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(2),
-                                          new TextureManager(sprites.getSingleTexture(2, 0)), 100, 4, 20, 0.75, null));
-        Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(2),
-                                             new TextureManager(sprites.getSingleTexture(1, 0)), 100, 4, 0, 0.75, null));
+        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(Math.PI/2),
+                                          new TextureManager(personDirection), 10, 4, 120, 0.75, null));
+        Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(Math.PI/2),
+                                             new TextureManager(personDirection), 10, 4, 120, 0.75, null));
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
         gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -249,8 +249,7 @@ public class Game {
             for (int i = 0; i < entities.size(); i++){
                 Entity temp = entities.get(i);
                 if (uuid.equals(temp.getUUID())){
-                    entities.remove(temp);
-                    
+                    entities.remove(temp);                   
                 }
             }
         }      
@@ -276,16 +275,18 @@ public class Game {
             
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.GRAY);
-            g2.fillRect(0, 0, Const.WIDTH, Const.HEIGHT / 2);
-            g2.setColor(Color.BLACK);
-            g2.fillRect(0, Const.HEIGHT / 2, Const.WIDTH, Const.HEIGHT);
+            g2.fillRect(0, 0, Const.WIDTH+1, Const.HEIGHT / 2);
+            g2.setColor(Color.GRAY.darker().darker());
+            g2.fillRect(0, Const.HEIGHT / 2, Const.WIDTH+1, Const.HEIGHT/2+1);
             rayCaster.rayCastWalls(g2, false);
             
             ArrayList<Entity> allEntities = copyEntities();
             
             rayCaster.drawSprite(g2, allEntities);
-            // rayCaster.drawSprite(g2, projectilesThread.getProjectiles());
-            
+
+            g2.setColor(Color.GREEN);
+            g2.fillRect(Const.WIDTH/2-1, Const.HEIGHT/2-4, 2,8);
+            g2.fillRect(Const.WIDTH/2-4, Const.HEIGHT/2-1, 8,2);
         } // paintComponent method end
     } // GraphicsPanel class end
     
@@ -321,23 +322,25 @@ public class Game {
             
             rayCaster.rayCastWalls(g2, true);
             
-            for (Entity thing : entities) {
+            for (Entity entity : entities) {
                 
-                if (thing instanceof Skeleton) {
+                if (entity instanceof Skeleton) {
                     g.setColor(Color.RED);
                    
-                } else if (thing instanceof Zombie) {
+                } else if (entity instanceof Zombie) {
                     g.setColor(Color.GREEN);
-                } else if (thing instanceof Projectile) {
+                } else if (entity instanceof Projectile) {
                     g.setColor(Color.RED);
                 } else {
                     g.setColor(Color.ORANGE);
                 }
                 
-                g2.fillRect((int) (thing.getPosition().getX() - thing.getWidth() / 2 + cameraOffset.getX()),
-                            (int) (thing.getPosition().getY() - thing.getHeight() / 2 + cameraOffset.getY()),
-                            thing.getWidth(), thing.getHeight());
-            }
+                g2.fillRect((int) (entity.getPosition().getX() - entity.getWidth() / 2 + cameraOffset.getX()),
+                            (int) (entity.getPosition().getY() - entity.getHeight() / 2 + cameraOffset.getY()),
+                            entity.getWidth(), entity.getHeight());
+            
+                g2.drawLine((int) (entity.getPosition().getX() + cameraOffset.getX()), (int) (entity.getPosition().getY() + cameraOffset.getY()), (int) (entity.getPosition().getX() + cameraOffset.getX() + Math.cos(entity.getAngle().getValue())*200), (int) (entity.getPosition().getY() + cameraOffset.getY() - Math.sin(entity.getAngle().getValue())*200));
+            }       
 
             
         } // paintComponent method end

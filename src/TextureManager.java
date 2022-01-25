@@ -27,6 +27,10 @@ public class TextureManager {
         }
     }
     
+    public TextureManager(TextureManager other) {
+    	textures = other.getTextures();
+    }
+    
     public BufferedImage[][] getTextures() {
         return textures;
     }

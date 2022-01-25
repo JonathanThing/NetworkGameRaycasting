@@ -8,8 +8,8 @@ class Player extends Character {
         double yComponent = Math.sin(getAngle().getValue());
         double xComponent = Math.cos(getAngle().getValue());
 
-        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 20, 20, "Bullet", getAngle(), sprite, 0,
-                0.5, 0, 1, xComponent, yComponent, "player"));
+        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 10, 10, "Bullet", getAngle().clone(), sprite, 0,
+                1, 0, 0.25, xComponent, yComponent, "player"));
     }
 
     public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,
