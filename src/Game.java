@@ -373,8 +373,18 @@ public class Game {
                     break;
                 case 'Q':
                     turnLeft = true;
-                    break;
+                    break; 
             }
+            
+			if (e.getKeyCode() == 'J'){
+				cameraOffset.changeX(Const.BOX_SIZE);
+            } else if (e.getKeyCode() =='L'){
+            	cameraOffset.changeX(-Const.BOX_SIZE);
+            } else if (e.getKeyCode() == 'I'){
+            	cameraOffset.changeY(Const.BOX_SIZE);
+            } else if (e.getKeyCode() == 'K'){
+            	cameraOffset.changeY(-Const.BOX_SIZE);
+            }   
         }
         
         public void keyReleased(KeyEvent e) {
@@ -401,6 +411,7 @@ public class Game {
         }
         
         public void keyTyped(KeyEvent e) {
+
         }
     }
     
