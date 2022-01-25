@@ -14,7 +14,7 @@ class Player extends Character {
 
     public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,
             boolean turnRight,
-            Level map) {
+            Level map, int deltaX) {
 
         double xRaw = 0;
         double yRaw = 0;

@@ -39,6 +39,10 @@ class Projectile extends Entity {
             } else if ((entity instanceof Enemy) && (getShooter().equals("player"))){
                 if(isColliding(entity)){
                 	entity.changeHealth(-damage);
+                	if (entity.getHealth() <= 0) {
+                		Game.removeCharacterEntity(entity);
+                		((Enemy)entity).stopRunning();
+                	}
                     return true;
                 }
             }
