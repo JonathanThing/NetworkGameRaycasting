@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -60,9 +61,12 @@ public class Game {
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
     static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
     static ProjectilesThread projectilesThread = new ProjectilesThread();
-    static int deltaX;
+    static double deltaX;
     static Robot robot;
     static boolean mouseMove = true;
+    static Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "blank cursor");
+    
+    
     // ------------------------------------------------------------------------------
     public static void main(String[] args) {
         
@@ -131,6 +135,8 @@ public class Game {
         rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
         mapWindow.setVisible(true);
         gameWindow.setVisible(true);
+       
+        gameWindow.setCursor(blankCursor);
         
         runGameLoop();
     }
@@ -215,13 +221,21 @@ public class Game {
     }
     
     // ------------------------------------------------------------------------------
-    public static void runGameLoop() {
+	public static void runGameLoop() {
         while (true) {
             try {
                 Thread.sleep(25);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            
+            if (!mouseMove) {
+            	gameWindow.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            } else {
+            	gameWindow.setCursor(blankCursor);
+
+            }
+            
             if (twoPlayers){
                 if (otherShooting){
                     other.shoot(fireBall);
@@ -444,10 +458,12 @@ public class Game {
         }
         
         public void mouseEntered(MouseEvent e) {
+        	
         }
         
         public void mouseExited(MouseEvent e) {
-        }
+
+    	}
     }
     
     // ------------------------------------------------------------------------------
@@ -455,8 +471,8 @@ public class Game {
     	
         public void mouseMoved(MouseEvent e) {
         	if (mouseMove) {
-        		deltaX = e.getX() - Const.WIDTH/2;
-        		robot.mouseMove(Const.SCREEN_WIDTH/2,Const.SCREEN_HEIGHT/2);
+        		deltaX = e.getX() - Const.WIDTH/2.0;
+        		robot.mouseMove(Const.SCREEN_WIDTH/2 + gameWindow.getX(),Const.SCREEN_HEIGHT/2 + gameWindow.getY());
         	} else {
         		deltaX = 0;
         	}
