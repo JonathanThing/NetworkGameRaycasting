@@ -1,11 +1,10 @@
-
 public interface Moveable {
 
-  public void moveLeft(double n);
+    void moveLeft(double n);
 
-  public void moveRight(double n);
+    void moveRight(double n);
 
-  public void moveUp(double n);
+    void moveUp(double n);
 
-  public void moveDown(double n);
+    void moveDown(double n);
 }

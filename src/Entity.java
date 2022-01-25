@@ -1,68 +1,77 @@
-
-import java.awt.image.BufferedImage;
+import java.util.UUID;
 
 abstract class Entity extends GameObject implements Moveable {
 
-	private double health;
-	private double speed;
-	private double spriteZOffset;
-	private double spriteScale;
-	
-	public double getSpriteZOffset() {
-		return spriteZOffset;
-	}
+    private double health;
+    private double speed;
+    private double spriteZOffset;
+    private double spriteScale;
+    private UUID uuid;
 
-	public void setSpriteZOffset(double spriteZOffset) {
-		this.spriteZOffset = spriteZOffset;
-	}
+ Entity(Vector position, int width, int height, String name, Angle angle, TextureManager sprites, double health,
+   double speed, double spriteZOffset, double spriteScale) {
+  super(position, width, height, name, angle, sprites);
+  this.health = health;
+  this.speed = speed;
+  this.spriteZOffset = spriteZOffset;
+  this.spriteScale = spriteScale;
+        this.uuid = UUID.randomUUID();
+    }
 
-	public double getSpriteScale() {
-		return spriteScale;
-	}
+    public double getSpriteZOffset() {
+        return spriteZOffset;
+    }
 
-	public void setSpriteScale(double spriteScale) {
-		this.spriteScale = spriteScale;
-	}
-	
-	public double getHealth() {
-		return this.health;
-	}
+    public void setSpriteZOffset(double spriteZOffset) {
+        this.spriteZOffset = spriteZOffset;
+    }
 
-	public void setHealth(double health) {
-		this.health = health;
-	}
+    public double getSpriteScale() {
+        return spriteScale;
+    }
 
-	public double getSpeed() {
-		return this.speed;
-	}
+    public void setSpriteScale(double spriteScale) {
+        this.spriteScale = spriteScale;
+    }
 
-	public void setSpeed(double speed) {
-		this.speed = speed;
-	}
+    public double getHealth() {
+        return this.health;
+    }
 
-	public void moveLeft(double n) {
-		this.getPosition().changeX(n);
-	}
+    public void setHealth(double health) {
+        this.health = health;
+    }
+    
+    public void changeHealth(double change) {
+        this.health += change;
+    }
 
-	public void moveRight(double n) {
-		this.getPosition().changeX(-n);
-	}
+    public double getSpeed() {
+        return this.speed;
+    }
 
-	public void moveUp(double n) {
-		this.getPosition().changeY(-n);
-	}
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
-	public void moveDown(double n) {
-		this.getPosition().changeY(n);
-	}
+    public void moveLeft(double n) {
+        this.getPosition().changeX(n);
+    }
 
-	Entity(Vector position, int width, int height, String name, Angle angle, TextureManager sprites, double health,
-			double speed, double spriteZOffset, double spriteScale) {
-		super(position, width, height, name, angle, sprites);
-		this.health = health;
-		this.speed = speed;
-		this.spriteZOffset = spriteZOffset;
-		this.spriteScale = spriteScale;
-	}
+    public void moveRight(double n) {
+        this.getPosition().changeX(-n);
+    }
+
+    public void moveUp(double n) {
+        this.getPosition().changeY(-n);
+    }
+
+    public void moveDown(double n) {
+        this.getPosition().changeY(n);
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
 
 }

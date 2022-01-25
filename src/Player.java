@@ -1,46 +1,24 @@
-import java.awt.image.BufferedImage;
 import java.lang.Math;
-import java.awt.Graphics;
 
 class Player extends Character {
 
     private int ammo;
 
-    public void shoot(TextureManager sprites){ //BufferedImage sprite) {
-        double yComponent = -1* Math.sin(getAngle().getValue());
-        double xComponent = -1* Math.cos(getAngle().getValue());
+    public void shoot(TextureManager sprite) { // BufferedImage sprite) {
+        double yComponent = Math.sin(getAngle().getValue());
+        double xComponent = Math.cos(getAngle().getValue());
 
-        this.getProjectilesList().add(new Projectile(this.getPosition().clone(), 10, 10, "Bullet", getAngle(), sprites, 0, 10, 0, 0.25, xComponent, yComponent));
-        //Projectile(Vector position, int width, int height, String name, Angle angle, BufferedImage sprite, double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY) {
-
+        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 10, 10, "Bullet", getAngle().clone(), sprite, 0,
+                1, 0, 0.25, xComponent, yComponent, "player", 10));
     }
 
-    public void moveProjectile() {
-    	
-    	
-        for (Projectile currentProjectile :  this.getProjectilesList()) { //loops through arrayList of projectiles
-
-        	//for some reason it applies to all the projectiles, odd
-        	long currentTime = System.currentTimeMillis();       	
-        	if (currentProjectile.getSprites().getLastAnimationChange() + 250 <= currentTime) {
-        		currentProjectile.getSprites().setLastAnimationChange(currentTime);
-        		currentProjectile.getSprites().changeAnimationNumber(1);
-        	}
-        
-        	
-            (currentProjectile).moveDown(currentProjectile.getChangeY()); //moves the projectils on the y-axis
-            (currentProjectile).moveRight(currentProjectile.getChangeX()); //moves the projectils on the x-axis
-
-        }
-
-    }
-
-    public void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft, boolean turnRight,
-                         Level map) {
+    public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,
+            boolean turnRight,
+            Level map) {
 
         double xRaw = 0;
         double yRaw = 0;
-        
+
         if (up) {
             yRaw += 1;
         }
@@ -80,36 +58,45 @@ class Player extends Character {
 
             // door collision
             if (map.getMapTile((int) futurePosition.getY() / Const.BOX_SIZE,
-                               (int) futurePosition.getX() / Const.BOX_SIZE) == 4) {
-                map.setMapTile((int) futurePosition.getY() / Const.BOX_SIZE, (int) futurePosition.getX() / Const.BOX_SIZE,
-                               0);
+                    (int) futurePosition.getX() / Const.BOX_SIZE) == 4) {
+                map.setMapTile((int) futurePosition.getY() / Const.BOX_SIZE,
+                        (int) futurePosition.getX() / Const.BOX_SIZE,
+                        0);
             }
 
             // wall side collision
             futurePosition = this.getPosition().add(movementVector.multiplyByScalar(2));
             if (map.getMapTile((int) this.getPosition().getY() / Const.BOX_SIZE,
-                               (int) futurePosition.getX() / Const.BOX_SIZE) < 1) {
+                    (int) futurePosition.getX() / Const.BOX_SIZE) < 1) {
                 this.moveLeft(movementVector.getX());
             }
 
             // wall forward collision
             if (map.getMapTile((int) futurePosition.getY() / Const.BOX_SIZE,
-                               (int) this.getPosition().getX() / Const.BOX_SIZE) < 1) {
+                    (int) this.getPosition().getX() / Const.BOX_SIZE) < 1) {
                 this.moveDown(movementVector.getY());
             }
         }
     }
 
-    public void drawPlayerProjectile(Graphics g, double offSetX, double offSetY) {
-        for (int i = 0; i < getProjectilesList().size(); i++) { //loop through arrayList
-            (getProjectilesList().get(i)).draw(g, offSetX, offSetY); //draws the projectile
-        }
+    public void run() {
     }
 
-    Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprites, double health,
-    		double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
-        super(position, width, height, name, angle, sprites, health, speed, spriteZOffset, spriteScale, weapon); // calls the constructor in the
-        // character super
-        // class
+    Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
+            double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
+        super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); 
+        ammo = 40;
     }
+
+	public int getAmmo() {
+		return ammo;
+	}
+
+	public void setAmmo(int ammo) {
+		this.ammo = ammo;
+	}
+	
+	public void changeAmmo(int change) {
+		this.ammo += change;
+	}
 }
