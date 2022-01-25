@@ -31,11 +31,11 @@ public class Game {
     static TextureManager personDirection;
     public static volatile Level currentLevel = new Level(new int[][] { { 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
+																        { 1, 0, -1, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
 																        { 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 6, 0, 2 }, 
-																        { 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 6, 6, 0, 2 },
+																        { 1, 0, 0, 0, 2, 0, 0, -2, 2, 0, 0, 0, 6, 6, 0, 2 },
 																        { 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
+																        { 2, 0, 0, -3, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
 																        { 2, 2, 4, 2, 1, 2, 4, 2, 2, 0, 0, 0, 3, 3, 0, 2 }, 
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 3, 0, 2 },
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
@@ -99,17 +99,8 @@ public class Game {
             e.printStackTrace();
         }
         generateMap(currentLevel.getMap());
-        if (twoPlayers) {
-            other = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
-            entities.add(other);
-            connect(sprites);
-        }
-        player = new Player(new Vector((3) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (2) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
-
-        Game.addCharacterEntity(new Zombie(new Vector(400, 300), 10, 10, "zombie", new Angle(Math.PI/2),
-                                          new TextureManager(personDirection), 50, 4, 120, 0.75, null));
-        Game.addCharacterEntity(new Skeleton(new Vector(200, 200), 10, 10, "skeleton", new Angle(Math.PI/2),
-                                             new TextureManager(personDirection), 50, 4, 120, 0.75, null));
+             
+        
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
         gameWindow.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -163,6 +154,26 @@ public class Game {
                     case 6: 
                         map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(6, 0));
                         break;       
+                    case -1:
+                    	if (twoPlayers) {
+                            other = new Player(new Vector((j) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+                            entities.add(other);
+                            connect(sprites);
+                        }
+                        player = new Player(new Vector((j) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+
+                        break;
+                        
+                    case -2: 
+                        addCharacterEntity(new Skeleton(new Vector((j+1) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "skeleton", new Angle(Math.PI/2),
+                                new TextureManager(personDirection), 50, 4, 120, 0.75, null));
+                    	break;  
+                    	
+                    case -3: 
+                        addCharacterEntity(new Zombie(new Vector((j+1) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "zombie", new Angle(Math.PI/2),
+                                new TextureManager(personDirection), 50, 4, 120, 0.75, null));
+
+                    	break;  
                 }
             }
         }
@@ -317,11 +328,11 @@ public class Game {
                                     rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
                     } else if (currentLevel.getMapTile(rows, columns) >= 1) {
                         g2.setColor(Color.BLACK);
-                        g2.fillRect(columns * Const.BOX_SIZE + +(int) cameraOffset.getX(),
+                        g2.fillRect(columns * Const.BOX_SIZE + (int) cameraOffset.getX(),
                                     rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
                     }
                     g2.setColor(Color.BLACK);
-                    g2.drawRect(columns * Const.BOX_SIZE + +(int) cameraOffset.getX(),
+                    g2.drawRect(columns * Const.BOX_SIZE + (int) cameraOffset.getX(),
                                 rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
                 }
             }
