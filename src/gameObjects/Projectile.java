@@ -1,7 +1,14 @@
+package gameObjects;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-class Projectile extends Entity {
+import core.Game;
+import misc.Level;
+import misc.TextureManager;
+import util.Angle;
+import util.Vector;
+
+public class Projectile extends Entity {
     
     private double changeX;
     private double changeY;

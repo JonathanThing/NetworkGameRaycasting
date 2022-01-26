@@ -1,10 +1,18 @@
+package gameObjects;
 import java.awt.image.BufferedImage;
+
+import core.Game;
+import misc.Level;
+import misc.TextureManager;
+import misc.Weapon;
+import util.Angle;
+import util.Vector;
 
 import java.awt.Graphics;
 
-class Skeleton extends Enemy {
+public class Skeleton extends Enemy {
     
-    Skeleton(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, 
+    public Skeleton(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, 
              double health, double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); //calls the constructor in the enemy super class
     }

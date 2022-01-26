@@ -1,14 +1,25 @@
+package core;
 /* RayCasting
  * Basic raycasting demo
  * @author Jonathan Cai
  * @version Dec 2021
  */
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTException;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,41 +30,62 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
-import java.awt.Cursor;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import gameObjects.Player;
+import gameObjects.Projectile;
+import gameObjects.Skeleton;
+import gameObjects.Character;
+import gameObjects.Door;
+import gameObjects.Entity;
+import gameObjects.Environment;
+import gameObjects.Wall;
+import gameObjects.Zombie;
+import misc.Level;
+import misc.TextureManager;
+import threads.CharacterThread;
+import threads.ProjectilesThread;
+import util.Angle;
+import util.Const;
+import util.Vector;
+
 
 public class Game {
-    static JFrame gameWindow;
-    static JFrame mapWindow;
-    static GraphicsPanel canvas;
-    static MapPanel mapThing;
-    static RayCaster rayCaster;
-    static MyKeyListener keyListener = new MyKeyListener();
-    static MyMouseListener mouseListener = new MyMouseListener();
-    static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
-    static TextureManager textures;
-    static TextureManager sprites;
-    static TextureManager fireBall;
-    static TextureManager personDirection;
+    public static JFrame gameWindow;
+    public static JFrame mapWindow;
+    public static GraphicsPanel canvas;
+    public static MapPanel mapThing;
+    public static RayCaster rayCaster;
+    public static MyKeyListener keyListener = new MyKeyListener();
+    public static MyMouseListener mouseListener = new MyMouseListener();
+    public static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener();
+    public static TextureManager textures;
+    public static TextureManager sprites;
+    public static TextureManager fireBall;
+    public static TextureManager personDirection;
     public volatile static char[][] bufferMap;
     
-    static Player player;
-    static Player other;
-    static boolean up, down, left, right, turnRight, turnLeft, shooting, otherShooting, twoPlayers = false;
-    static Vector cameraOffset = new Vector(0, 0);
-    static int playerID;
-    static ReadFromServer rfsThread;
-    static WriteToServer wtsThread;
-    static Socket socket;
+    public static Player player;
+    public static Player other;
+    public static boolean up, down, left, right, turnRight, turnLeft, shooting, otherShooting, twoPlayers = false;
+    public static Vector cameraOffset = new Vector(0, 0);
+    public static int playerID;
+    public static ReadFromServer rfsThread;
+    public static WriteToServer wtsThread;
+    public static Socket socket;
     public static volatile Level map;
     // 0 = singe player, 1 = coop, 2 = multiplayer, 3 = map editor
-    static int gameState;
+    public  static int gameState;
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
-    static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
-    static ProjectilesThread projectilesThread = new ProjectilesThread();
-    static double deltaX;
-    static Robot robot;
-    static boolean mouseMove = true;
-    static Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "blank cursor");
+    public static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
+    public static ProjectilesThread projectilesThread = new ProjectilesThread();
+    public static double deltaX;
+    public static Robot robot;
+    public static boolean mouseMove = true;
+    public static Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "blank cursor");
     
     
     // ------------------------------------------------------------------------------
@@ -292,12 +324,12 @@ public class Game {
         }
     }
     
-    public static void addCharacterEntity(Character entity) {
+    public static void addCharacterEntity(Entity entity) {
         synchronized(entities) {
             entities.add(entity);
         }
         
-        CharacterThread thread = new CharacterThread(entity);
+        CharacterThread thread = new CharacterThread((Character) entity);
         thread.start();
         
         characterThreads.add(thread);

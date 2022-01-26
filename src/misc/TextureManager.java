@@ -1,4 +1,7 @@
+package misc;
 import java.awt.image.BufferedImage;
+
+import util.Const;
 
 public class TextureManager {
     

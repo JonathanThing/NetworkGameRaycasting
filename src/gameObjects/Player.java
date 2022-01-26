@@ -1,6 +1,15 @@
+package gameObjects;
 import java.lang.Math;
 
-class Player extends Character {
+import core.Game;
+import misc.Level;
+import misc.TextureManager;
+import misc.Weapon;
+import util.Angle;
+import util.Const;
+import util.Vector;
+
+public class Player extends Character {
 
     private int ammo;
 
@@ -89,7 +98,7 @@ class Player extends Character {
     public void run() {
     }
 
-    Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
+    public Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
             double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); 
         ammo = 40;

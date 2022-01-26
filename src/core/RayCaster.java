@@ -1,3 +1,4 @@
+package core;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -5,6 +6,15 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import gameObjects.Entity;
+import gameObjects.Environment;
+import gameObjects.Player;
+import misc.Level;
+import misc.TextureManager;
+import util.Angle;
+import util.Const;
+import util.Vector;
 
 public class RayCaster {
 	

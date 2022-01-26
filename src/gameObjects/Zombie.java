@@ -1,8 +1,16 @@
+package gameObjects;
 import java.awt.image.BufferedImage;
 
-class Zombie extends Enemy {
+import core.Game;
+import misc.Level;
+import misc.TextureManager;
+import misc.Weapon;
+import util.Angle;
+import util.Vector;
 
-    Zombie(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
+public class Zombie extends Enemy {
+
+    public Zombie(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
             double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon);
     }

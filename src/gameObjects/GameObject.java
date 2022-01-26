@@ -1,7 +1,12 @@
+package gameObjects;
 import java.awt.*;
 
+import misc.TextureManager;
+import util.Angle;
+import util.Vector;
 
-abstract class GameObject {
+
+public abstract class GameObject {
 
     private Vector position;
 

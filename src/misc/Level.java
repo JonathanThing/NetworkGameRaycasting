@@ -1,3 +1,7 @@
+package misc;
+import gameObjects.Environment;
+import util.Vector;
+
 public class Level {
     
     private Environment[][] map;

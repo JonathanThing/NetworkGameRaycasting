@@ -1,4 +1,10 @@
+package gameObjects;
 import java.awt.Graphics;
+
+import interfaces.Pickupable;
+import misc.TextureManager;
+import util.Angle;
+import util.Vector;
 
 
 public class Item extends GameObject implements Pickupable {

@@ -1,6 +1,13 @@
+package gameObjects;
 import java.awt.image.BufferedImage;
 
-abstract class Enemy extends Character {
+import misc.Level;
+import misc.TextureManager;
+import misc.Weapon;
+import util.Angle;
+import util.Vector;
+
+public abstract class Enemy extends Character {
 
     private boolean running = true;
 

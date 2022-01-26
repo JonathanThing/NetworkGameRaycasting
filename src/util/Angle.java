@@ -1,3 +1,4 @@
+package util;
 public class Angle {
     private double angle;
 

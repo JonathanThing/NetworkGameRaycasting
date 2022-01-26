@@ -1,3 +1,7 @@
+package gameObjects;
+import misc.TextureManager;
+import util.Angle;
+import util.Vector;
 
 public class HealthPack extends Item {
     private int value;

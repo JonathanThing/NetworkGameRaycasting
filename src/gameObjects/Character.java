@@ -1,6 +1,12 @@
+package gameObjects;
 import java.util.ArrayList;
 
-abstract class Character extends Entity implements Runnable {
+import misc.TextureManager;
+import misc.Weapon;
+import util.Angle;
+import util.Vector;
+
+public abstract class Character extends Entity implements Runnable {
 
     private Weapon weapon;
     private ArrayList<Projectile> projectilesList = new ArrayList<Projectile>();

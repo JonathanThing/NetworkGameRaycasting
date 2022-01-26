@@ -1,6 +1,12 @@
+package gameObjects;
 import java.util.UUID;
 
-abstract class Entity extends GameObject implements Moveable {
+import interfaces.Moveable;
+import misc.TextureManager;
+import util.Angle;
+import util.Vector;
+
+public abstract class Entity extends GameObject implements Moveable {
 
     private double health;
     private double speed;

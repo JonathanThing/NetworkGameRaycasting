@@ -1,3 +1,6 @@
+package util;
+
+import misc.Level;
 
 public class Vector {
  private double x;
