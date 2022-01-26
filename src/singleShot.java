@@ -1,59 +1,40 @@
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-//Note: Need to make lastFire,timer,cooldown extend from weapon
-
-import javax.imageio.ImageIO;
-
 
 public class singleShot extends Weapon{
-	private long lastFire;
-	private long timer;
-	private long cooldown;
-	private boolean reloading = false;
 	
-	void shoot(Angle angle, Vector playerPos, ArrayList<Projectile> projectilesList) {
-        cooldown = setCooldown(this.lastFire, this.timer);
-        if(projectilesList.size() == this.getAmmoSize()) {
-        	reloading = true;        	
+	void shoot(Angle angle, Vector playerPos, long timer) {	
+		
+        this.setCooldown((timer - this.getLastFire()) / 100);
+        
+        if(this.getAmmo() == this.getTotalAmmo()) {
+        	this.setAmmo(0);
+        	this.setReloading(true);
+
         }
         else {
-        	if(reloading == false) {
-        		if(this.cooldown < 5) {    
-            		double yComponent = -1* Math.sin(angle.getValue());
-            		double xComponent = -1* Math.cos(angle.getValue());		
-            		projectilesList.add(new Projectile(new Vector(playerPos.getX(),playerPos.getY()), 20, 20, "Bullet", angle, fireball,
-            				10, 10, 0, 1, xComponent, yComponent));
+        	if(this.getReloading() == false) {
+        		if(this.getFireRate() > this.getCooldown()) {  
+        			 double yComponent =  Math.sin(angle.getValue());
+        			 double xComponent =  Math.cos(angle.getValue());
+        			 Game.addProjectileEntity(new Projectile(playerPos, 10, 10, "Bullet", angle, fireball, 0, 1, 0, 0.25, xComponent, yComponent, "player", 10));
+        			 this.setAmmo(this.getAmmo()+1);	 
                 }
-                else if(this.cooldown > this.getFireRate()) {
-                	lastFire = System.currentTimeMillis();
-            	    cooldown = 0;           
+                else {
+                	setLastFire(System.currentTimeMillis());
+                	this.setCooldown(0);    
                 }  		    		
         	}
-        }
-    	if (this.getReloadTime() < cooldown) {
-    		reloading = false;
-    		projectilesList.clear();
+       }
+    	if (this.getReloadTime() < this.getCooldown() && this.getAmmo() == 0) {
+    		this.setReloading(false);
     	}
 	}
 	
-	void moveProjectile(ArrayList<Projectile> projectilesList) {
-	    this.timer = System.currentTimeMillis();
-		for(int i = 0; i < projectilesList.size(); i++) {
-				(projectilesList.get(i)).moveUp(projectilesList.get(i).getChangeY()*-projectilesList.get(i).getSpeed()); //moves the projectils on the y-axis
-		        (projectilesList.get(i)).moveLeft(projectilesList.get(i).getChangeX()*-projectilesList.get(i).getSpeed()); //moves the projectils on the x-axis   
-		}
-	    if(projectilesList.size() > this.getAmmoSize()) {
-	    	projectilesList.remove(0);
-	    }
-	}
 
-	singleShot(double x, double y, int width, int height, String name, TextureManager sprite, double damage, double fireRate, int clipSize, int reloadTime) {
+	singleShot(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,int clipSize, int reloadTime) {
 		super(x, y, width, height, name, sprite, damage, fireRate, clipSize, reloadTime);
-		
+		//lastFire = System.currentTimeMillis();
 	}
-
 }
 
  
