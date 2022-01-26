@@ -7,60 +7,90 @@ import javax.imageio.ImageIO;
 
 abstract class Weapon{
 
-  private double damage;
-
-  private double fireRate;
-  
-  private int AmmoSize;
-  
-  private long lastFire;
-  
-  private int reloadTime;
-  
-  TextureManager fireball;
-  
-  public double getFireRate() {
-    return this.fireRate;
-  }
-  
-  public double getDamage() {
-	return this.damage;
-  }
-  
-  public long getLastFire() {
-	  return this.lastFire;
-  }
-  
-  public int getAmmoSize() {
-	  return this.AmmoSize;
-  }
-  
-  public int getReloadTime() {
-	  return this.reloadTime;
-  }
-
-  long setCooldown(long lastFire, long timer) {
-		return(timer - lastFire) / 10;
-	}
-
-  abstract void shoot(Angle angle, Vector playerPos, ArrayList<Projectile> projectilesList);
-  
-  abstract void moveProjectile(ArrayList<Projectile> projectilesList);
-  
-  Weapon(double x, double y, int width, int height, String name, TextureManager sprite, double damage, double fireRate,
-      int AmmoSize, int reloadTime) {
-    this.damage = damage;
-    this.fireRate = fireRate;
-    this.AmmoSize = AmmoSize;
-    this.reloadTime = reloadTime;
-    try {
-		fireball = new TextureManager(ImageIO.read(new File("C://FireBallAnimation.png")));
-	} catch (IOException e1) {
-		System.out.println("failed to get image");
-		e1.printStackTrace();
-	}
-  }
-
-
+	  private double damage;
+	
+	  private double fireRate;
+	  
+	  private boolean reloading = false;
+	  
+	  private int TotalAmmo;
+	  
+	  private int reloadTime;
+	  
+	  private long cooldown; 
+	  
+	  private long lastFire;
+	  
+	  private int Ammo = 0;
+	  
+	  TextureManager fireball;
+	  
+	  public double getFireRate() {
+	    return this.fireRate;
+	  }
+	  
+	  public boolean getReloading() {
+		  return this.reloading;
+	  }
+	  
+	  public double getDamage() {
+		return this.damage;
+	  }
+	  
+	  public int getTotalAmmo() {
+		    return this.TotalAmmo;
+	  }
+	  
+	  public int getAmmo() {
+		    return this.Ammo;
+	  }
+	  
+	  public int getReloadTime() {
+		    return this.reloadTime;
+	  }
+	  
+	  public long getCooldown() {
+		    return this.cooldown;
+	  }
+	  
+	  public long getLastFire() {
+		  return this.lastFire;
+	  }
+	  
+	  public void setReloading(boolean newReloading) {
+		  this.reloading = newReloading;
+	  }
+	  
+	  public void setAmmo(int Ammo) {
+		    this.Ammo = Ammo;
+	  }
+	  
+	  public void setCooldown(long newCooldown) {
+		    this.cooldown = newCooldown;
+	  }
+	  
+	  public void setLastFire(long newLastFire) {
+		  this.lastFire = newLastFire;
+	  }
+	  
+	  
+	
+	  abstract void shoot(Angle angle, Vector playerPos, long timer);
+	  
+	  //abstract void moveProjectile(ArrayList<Projectile> projectilesList);
+	  
+	  Weapon(double x, double y, int width, int height, String name, BufferedImage sprite, double damage, double fireRate,
+	      int Ammo, int reloadTime) {
+	    this.damage = damage;
+	    this.fireRate = fireRate;
+	    this.TotalAmmo = Ammo;
+	    this.reloadTime = reloadTime;
+	    try {
+	    	fireball = new TextureManager(ImageIO.read(new File("D://FireBallAnimation.png")));
+	    }
+	    catch(IOException e1){
+	    	System.out.print("failed to load bullet image");
+	    }
+	  }
   
 }
