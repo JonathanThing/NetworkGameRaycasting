@@ -8,20 +8,24 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
 
-    private optionPanel panel;
     private int state = -1;
 
     Menu() {
-      
         this.setTitle("Java Knight 2D");
         this.setSize(new Dimension(1280, 720));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setMinimumSize(this.getMinimumSize());
         this.setResizable(false);
         this.setVisible(true);
-        this.panel = new optionPanel();
-        this.add(panel);
+        this.add(new optionPanel());
     }
+
+    @Override
+    public int getState() {
+        return state;
+    }
+
+    // ******************************** Inner Classes ********************************* //
 
     private class optionPanel extends JPanel {
 
@@ -78,38 +82,11 @@ public class Menu extends JFrame {
 
     // ******************************* Action Listeners ******************************* //
 
-    class playButtonListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object[] buttons = {"Singleplayer", "Coop", "Multiplayer"};
-            int optionDialog = JOptionPane.showOptionDialog(null, "Pick an Option", "Menu",
-                    JOptionPane.YES_NO_CANCEL_OPTION, 0, null, buttons, buttons[2]);
-
-            if (optionDialog == JOptionPane.YES_OPTION){
-                state = 0;
-                setVisible(false);
-                dispose();
-            }
-
-            if (optionDialog == JOptionPane.NO_OPTION){
-                state = 1;
-                setVisible(false);
-                dispose();
-            }
-
-            if (optionDialog == JOptionPane.CANCEL_OPTION){
-                state = 2;
-                setVisible(false);
-                dispose();
-            }
-        }
-    }
-
     class editButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+        	state = 3;
         }
     }
 
@@ -121,8 +98,31 @@ public class Menu extends JFrame {
         }
     }
 
-    @Override
-    public int getState() {
-        return state;
+    class playButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object[] buttons = {"Singleplayer", "Coop", "Multiplayer"};
+            int optionDialog = JOptionPane.showOptionDialog(null, "Pick an Option", "Menu",
+                    JOptionPane.YES_NO_CANCEL_OPTION, 0, null, buttons, buttons[2]);
+
+            if (optionDialog == JOptionPane.YES_OPTION) {
+                state = 0;
+                setVisible(false);
+                dispose();
+            }
+
+            if (optionDialog == JOptionPane.NO_OPTION) {
+                state = 1;
+                setVisible(false);
+                dispose();
+            }
+
+            if (optionDialog == JOptionPane.CANCEL_OPTION) {
+                state = 2;
+                setVisible(false);
+                dispose();
+            }
+        }
     }
-}
+} 

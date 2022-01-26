@@ -17,7 +17,7 @@ public class Player extends Character {
         double yComponent = Math.sin(getAngle().getValue());
         double xComponent = Math.cos(getAngle().getValue());
 
-        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 10, 10, "Bullet", getAngle().clone(), sprite, 0,
+        Game.addProjectileEntity(new Projectile(this.getPosition().clone(), 10, 10, getAngle().clone(), sprite, 0,
                 1, 0, 0.25, xComponent, yComponent, "player", 10));
     }
 
@@ -98,9 +98,9 @@ public class Player extends Character {
     public void run() {
     }
 
-    public Player(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
+    public Player(Vector position, int width, int height, Angle angle, TextureManager sprite, double health,
             double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
-        super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); 
+        super(position, width, height, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); 
         ammo = 40;
     }
 

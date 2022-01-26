@@ -14,9 +14,9 @@ public abstract class Entity extends GameObject implements Moveable {
     private double spriteScale;
     private UUID uuid;
 
- Entity(Vector position, int width, int height, String name, Angle angle, TextureManager sprites, double health,
+ Entity(Vector position, int width, int height, Angle angle, TextureManager sprites, double health,
    double speed, double spriteZOffset, double spriteScale) {
-  super(position, width, height, name, angle, sprites);
+  super(position, width, height, angle, sprites);
   this.health = health;
   this.speed = speed;
   this.spriteZOffset = spriteZOffset;

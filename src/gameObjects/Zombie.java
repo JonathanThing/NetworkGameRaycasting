@@ -10,9 +10,9 @@ import util.Vector;
 
 public class Zombie extends Enemy {
 
-    public Zombie(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, double health,
+    public Zombie(Vector position, int width, int height, Angle angle, TextureManager sprite, double health,
             double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
-        super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon);
+        super(position, width, height, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon);
     }
 
     public void attack(Player player, BufferedImage sprite, Level map) {

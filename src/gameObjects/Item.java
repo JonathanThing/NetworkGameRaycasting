@@ -9,8 +9,8 @@ import util.Vector;
 
 public class Item extends GameObject implements Pickupable {
 
-    Item(Vector position, int width, int height, String name, Angle angle, TextureManager sprite) {
-        super(position, width, height, name, angle, sprite);
+    Item(Vector position, int width, int height, Angle angle, TextureManager sprite) {
+        super(position, width, height, angle, sprite);
     }
 
     public void draw(Graphics g) {

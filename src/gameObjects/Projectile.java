@@ -73,9 +73,9 @@ public class Projectile extends Entity {
     }
     
     
-    Projectile(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, 
+    Projectile(Vector position, int width, int height, Angle angle, TextureManager sprite, 
                double health, double speed, double spriteZOffset, double spriteScale, double changeX, double changeY, String shooter, double damage) {
-        super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale);
+        super(position, width, height, angle, sprite, health, speed, spriteZOffset, spriteScale);
         this.changeX = changeX;
         this.changeY = changeY;
         this.shooter = shooter;

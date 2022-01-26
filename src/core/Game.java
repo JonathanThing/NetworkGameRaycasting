@@ -207,55 +207,55 @@ public class Game {
             	
                 switch (tempMap[i][j]) {
                     case 'f': // Creates a Wall object
-                        map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(0)));                        
+                        map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(0)));                        
                         break;
                         
                     case 'b': // Creates a special wall object                      
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(1)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(1)));                        
                         break;
                         
                     case 'p': 
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(2)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(2)));                        
                         break;
                         
                     case 'd': 
-                    	map.setMapTile(i, j, new Door(new Vector(xPosition,yPosition), "door", textures.getWallTexture(8)));
+                    	map.setMapTile(i, j, new Door(new Vector(xPosition,yPosition), textures.getWallTexture(8)));
                         break;
                         
                     case 'c':
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(3)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(3)));                        
                         break;
                         
                     case 'B': 
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(4)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(4)));                        
                         break;  
                         
                     case 'C':
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(5)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(5)));                        
                         break;
                     case 'w':
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(6)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(6)));                        
                         break;
                     case 'r':
-                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(7)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), textures.getWallTexture(7)));                        
                         break;
                     case 'P':
                     	if (twoPlayers) {
-                            other = new Player(new Vector(xPosition,yPosition), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+                            other = new Player(new Vector(xPosition,yPosition), 10, 10, new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
                             entities.add(other);
                             connect(sprites);
                         }
-                        player = new Player(new Vector(xPosition,yPosition), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+                        player = new Player(new Vector(xPosition,yPosition), 10, 10, new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
                         entities.add(player);
                         break;
                         
                     case 'S': 
-                        addCharacterEntity(new Skeleton(new Vector(xPosition,yPosition) , 10, 10, "skeleton", new Angle(Math.PI/2),
+                        addCharacterEntity(new Skeleton(new Vector(xPosition,yPosition) , 10, 10, new Angle(Math.PI/2),
                                 new TextureManager(personDirection), 50, 4, 120, 0.75, null));
                     	break;  
                     	
                     case 'Z': 
-                        addCharacterEntity(new Zombie(new Vector(xPosition,yPosition), 10, 10, "zombie", new Angle(Math.PI/2),
+                        addCharacterEntity(new Zombie(new Vector(xPosition,yPosition), 10, 10, new Angle(Math.PI/2),
                                 new TextureManager(personDirection), 50, 4, 120, 0.75, null));
 
                     	break;  

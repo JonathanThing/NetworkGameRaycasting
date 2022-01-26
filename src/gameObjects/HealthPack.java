@@ -6,8 +6,8 @@ import util.Vector;
 public class HealthPack extends Item {
     private int value;
 
-    HealthPack(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, int value) {
-        super(position, width, height, name, angle, sprite);
+    HealthPack(Vector position, int width, int height, Angle angle, TextureManager sprite, int value) {
+        super(position, width, height, angle, sprite);
         this.value = value;
     }
 

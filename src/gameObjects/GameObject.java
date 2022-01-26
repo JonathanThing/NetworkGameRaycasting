@@ -13,15 +13,13 @@ public abstract class GameObject {
     private int width;
     private int height;
     private TextureManager sprites;
-    private String name;
     private Angle angle;
 
-    GameObject(Vector position, int width, int height, String name, Angle angle, TextureManager sprites) {
+    GameObject(Vector position, int width, int height, Angle angle, TextureManager sprites) {
         this.position = position;
         this.width = width;
         this.height = height;
         this.sprites = sprites;
-        this.name = name;
         this.angle = angle;
     }
 
@@ -61,14 +59,6 @@ public abstract class GameObject {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public TextureManager getSprites() {

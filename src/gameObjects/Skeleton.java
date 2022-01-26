@@ -12,9 +12,9 @@ import java.awt.Graphics;
 
 public class Skeleton extends Enemy {
     
-    public Skeleton(Vector position, int width, int height, String name, Angle angle, TextureManager sprite, 
+    public Skeleton(Vector position, int width, int height, Angle angle, TextureManager sprite, 
              double health, double speed, double spriteZOffset, double spriteScale, Weapon weapon) {
-        super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); //calls the constructor in the enemy super class
+        super(position, width, height, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon); //calls the constructor in the enemy super class
     }
     
     
@@ -25,7 +25,7 @@ public class Skeleton extends Enemy {
     public void shoot(Player player, TextureManager sprite) {
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
-        Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, "Bullet", this.getAngle().clone(), sprite, 0 , 1 , 0,
+        Game.addProjectileEntity(new Projectile(new Vector (this.getPosition().getX(),this.getPosition().getY()), 10, 10, this.getAngle().clone(), sprite, 0 , 1 , 0,
                                                 0.25,-1* hypotenuse.getX(), hypotenuse.getY(), "skeleton", 10));
     }
     
