@@ -43,6 +43,10 @@ public class TextureManager {
         return textures[direction][animationNumber];
     }
     
+    public TextureManager getWallTexture(int index) {
+        return new TextureManager (textures[index][0]);
+    }
+    
     public int getNumberOfDirectionTextures() {
         return textures.length;
     }

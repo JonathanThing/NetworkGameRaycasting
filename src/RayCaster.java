@@ -10,23 +10,21 @@ public class RayCaster {
 	
 	private Vector playerPosition;
 	private Angle playerAngle;
-	private double fov;
+	private double fov = Const.FOV;
 	private Vector cameraOffset;
 	private LevelE map;
-	private TextureManager textures;
 	private int numberOfRays = 360;
 	private double dist[] = new double[numberOfRays];
 	private Environment wallHorizontal;
 	private Environment wallVertical;
 	
 	public RayCaster (TextureManager textures) { 
-		this.textures = textures;
+
 	}
 	
 	public void updateInformation(Player player, Vector cameraOffset, LevelE map) {
 		this.playerPosition = player.getPosition();
 		this.playerAngle = player.getAngle();
-		this.fov = fov;
 		this.cameraOffset = cameraOffset;
 		this.map = map;
 	}
@@ -170,7 +168,6 @@ public class RayCaster {
 //			}	
 //		}	
 //	}
-
 	
 	public void rayCastWalls(Graphics2D g2, boolean drawingMap) {
 
@@ -183,10 +180,10 @@ public class RayCaster {
 		double cameraPlane = Math.tan(fov/2)*2; //Distance of camera plane
 		double incrementPlane = cameraPlane/numberOfRays; //Distance between every ray on the plane
 		
-		for (int rays = 0; rays < numberOfRays; rays++) {
+		for (int rays = 0; rays < numberOfRays; rays++) {		
 			
 			rayAngle = Angle.checkLimit(playerAngle.getValue() + Math.atan(incrementPlane*(rays-numberOfRays/2)));
-
+			
 			distVerticalSide = rayCastVerticalSides(rayAngle);
 			distHorizontalSide = rayCastHorizontalSides(rayAngle);
 					

@@ -149,27 +149,27 @@ public class Game {
                 
                 switch (tempMap[i][j]) {
                     case 1: // Creates a Wall object
-                        map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(1, 0)));                        
+                        map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(0)));                        
                         break;
                         
                     case 2: // Creates a special wall object                      
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(2, 0)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(1)));                        
                         break;
                         
                     case 3: 
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(3, 0)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(2)));                        
                         break;
                         
                     case 4: 
-                    	map.setMapTile(i, j, new Door(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "door", textures.getSingleTexture(4, 0)));
+                    	map.setMapTile(i, j, new Door(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "door", textures.getWallTexture(3)));
                         break;
                         
                     case 5:
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(5, 0)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(4)));                        
                         break;
                         
                     case 6: 
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(6, 0)));                        
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(5)));                        
                         break;       
                     case -1:
                     	if (twoPlayers) {
