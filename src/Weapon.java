@@ -7,11 +7,13 @@ import javax.imageio.ImageIO;
 
 abstract class Weapon{
 
+	  private boolean shoot = false;
+	  
+	  private boolean reloading = false;
+	  
 	  private double damage;
 	
 	  private double fireRate;
-	  
-	  private boolean reloading = false;
 	  
 	  private int TotalAmmo;
 	  
@@ -24,6 +26,10 @@ abstract class Weapon{
 	  private int Ammo = 0;
 	  
 	  TextureManager fireball;
+	  
+	  public boolean getShoot() {
+		    return this.shoot;
+		  }
 	  
 	  public double getFireRate() {
 	    return this.fireRate;
@@ -57,6 +63,10 @@ abstract class Weapon{
 		  return this.lastFire;
 	  }
 	  
+	  public void setShoot(boolean newShoot) {
+		    this.shoot = newShoot;
+		  }
+	  
 	  public void setReloading(boolean newReloading) {
 		  this.reloading = newReloading;
 	  }
@@ -71,9 +81,7 @@ abstract class Weapon{
 	  
 	  public void setLastFire(long newLastFire) {
 		  this.lastFire = newLastFire;
-	  }
-	  
-	  
+	  }	  
 	
 	  abstract void shoot(Angle angle, Vector playerPos, long timer);
 	  
