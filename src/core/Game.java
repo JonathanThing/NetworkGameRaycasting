@@ -113,7 +113,6 @@ public class Game {
                 break;
             case 3:
                 // map editor
-                init();
                 break;
             default:
                 twoPlayers = true;
