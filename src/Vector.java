@@ -1,3 +1,4 @@
+
 public class Vector {
  private double x;
  private double y;
@@ -73,7 +74,7 @@ public class Vector {
   return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
  }
  
- public boolean inRange(Level map) {
+ public boolean inRange(LevelE map) {
   if (this.x < map.getColumns() * Const.BOX_SIZE && this.x >= 0 && this.y < map.getRows() * Const.BOX_SIZE && this.y >= 0) {
    return true;
   } 

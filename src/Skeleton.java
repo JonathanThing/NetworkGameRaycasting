@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+
 import java.awt.Graphics;
 
 class Skeleton extends Enemy {
@@ -9,7 +10,7 @@ class Skeleton extends Enemy {
     }
     
     
-    public void attack(Player player, TextureManager sprite, Environment[][] e) {
+    public void attack(Player player, TextureManager sprite, LevelE e) {
         this.shoot(player, sprite); 
     }
     
@@ -40,7 +41,7 @@ class Skeleton extends Enemy {
     }
 
     @Override
-    public void attack(Player player, BufferedImage sprite, Environment[][] e) {
+    public void attack(Player player, BufferedImage sprite, LevelE map) {
         // TODO Auto-generated method stub
     }
 }

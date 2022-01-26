@@ -7,24 +7,24 @@ class Zombie extends Enemy {
         super(position, width, height, name, angle, sprite, health, speed, spriteZOffset, spriteScale, weapon);
     }
 
-    public void attack(Player player, BufferedImage sprite, Environment[][] e) {
+    public void attack(Player player, BufferedImage sprite, LevelE map) {
         Vector distance = (this.getPosition()).subtract(player.getPosition());
         Vector hypotenuse = distance.normalized();
         this.moveRight(hypotenuse.getX());
         this.moveUp(hypotenuse.getY());
 
-        if (detectCollision(e, player)) {
+        if (detectCollision(map, player)) {
             this.moveLeft(hypotenuse.getX());
             this.moveDown(hypotenuse.getY());
         }
 
     }
 
-    public boolean detectCollision(Environment[][] e, Player player) {
-        for (int i = 0; i < e.length; i++) {
-            for (int j = 0; j < e[0].length; j++) {
-                if (e[i][j] instanceof Wall) {
-                    if (isColliding(e[i][j])) {
+    public boolean detectCollision(LevelE map, Player player) {
+        for (int i = 0; i < map.getRows(); i++) {
+            for (int j = 0; j < map.getColumns(); j++) {
+                if (map.getMapTile(i, j) instanceof Wall) {
+                    if (isColliding(map.getMapTile(i, j))) {
                         return true;
                     }
                 }

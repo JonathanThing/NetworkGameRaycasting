@@ -1,5 +1,6 @@
 import java.awt.*;
 
+
 abstract class GameObject {
 
     private Vector position;

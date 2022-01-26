@@ -6,6 +6,7 @@
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -55,7 +56,7 @@ public class Game {
     static ReadFromServer rfsThread;
     static WriteToServer wtsThread;
     static Socket socket;
-    public static volatile Environment[][] map;
+    public static volatile LevelE map;
     // 0 = singe player, 1 = coop, 2 = multiplayer, 3 = map editor
     static int gameState;
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -132,7 +133,7 @@ public class Game {
         mapWindow.add(mapThing);
         
         rayCaster = new RayCaster(textures);
-        rayCaster.updateInformation(player, cameraOffset, currentLevel, Math.PI / 2);
+        rayCaster.updateInformation(player, cameraOffset, map);
         mapWindow.setVisible(true);
         gameWindow.setVisible(true);
        
@@ -142,33 +143,33 @@ public class Game {
     }
     
     public static void generateMap(int[][] tempMap){
-        map = new Environment[tempMap.length][tempMap[0].length];
+        map = new LevelE(new Environment[tempMap.length][tempMap[0].length]);
         for (int i = 0; i < tempMap.length; i++) {
             for (int j = 0; j < tempMap[0].length; j++) {
                 
                 switch (tempMap[i][j]) {
                     case 1: // Creates a Wall object
-                        map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(1, 0));                        
+                        map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(1, 0)));                        
                         break;
                         
                     case 2: // Creates a special wall object                      
-                        map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(2, 0));
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(2, 0)));                        
                         break;
                         
                     case 3: 
-                        map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(3, 0));
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(3, 0)));                        
                         break;
                         
                     case 4: 
-                        map[i][j] = new Door(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "door", textures.getSingleTexture(4, 0));
+                    	map.setMapTile(i, j, new Door(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "door", textures.getSingleTexture(4, 0)));
                         break;
                         
                     case 5:
-                        map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(5, 0));
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(5, 0)));                        
                         break;
                         
                     case 6: 
-                        map[i][j] = new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(6, 0));
+                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getSingleTexture(6, 0)));                        
                         break;       
                     case -1:
                     	if (twoPlayers) {
@@ -248,7 +249,7 @@ public class Game {
                 shooting = false;
             }
             
-            rayCaster.updateInformation(player, cameraOffset, currentLevel, Const.FOV);
+            rayCaster.updateInformation(player, cameraOffset, map);
             gameWindow.repaint();
             mapWindow.repaint();
 

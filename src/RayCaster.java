@@ -12,18 +12,18 @@ public class RayCaster {
 	private Angle playerAngle;
 	private double fov;
 	private Vector cameraOffset;
-	private Level map;
+	private LevelE map;
 	private TextureManager textures;
 	private int numberOfRays = 360;
 	private double dist[] = new double[numberOfRays];
-	private int wallTypeHorizontal;
-	private int wallTypeVertical;
+	private Environment wallHorizontal;
+	private Environment wallVertical;
 	
 	public RayCaster (TextureManager textures) { 
 		this.textures = textures;
 	}
 	
-	public void updateInformation(Player player, Vector cameraOffset, Level map, double fov) {
+	public void updateInformation(Player player, Vector cameraOffset, LevelE map) {
 		this.playerPosition = player.getPosition();
 		this.playerAngle = player.getAngle();
 		this.fov = fov;
@@ -176,7 +176,7 @@ public class RayCaster {
 
 		double distVerticalSide;
 		double distHorizontalSide;
-		int wallType = 0;
+		Environment wall = null;
 		double rayDistance = 0;
 		double rayAngle;
 
@@ -194,11 +194,11 @@ public class RayCaster {
 			
 			if (distHorizontalSide < distVerticalSide && distHorizontalSide != Const.NONE) { //horizontal side is closer
 				rayDistance = distHorizontalSide;
-				wallType = wallTypeHorizontal;
+				wall = wallHorizontal;
 				verticalWall = false;
 			} else if (distVerticalSide < distHorizontalSide && distVerticalSide != Const.NONE) { //vertical side is closer
 				rayDistance = distVerticalSide;
-				wallType = wallTypeVertical;
+				wall = wallVertical;
 				verticalWall = true;
 			}
 			
@@ -217,14 +217,14 @@ public class RayCaster {
 				double strokeWidth = (double)Const.WIDTH/numberOfRays;
 				g2.setStroke(new BasicStroke((int)strokeWidth+1));
 				
-				int numbPixel = textures.getTextureHeight(wallType, 0);
+				int numbPixel = wall.getSprites().getTextureHeight(0, 0);
 				double lineH = (Const.HEIGHT*Const.BOX_SIZE/2)/rayDistance;
 				double middle = lineH/2;
 				double stepPattern = (lineH/numbPixel);
 				int textureX;
 				int textureY = 0;
 				
-				int textureWidth = textures.getTextureWidth(wallType, 0);
+				int textureWidth = wall.getSprites().getTextureWidth(0, 0);
 				
 				if (!verticalWall) {
 					if (rayAngle < Math.PI) {
@@ -243,10 +243,10 @@ public class RayCaster {
 				for (int i = 0; i < numbPixel; i++) {
 					textureY = (numbPixel-i-1);
 					
-					BufferedImage texture = textures.getSingleTexture(wallType, 0);
+					BufferedImage texture = wall.getSprites().getSingleTexture(0, 0);
 					int valueRGB = texture.getRGB((int)textureX,(int)textureY);
 					
-					if (rayDistance == Const.NONE || wallType < 0) {
+					if (rayDistance == Const.NONE || wall == null) {
 						g2.setColor(Color.WHITE);
 					} else {
 						if (verticalWall) {
@@ -289,12 +289,12 @@ public class RayCaster {
 			Vector currentTile = gridLines.divideByScalar(Const.BOX_SIZE).flipXY();
 			Vector currentTileBehind = currentTile.subtract(new Vector(0,1));
 			
-			if (map.getMapTile(currentTileBehind) >= 1) {
-				wallTypeVertical = map.getMapTile(currentTileBehind) -1;
+			if (map.getMapTile(currentTileBehind) instanceof Wall) {
+				wallVertical = map.getMapTile(currentTileBehind);
 				distance = playerPosition.distance(gridLines);
 				break;
-			} else if (map.getMapTile(currentTile) >= 1) {
-				wallTypeVertical = map.getMapTile(currentTile)-1;
+			} else if (map.getMapTile(currentTile) instanceof Wall) {
+				wallVertical = map.getMapTile(currentTile);
 				distance = playerPosition.distance(gridLines);
 				break;
 			} else {
@@ -329,12 +329,12 @@ public class RayCaster {
 			Vector currentTile = gridLines.divideByScalar(Const.BOX_SIZE).flipXY();
 			Vector currentTileBehind = currentTile.subtract(new Vector(1,0));
 			
-			if (map.getMapTile(currentTileBehind) >= 1) {
-				wallTypeHorizontal = map.getMapTile(currentTileBehind)-1;
+			if (map.getMapTile(currentTileBehind) instanceof Wall) {
+				wallHorizontal = map.getMapTile(currentTileBehind);
 				distance = playerPosition.distance(gridLines);
 				break;
-			} else if (map.getMapTile(currentTile) >= 1) {
-				wallTypeHorizontal = map.getMapTile(currentTile) -1;
+			} else if (map.getMapTile(currentTile) instanceof Wall) {
+				wallHorizontal = map.getMapTile(currentTile);
 				distance = playerPosition.distance(gridLines);
 				break;
 			} else {

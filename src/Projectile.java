@@ -20,11 +20,11 @@ class Projectile extends Entity {
         return this.changeY;
     }
     
-    public synchronized boolean checkCollision(Environment[][] e, ArrayList<Entity> entities){
-        for (int i = 0; i < e.length; i++) {
-            for (int j = 0; j < e[0].length; j++) {
-                if (e[i][j] instanceof Wall){
-                    if  (isColliding(e[i][j])){
+    public synchronized boolean checkCollision(LevelE map, ArrayList<Entity> entities){
+        for (int i = 0; i < map.getRows(); i++) {
+            for (int j = 0; j < map.getColumns(); j++) {
+                if (map.getMapTile(i, j) instanceof Wall){
+                    if  (isColliding(map.getMapTile(i, j))){
                         return true;
                     }
                 }
