@@ -2,12 +2,27 @@ import java.lang.Math;
 
 class Player extends Character {
     private int ammo;
-    singleShot pistol = new singleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "pistol", null, 40, 40, 6, 40);
-    //multiShot shotgun = new multiShot(this.getPosition().getX(), this.getPosition().getY(),5,5,"shotgun",null,30,50,4,60,3);
+    private boolean slot1 = false;
+    private boolean slot2 = false;
+    private boolean slot3 = false;
+    
+    SingleShot pistol = new SingleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "Pistol", null, 40, 5, 6, 25);
+    SingleShot ar = new SingleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "ar", null, 20, 1, 25, 40);
+    SingleShot rifle = new SingleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "rifle", null, 200, 15, 2, 75);
+    MultiShot shotgun = new MultiShot(this.getPosition().getX(), this.getPosition().getY(),5,5,"shotgun",null,30,5,6,40,5);
     //dmg, firerate, bullets, reloadtime
     
-    public void shoot(long timer) {    		
+    public void shoot(long timer) {    	
+    	if(this.slot1 == true) {
     		pistol.shoot(getAngle(), this.getPosition().clone(), timer);
+    	}
+    	else if(this.slot2 == true) {
+    		ar.shoot(getAngle(), this.getPosition().clone(), timer);
+    	}
+    	else if(this.slot3 == true) {
+    		shotgun.shoot(getAngle(), this.getPosition().clone(), timer);
+    	}
+    		
       }
 
     public synchronized void movement(boolean up, boolean down, boolean left, boolean right, boolean turnLeft,
@@ -96,4 +111,18 @@ class Player extends Character {
 	public void changeAmmo(int change) {
 		this.ammo += change;
 	}
+	
+	public void setSlot1(boolean slot) {
+		this.slot1 = slot;
+	}
+	
+	public void setSlot2(boolean slot) {
+		this.slot2 = slot;
+	}
+	
+	public void setSlot3(boolean slot) {
+		this.slot3 = slot;
+	}
+	
+	
 }
