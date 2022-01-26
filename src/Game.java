@@ -221,7 +221,7 @@ public class Game {
             player.movement(up, down, left, right, turnLeft, turnRight, currentLevel, deltaX);
             if (shooting) {
                 player.shoot(timer);
-                shooting = false;
+                //shooting = false;
             }
             
             rayCaster.updateInformation(player, cameraOffset, currentLevel, Const.FOV);
@@ -411,7 +411,7 @@ public class Game {
                 case 'Q':
                     turnLeft = true;
                     break;
-               /* case '1':
+                case '1':
                 	player.setSlot1(true);
     				player.setSlot2(false);
     				player.setSlot3(false);
@@ -425,7 +425,7 @@ public class Game {
                 	player.setSlot1(false);
 					player.setSlot2(false);
 				    player.setSlot3(true);
-                	break;*/
+                	break;
             }
         }
         
