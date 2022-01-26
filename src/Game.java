@@ -30,6 +30,7 @@ public class Game {
     static TextureManager fireBall;
     static TextureManager personDirection;
     public static Robot robo;
+    static int deltaX;
     public static volatile Level currentLevel = new Level(new int[][] { { 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
 																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
 																        { 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
@@ -55,11 +56,12 @@ public class Game {
     static WriteToServer wtsThread;
     static Socket socket;
     public static volatile Environment[][] map;
-    // 0 = singe player, 1 = coop, 2 = multiplayer, 3 = map editor
+    // 0 = single player, 1 = coop, 2 = multiplayer, 3 = map editor
     static int gameState;
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
     static ArrayList<CharacterThread> characterThreads = new ArrayList<CharacterThread>();
     static ProjectilesThread projectilesThread = new ProjectilesThread();
+    private static long timer;
     
     // ------------------------------------------------------------------------------
     public static void main(String[] args) {
@@ -97,10 +99,10 @@ public class Game {
             e.printStackTrace();
         }	
         try {
-            textures = new TextureManager(ImageIO.read(new File("C://WallTextures.png")));
-            sprites = new TextureManager(ImageIO.read(new File("C://spriteSheet.png")));
-            personDirection = new TextureManager(ImageIO.read(new File("C://PersonDirectionAnimation.png")));
-            fireBall = new TextureManager(ImageIO.read(new File("C://FireBallAnimation.png")));
+            textures = new TextureManager(ImageIO.read(new File("D://WallTextures.png")));
+            sprites = new TextureManager(ImageIO.read(new File("D://spriteSheet.png")));
+            personDirection = new TextureManager(ImageIO.read(new File("D://PersonDirectionAnimation.png")));
+            fireBall = new TextureManager(ImageIO.read(new File("D://FireBallAnimation.png")));
         } catch (IOException e) {
             System.out.println("failed to get image");
             e.printStackTrace();
@@ -209,15 +211,16 @@ public class Game {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            timer = System.currentTimeMillis();
             if (twoPlayers){
                 if (otherShooting){
-                    other.shoot(fireBall);
+                    other.shoot(timer);
                     otherShooting = false;
                 }
             }
-            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel);
+            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel, deltaX);
             if (shooting) {
-                player.shoot(fireBall);
+                player.shoot(timer);
                 shooting = false;
             }
             
@@ -230,7 +233,6 @@ public class Game {
     // ------------------------------------------------------------------------------
    
     private static void MouseController(MouseEvent e) {
-    	System.out.println("1");
 		int adjfactor = -7;		
         
         robo.mouseMove(Const.WIDTH/2 + gameWindow.getX(), Const.WIDTH/2 + gameWindow.getY());
@@ -409,7 +411,7 @@ public class Game {
                 case 'Q':
                     turnLeft = true;
                     break;
-                case '1':
+               /* case '1':
                 	player.setSlot1(true);
     				player.setSlot2(false);
     				player.setSlot3(false);
@@ -422,8 +424,8 @@ public class Game {
                 case '3':
                 	player.setSlot1(false);
 					player.setSlot2(false);
-				player.setSlot3(true);
-                	break;
+				    player.setSlot3(true);
+                	break;*/
             }
         }
         
