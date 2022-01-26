@@ -17,6 +17,6 @@ abstract class Enemy extends Character {
         this.running = false;
     }
 
-    public abstract void attack(Player player, BufferedImage sprite, LevelE e);
+    public abstract void attack(Player player, BufferedImage sprite, Level e);
 
 }

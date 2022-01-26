@@ -12,7 +12,7 @@ public class RayCaster {
 	private Angle playerAngle;
 	private double fov = Const.FOV;
 	private Vector cameraOffset;
-	private LevelE map;
+	private Level map;
 	private int numberOfRays = 360;
 	private double dist[] = new double[numberOfRays];
 	private Environment wallHorizontal;
@@ -22,7 +22,7 @@ public class RayCaster {
 
 	}
 	
-	public void updateInformation(Player player, Vector cameraOffset, LevelE map) {
+	public void updateInformation(Player player, Vector cameraOffset, Level map) {
 		this.playerPosition = player.getPosition();
 		this.playerAngle = player.getAngle();
 		this.cameraOffset = cameraOffset;
@@ -207,7 +207,7 @@ public class RayCaster {
 				g2.setStroke(new BasicStroke(1));
 				g2.drawLine((int) (playerPosition.getX() + cameraOffset.getX()), (int) (playerPosition.getY() + cameraOffset.getY()),(int)(playerPosition.getX() + rayDistance*Math.cos(rayAngle) + cameraOffset.getX()), (int)(playerPosition.getY() - rayDistance*Math.sin(rayAngle) + cameraOffset.getY()));
 				
-			} else {
+			} else if (wall != null){
 					
 				rayDistance = rayDistance*Math.cos(rayAngle-playerAngle.getValue());
 				dist[numberOfRays-rays-1] = rayDistance;
@@ -286,11 +286,11 @@ public class RayCaster {
 			Vector currentTile = gridLines.divideByScalar(Const.BOX_SIZE).flipXY();
 			Vector currentTileBehind = currentTile.subtract(new Vector(0,1));
 			
-			if (map.getMapTile(currentTileBehind) instanceof Wall) {
+			if (map.getMapTile(currentTileBehind) instanceof Environment) {
 				wallVertical = map.getMapTile(currentTileBehind);
 				distance = playerPosition.distance(gridLines);
 				break;
-			} else if (map.getMapTile(currentTile) instanceof Wall) {
+			} else if (map.getMapTile(currentTile) instanceof Environment) {
 				wallVertical = map.getMapTile(currentTile);
 				distance = playerPosition.distance(gridLines);
 				break;
@@ -326,11 +326,11 @@ public class RayCaster {
 			Vector currentTile = gridLines.divideByScalar(Const.BOX_SIZE).flipXY();
 			Vector currentTileBehind = currentTile.subtract(new Vector(1,0));
 			
-			if (map.getMapTile(currentTileBehind) instanceof Wall) {
+			if (map.getMapTile(currentTileBehind) instanceof Environment) {
 				wallHorizontal = map.getMapTile(currentTileBehind);
 				distance = playerPosition.distance(gridLines);
 				break;
-			} else if (map.getMapTile(currentTile) instanceof Wall) {
+			} else if (map.getMapTile(currentTile) instanceof Environment) {
 				wallHorizontal = map.getMapTile(currentTile);
 				distance = playerPosition.distance(gridLines);
 				break;

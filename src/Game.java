@@ -13,9 +13,11 @@ import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.UUID;
 import java.awt.Cursor;
 
@@ -32,21 +34,7 @@ public class Game {
     static TextureManager sprites;
     static TextureManager fireBall;
     static TextureManager personDirection;
-    public static volatile Level currentLevel = new Level(new int[][] { { 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
-																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 1, 0, -1, 0, 0, 0, 0, 0, 4, 0, 0, 0, 6, 6, 0, 2 },
-																        { 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 6, 0, 2 }, 
-																        { 1, 0, 0, 0, 2, 0, 0, -2, 2, 0, 0, 0, 6, 6, 0, 2 },
-																        { 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 2, 0, 0, -3, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
-																        { 2, 2, 4, 2, 1, 2, 4, 2, 2, 0, 0, 0, 3, 3, 0, 2 }, 
-																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 3, 0, 2 },
-																        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 },
-																        { 2, 0, 0, 5, 5, 0, 0, 0, 2, 0, 0, 0, 5, 5, 0, 2 }, 
-																        { 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5, 5, 0, 2 },
-																        { 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2 }, 
-																        { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 } });
+    public volatile static char[][] bufferMap;
     
     static Player player;
     static Player other;
@@ -56,7 +44,7 @@ public class Game {
     static ReadFromServer rfsThread;
     static WriteToServer wtsThread;
     static Socket socket;
-    public static volatile LevelE map;
+    public static volatile Level map;
     // 0 = singe player, 1 = coop, 2 = multiplayer, 3 = map editor
     static int gameState;
     public static volatile ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -113,7 +101,14 @@ public class Game {
             System.out.println("failed to get image");
             e.printStackTrace();
         }
-        generateMap(currentLevel.getMap());
+        
+        try {
+			bufferMap = getMapFile("maps/map.txt");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        generateMap(bufferMap);
         
         projectilesThread.start();
         gameWindow = new JFrame("Game Window");
@@ -142,52 +137,93 @@ public class Game {
         runGameLoop();
     }
     
-    public static void generateMap(int[][] tempMap){
-        map = new LevelE(new Environment[tempMap.length][tempMap[0].length]);
+    public static char[][] getMapFile(String fileName) throws FileNotFoundException {
+    	File myFile = new File(fileName);
+        System.out.println("Attempting to read data from file: " + fileName);
+        Scanner input = new Scanner(myFile);
+
+        int x = input.nextInt();
+        int y = input.nextInt();
+        
+        String line = "";
+        
+        input.nextLine();
+        
+        char[][] map = new char[y][x];
+        
+        for (int i = 0; i < y; i++) { 
+          
+          line = input.nextLine();
+          
+          for (int j = 0; j < x; j++) {
+            
+            map[i][j] = line.charAt(j);
+            
+          }
+        }
+        
+        return map;
+    }
+    
+    public static void generateMap(char[][] tempMap){
+        map = new Level(new Environment[tempMap.length][tempMap[0].length]);
         for (int i = 0; i < tempMap.length; i++) {
             for (int j = 0; j < tempMap[0].length; j++) {
                 
+            	int xPosition = j * Const.BOX_SIZE + Const.BOX_SIZE / 2;
+            	int yPosition = i * Const.BOX_SIZE + Const.BOX_SIZE / 2;
+            	
                 switch (tempMap[i][j]) {
-                    case 1: // Creates a Wall object
-                        map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(0)));                        
+                    case 'f': // Creates a Wall object
+                        map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(0)));                        
                         break;
                         
-                    case 2: // Creates a special wall object                      
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(1)));                        
+                    case 'b': // Creates a special wall object                      
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(1)));                        
                         break;
                         
-                    case 3: 
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(2)));                        
+                    case 'p': 
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(2)));                        
                         break;
                         
-                    case 4: 
-                    	map.setMapTile(i, j, new Door(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "door", textures.getWallTexture(3)));
+                    case 'd': 
+                    	map.setMapTile(i, j, new Door(new Vector(xPosition,yPosition), "door", textures.getWallTexture(8)));
                         break;
                         
-                    case 5:
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(4)));                        
+                    case 'c':
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(3)));                        
                         break;
                         
-                    case 6: 
-                    	map.setMapTile(i, j, new Wall(new Vector(j * Const.BOX_SIZE + Const.BOX_SIZE / 2, i * Const.BOX_SIZE + Const.BOX_SIZE / 2), "wall", textures.getWallTexture(5)));                        
-                        break;       
-                    case -1:
+                    case 'B': 
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(4)));                        
+                        break;  
+                        
+                    case 'C':
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(5)));                        
+                        break;
+                    case 'w':
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(6)));                        
+                        break;
+                    case 'r':
+                    	map.setMapTile(i, j, new Wall(new Vector(xPosition,yPosition), "wall", textures.getWallTexture(7)));                        
+                        break;
+                    case 'P':
                     	if (twoPlayers) {
-                            other = new Player(new Vector((j) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+                            other = new Player(new Vector(xPosition,yPosition), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
                             entities.add(other);
                             connect(sprites);
                         }
-                        player = new Player(new Vector((j) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
-
+                        player = new Player(new Vector(xPosition,yPosition), 10, 10, "player", new Angle(3 * Math.PI / 2), sprites, 100, 4, 120, 0.75, null);
+                        entities.add(player);
                         break;
                         
-                    case -2: 
-                        addCharacterEntity(new Skeleton(new Vector((j+1) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "skeleton", new Angle(Math.PI/2),
+                    case 'S': 
+                        addCharacterEntity(new Skeleton(new Vector(xPosition,yPosition) , 10, 10, "skeleton", new Angle(Math.PI/2),
                                 new TextureManager(personDirection), 50, 4, 120, 0.75, null));
                     	break;  
                     	
-                    case -3: 
-                        addCharacterEntity(new Zombie(new Vector((j+1) * Const.BOX_SIZE - Const.BOX_SIZE / 2, (i) * Const.BOX_SIZE - Const.BOX_SIZE / 2), 10, 10, "zombie", new Angle(Math.PI/2),
+                    case 'Z': 
+                        addCharacterEntity(new Zombie(new Vector(xPosition,yPosition), 10, 10, "zombie", new Angle(Math.PI/2),
                                 new TextureManager(personDirection), 50, 4, 120, 0.75, null));
 
                     	break;  
@@ -243,7 +279,7 @@ public class Game {
                     otherShooting = false;
                 }
             }
-            player.movement(up, down, left, right, turnLeft, turnRight, currentLevel, deltaX);
+            player.movement(up, down, left, right, turnLeft, turnRight, map, deltaX);
             if (shooting) {
                 player.shoot(fireBall);
                 shooting = false;
@@ -346,13 +382,13 @@ public class Game {
            
             g2.setStroke(new BasicStroke(4));
             g2.setColor(Color.BLACK);
-            for (int rows = 0; rows < currentLevel.getRows(); rows++) {
-                for (int columns = 0; columns < currentLevel.getColumns(); columns++) {
-                    if (currentLevel.getMapTile(rows, columns) == 0) {
+            for (int rows = 0; rows < map.getRows(); rows++) {
+                for (int columns = 0; columns < map.getColumns(); columns++) {
+                    if (map.getMapTile(rows, columns) == null) {
                         g2.setColor(Color.WHITE);
                         g2.drawRect(columns * Const.BOX_SIZE + (int) cameraOffset.getX(),
                                     rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);
-                    } else if (currentLevel.getMapTile(rows, columns) >= 1) {
+                    } else if (map.getMapTile(rows, columns) instanceof Environment) {
                         g2.setColor(Color.BLACK);
                         g2.fillRect(columns * Const.BOX_SIZE + (int) cameraOffset.getX(),
                                     rows * Const.BOX_SIZE + (int) cameraOffset.getY(), Const.BOX_SIZE, Const.BOX_SIZE);

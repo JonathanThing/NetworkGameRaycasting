@@ -1,34 +1,34 @@
 public class Level {
     
-    private int[][] map;
+    private Environment[][] map;
     private int rows;
     private int columns;
     
-    public Level(int [][] map) {
+    public Level(Environment [][] map) {
         this.map = map;
         this.rows = map.length;
         this.columns = map[0].length;
     }
     
-    public int[][] getMap() {
+    public Environment[][] getMap() {
         return map;
     }
     
-    public void setMap(int[][] map) {
+    public void setMap(Environment[][] map) {
         this.map = map;
         this.rows = map.length;
         this.columns = map[0].length;
     }
     
-    public int getMapTile(int row, int column) {
+    public Environment getMapTile(int row, int column) {
         return map[row][column];
     }
 
-    public int getMapTile(Vector position) {
+    public Environment getMapTile(Vector position) {
         return map[(int) position.getX()][(int) position.getY()];
     }
     
-    public void setMapTile(int row, int column, int value) {
+    public void setMapTile(int row, int column, Environment value) {
         this.map[row][column] = value;
     }
     

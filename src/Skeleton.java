@@ -10,7 +10,7 @@ class Skeleton extends Enemy {
     }
     
     
-    public void attack(Player player, TextureManager sprite, LevelE e) {
+    public void attack(Player player, TextureManager sprite, Level e) {
         this.shoot(player, sprite); 
     }
     
@@ -41,7 +41,7 @@ class Skeleton extends Enemy {
     }
 
     @Override
-    public void attack(Player player, BufferedImage sprite, LevelE map) {
+    public void attack(Player player, BufferedImage sprite, Level map) {
         // TODO Auto-generated method stub
     }
 }
