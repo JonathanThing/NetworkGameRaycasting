@@ -9,7 +9,6 @@ class Player extends Character {
     SingleShot pistol = new SingleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "Pistol", null, 40, 5, 6, 25);
     SingleShot ar = new SingleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "ar", null, 20, 1, 25, 40);
     SingleShot rifle = new SingleShot(this.getPosition().getX(), this.getPosition().getY(),5,5, "rifle", null, 200, 15, 2, 75);
-    MultiShot shotgun = new MultiShot(this.getPosition().getX(), this.getPosition().getY(),5,5,"shotgun",null,30,5,6,40,5);
     //dmg, firerate, bullets, reloadtime
     
     public void shoot(long timer) {    	
@@ -20,7 +19,7 @@ class Player extends Character {
     		ar.shoot(getAngle(), this.getPosition().clone(), timer);
     	}
     	else if(this.slot3 == true) {
-    		shotgun.shoot(getAngle(), this.getPosition().clone(), timer);
+    		rifle.shoot(getAngle(), this.getPosition().clone(), timer);
     	}
     		
       }
