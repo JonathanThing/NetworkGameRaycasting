@@ -1,5 +1,5 @@
 # RaycastingProject
-pseudo 3d game
+Gr.12 Final project.
 
-The 2D game that we're borrowing stuff from
-https://github.com/SomeGuySomeGuy/JavaKnight
+An ambitious attempt at recreating Wolfenstein 3D in Java.
+Currently the game has a working graphics system using raycasting to draw the environemnt and sprites of enemies, networking to connect with other people, and multithreading.
